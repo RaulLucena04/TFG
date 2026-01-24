@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.estadisticas.TeamsStatsController"
+      spacing="20"
+      styleClass="teams-stats-container">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <HBox spacing="15" alignment="CENTER_LEFT">
+        <Button text="← Volver" onAction="#handleBack"/>
+        <Label text="🏀 Estadísticas de Equipos" styleClass="page-title"/>
+    </HBox>
+
+    <TableView fx:id="tableTeams" prefHeight="500">
+        <columns>
+            <TableColumn text="Equipo" prefWidth="200"/>
+            <TableColumn text="Conferencia" prefWidth="150"/>
+            <TableColumn text="División" prefWidth="120"/>
+            <TableColumn text="Victorias" prefWidth="100"/>
+            <TableColumn text="Derrotas" prefWidth="100"/>
+            <TableColumn text="% Victorias" prefWidth="100"/>
+            <TableColumn text="PPG" prefWidth="80"/>
+            <TableColumn text="RPG" prefWidth="80"/>
+            <TableColumn text="APG" prefWidth="80"/>
+            <TableColumn text="Acción" prefWidth="100"/>
+        </columns>
+    </TableView>
+
+</VBox>

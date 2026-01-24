@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.perfil.ProfileController"
+      spacing="20"
+      styleClass="profile-container">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="👤 Mi Perfil" styleClass="page-title"/>
+
+    <!-- Información del usuario -->
+    <VBox spacing="15" styleClass="profile-info-card">
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
+
+        <Label text="Información Personal" styleClass="section-title"/>
+
+        <GridPane hgap="15" vgap="10">
+            <columnConstraints>
+                <ColumnConstraints minWidth="150"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+            </columnConstraints>
+
+            <Label text="Nombre de usuario:" GridPane.columnIndex="0" styleClass="info-label"/>
+            <Label fx:id="lblUsername" text="-" GridPane.columnIndex="1" styleClass="info-value"/>
+
+            <Label text="Correo electrónico:" GridPane.columnIndex="0" styleClass="info-label"/>
+            <Label fx:id="lblEmail" text="-" GridPane.columnIndex="1" styleClass="info-value"/>
+
+            <Label text="Fecha de registro:" GridPane.columnIndex="0" styleClass="info-label"/>
+            <Label fx:id="lblRegistrationDate" text="-" GridPane.columnIndex="1" styleClass="info-value"/>
+        </GridPane>
+
+        <HBox spacing="15" alignment="CENTER_LEFT">
+            <Button text="✏️ Editar Perfil" onAction="#handleEditProfile"/>
+            <Button text="🔒 Cambiar Contraseña" onAction="#handleChangePassword"/>
+        </HBox>
+    </VBox>
+
+    <!-- Estadísticas del usuario -->
+    <GridPane hgap="20" vgap="15" alignment="CENTER">
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="200"/>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="200"/>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="200"/>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="200"/>
+        </columnConstraints>
+
+        <VBox styleClass="stat-card" GridPane.columnIndex="0">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <Label text="💰 Puntos Totales" styleClass="stat-label"/>
+            <Label fx:id="lblTotalPoints" text="0" styleClass="stat-value"/>
+        </VBox>
+
+        <VBox styleClass="stat-card" GridPane.columnIndex="1">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <Label text="📊 Apuestas Totales" styleClass="stat-label"/>
+            <Label fx:id="lblTotalBets" text="0" styleClass="stat-value"/>
+        </VBox>
+
+        <VBox styleClass="stat-card" GridPane.columnIndex="2">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <Label text="✅ Tasa de Aciertos" styleClass="stat-label"/>
+            <Label fx:id="lblWinRate" text="0%" styleClass="stat-value"/>
+        </VBox>
+
+        <VBox styleClass="stat-card" GridPane.columnIndex="3">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <Label text="🏆 Posición Ranking" styleClass="stat-label"/>
+            <Label fx:id="lblRanking" text="#0" styleClass="stat-value"/>
+        </VBox>
+    </GridPane>
+
+    <!-- Gráfica de rendimiento -->
+    <VBox spacing="10">
+        <Label text="📈 Mi Rendimiento" styleClass="section-title"/>
+        <Pane fx:id="chartContainer" prefHeight="300" styleClass="chart-container"/>
+    </VBox>
+
+    <!-- Historial reciente -->
+    <VBox spacing="10">
+        <Label text="📜 Apuestas Recientes" styleClass="section-title"/>
+        <TableView fx:id="tableRecentBets" prefHeight="200">
+            <columns>
+                <TableColumn text="Fecha" prefWidth="150"/>
+                <TableColumn text="Partido" prefWidth="250"/>
+                <TableColumn text="Tipo" prefWidth="120"/>
+                <TableColumn text="Cantidad" prefWidth="100"/>
+                <TableColumn text="Resultado" prefWidth="100"/>
+                <TableColumn text="Ganancia/Pérdida" prefWidth="130"/>
+            </columns>
+        </TableView>
+    </VBox>
+
+</VBox>

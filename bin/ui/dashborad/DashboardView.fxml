@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.dashborad.DashboardController"
+      spacing="20"
+      styleClass="dashboard-container">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Dashboard" styleClass="page-title"/>
+
+    <!-- Tarjetas de resumen -->
+    <GridPane hgap="20" vgap="20" alignment="CENTER">
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="250"/>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="250"/>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="250"/>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="250"/>
+        </columnConstraints>
+
+        <VBox styleClass="stat-card" GridPane.columnIndex="0">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <Label text="💰 Puntos Totales" styleClass="stat-label"/>
+            <Label fx:id="lblTotalPoints" text="0" styleClass="stat-value"/>
+        </VBox>
+
+        <VBox styleClass="stat-card" GridPane.columnIndex="1">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <Label text="📊 Apuestas Activas" styleClass="stat-label"/>
+            <Label fx:id="lblActiveBets" text="0" styleClass="stat-value"/>
+        </VBox>
+
+        <VBox styleClass="stat-card" GridPane.columnIndex="2">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <Label text="✅ Tasa de Aciertos" styleClass="stat-label"/>
+            <Label fx:id="lblWinRate" text="0%" styleClass="stat-value"/>
+        </VBox>
+
+        <VBox styleClass="stat-card" GridPane.columnIndex="3">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <Label text="🏆 Posición Ranking" styleClass="stat-label"/>
+            <Label fx:id="lblRanking" text="#0" styleClass="stat-value"/>
+        </VBox>
+    </GridPane>
+
+    <!-- Sección de partidos próximos -->
+    <VBox spacing="10">
+        <Label text="📅 Partidos Próximos" styleClass="section-title"/>
+        <TableView fx:id="tableUpcomingMatches" prefHeight="200">
+            <columns>
+                <TableColumn text="Fecha" prefWidth="150"/>
+                <TableColumn text="Equipo Local" prefWidth="200"/>
+                <TableColumn text="Equipo Visitante" prefWidth="200"/>
+                <TableColumn text="Acción" prefWidth="150"/>
+            </columns>
+        </TableView>
+    </VBox>
+
+    <!-- Gráfica de rendimiento -->
+    <VBox spacing="10">
+        <Label text="📈 Rendimiento Reciente" styleClass="section-title"/>
+        <Pane fx:id="chartContainer" prefHeight="300" styleClass="chart-container"/>
+    </VBox>
+
+</VBox>

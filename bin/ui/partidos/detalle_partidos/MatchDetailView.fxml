@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.partidos.detalle_partidos.MatchDetailController"
+      spacing="20"
+      styleClass="match-detail-container">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Button text="← Volver" onAction="#handleBack" alignment="TOP_LEFT"/>
+
+    <!-- Información del partido -->
+    <VBox spacing="15" styleClass="match-info-card">
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
+
+        <Label fx:id="lblMatchDate" text="Fecha del partido" styleClass="match-date"/>
+        <Label fx:id="lblMatchStatus" text="Estado" styleClass="match-status"/>
+
+        <HBox spacing="30" alignment="CENTER" prefWidth="Infinity">
+            <VBox alignment="CENTER" spacing="10" HBox.hgrow="ALWAYS">
+                <Label fx:id="lblHomeTeam" text="Equipo Local" styleClass="team-name"/>
+                <Label fx:id="lblHomeScore" text="0" styleClass="team-score"/>
+            </VBox>
+
+            <Label text="VS" styleClass="vs-label"/>
+
+            <VBox alignment="CENTER" spacing="10" HBox.hgrow="ALWAYS">
+                <Label fx:id="lblAwayTeam" text="Equipo Visitante" styleClass="team-name"/>
+                <Label fx:id="lblAwayScore" text="0" styleClass="team-score"/>
+            </VBox>
+        </HBox>
+    </VBox>
+
+    <!-- Estadísticas del partido -->
+    <VBox spacing="10">
+        <Label text="📊 Estadísticas del Partido" styleClass="section-title"/>
+        <TableView fx:id="tableStats" prefHeight="200">
+            <columns>
+                <TableColumn text="Estadística" prefWidth="200"/>
+                <TableColumn fx:id="colHomeStat" text="Local" prefWidth="150"/>
+                <TableColumn fx:id="colAwayStat" text="Visitante" prefWidth="150"/>
+            </columns>
+        </TableView>
+    </VBox>
+
+    <!-- Acciones -->
+    <HBox spacing="15" alignment="CENTER">
+        <Button text="💰 Crear Apuesta" onAction="#handleCreateBet" styleClass="primary-button" prefWidth="200"/>
+        <Button text="📊 Ver Estadísticas Detalladas" onAction="#handleViewStats" prefWidth="250"/>
+    </HBox>
+
+</VBox>

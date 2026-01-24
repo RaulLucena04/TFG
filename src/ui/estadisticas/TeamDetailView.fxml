@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.ImageView?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.estadisticas.TeamDetailController"
+      spacing="20"
+      styleClass="team-detail-container">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Button text="← Volver" onAction="#handleBack" alignment="TOP_LEFT"/>
+
+    <!-- Información del equipo -->
+    <HBox spacing="30" alignment="CENTER_LEFT" styleClass="team-header-card">
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
+        <ImageView fx:id="imgTeamLogo" fitWidth="120" fitHeight="120" preserveRatio="true"/>
+        <VBox spacing="10">
+            <Label fx:id="lblTeamName" text="Nombre del Equipo" styleClass="team-name-large"/>
+            <Label fx:id="lblConference" text="Conferencia" styleClass="info-label"/>
+            <Label fx:id="lblDivision" text="División" styleClass="info-label"/>
+            <Label fx:id="lblRecord" text="Record: 0-0" styleClass="info-value"/>
+        </VBox>
+    </HBox>
+
+    <!-- Estadísticas generales -->
+    <GridPane hgap="20" vgap="15" alignment="CENTER">
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="200"/>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="200"/>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="200"/>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="200"/>
+        </columnConstraints>
+
+        <VBox styleClass="stat-card" GridPane.columnIndex="0">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+            <Label text="Puntos por juego" styleClass="stat-label"/>
+            <Label fx:id="lblPPG" text="0.0" styleClass="stat-value"/>
+        </VBox>
+
+        <VBox styleClass="stat-card" GridPane.columnIndex="1">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+            <Label text="Rebotes por juego" styleClass="stat-label"/>
+            <Label fx:id="lblRPG" text="0.0" styleClass="stat-value"/>
+        </VBox>
+
+        <VBox styleClass="stat-card" GridPane.columnIndex="2">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+            <Label text="Asistencias por juego" styleClass="stat-label"/>
+            <Label fx:id="lblAPG" text="0.0" styleClass="stat-value"/>
+        </VBox>
+
+        <VBox styleClass="stat-card" GridPane.columnIndex="3">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+            <Label text="% Tiros de campo" styleClass="stat-label"/>
+            <Label fx:id="lblFGPercent" text="0.0%" styleClass="stat-value"/>
+        </VBox>
+    </GridPane>
+
+    <!-- Plantilla de jugadores -->
+    <VBox spacing="10">
+        <Label text="👤 Plantilla" styleClass="section-title"/>
+        <TableView fx:id="tablePlayers" prefHeight="300">
+            <columns>
+                <TableColumn text="Nombre" prefWidth="200"/>
+                <TableColumn text="Posición" prefWidth="100"/>
+                <TableColumn text="Número" prefWidth="80"/>
+                <TableColumn text="PPG" prefWidth="80"/>
+                <TableColumn text="RPG" prefWidth="80"/>
+                <TableColumn text="APG" prefWidth="80"/>
+                <TableColumn text="Acción" prefWidth="100"/>
+            </columns>
+        </TableView>
+    </VBox>
+
+    <!-- Partidos recientes -->
+    <VBox spacing="10">
+        <Label text="📅 Partidos Recientes" styleClass="section-title"/>
+        <TableView fx:id="tableRecentMatches" prefHeight="200">
+            <columns>
+                <TableColumn text="Fecha" prefWidth="150"/>
+                <TableColumn text="Rival" prefWidth="200"/>
+                <TableColumn text="Resultado" prefWidth="150"/>
+                <TableColumn text="Acción" prefWidth="100"/>
+            </columns>
+        </TableView>
+    </VBox>
+
+</VBox>

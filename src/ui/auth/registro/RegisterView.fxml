@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.auth.registro.RegisterController"
+      alignment="CENTER"
+      spacing="20"
+      styleClass="auth-container"
+      prefWidth="400" prefHeight="600">
+
+    <padding>
+        <Insets top="40" right="40" bottom="40" left="40"/>
+    </padding>
+
+    <Label text="NBA Predictor" styleClass="auth-title"/>
+
+    <Label text="Crear Cuenta" styleClass="auth-subtitle"/>
+
+    <VBox spacing="15" alignment="CENTER" prefWidth="Infinity">
+        <TextField fx:id="txtUsername" promptText="Nombre de usuario" prefWidth="Infinity" prefHeight="40"/>
+        <TextField fx:id="txtEmail" promptText="Correo electrónico" prefWidth="Infinity" prefHeight="40"/>
+        <PasswordField fx:id="txtPassword" promptText="Contraseña" prefWidth="Infinity" prefHeight="40"/>
+        <PasswordField fx:id="txtConfirmPassword" promptText="Confirmar contraseña" prefWidth="Infinity" prefHeight="40"/>
+        <Label fx:id="lblError" text="" styleClass="error-label" visible="false" managed="false"/>
+        <Button text="Registrarse" onAction="#handleRegister" prefWidth="Infinity" prefHeight="40" styleClass="primary-button"/>
+        <Hyperlink text="¿Ya tienes cuenta? Inicia sesión" onAction="#handleLogin"/>
+    </VBox>
+
+</VBox>

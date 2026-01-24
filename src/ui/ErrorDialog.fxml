@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<DialogPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.ui.ErrorDialogController"
+            styleClass="error-dialog">
+
+    <headerText>
+        <Label fx:id="lblTitle" text="Error"/>
+    </headerText>
+
+    <content>
+        <VBox spacing="15" alignment="CENTER">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <Label text="⚠️" styleClass="error-icon"/>
+            <Label fx:id="lblMessage" text="Ha ocurrido un error" styleClass="dialog-message" wrapText="true"/>
+        </VBox>
+    </content>
+
+    <buttonTypes>
+        <ButtonType text="Aceptar" buttonData="OK_DONE"/>
+    </buttonTypes>
+
+</DialogPane>

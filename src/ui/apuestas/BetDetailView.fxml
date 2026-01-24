@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.apuestas.BetDetailController"
+      spacing="20"
+      styleClass="bet-detail-container">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Button text="← Volver" onAction="#handleBack" alignment="TOP_LEFT"/>
+
+    <Label text="💰 Detalle de Apuesta" styleClass="page-title"/>
+
+    <!-- Información de la apuesta -->
+    <VBox spacing="15" styleClass="bet-info-card">
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
+
+        <Label text="Información de la Apuesta" styleClass="section-title"/>
+
+        <GridPane hgap="15" vgap="10">
+            <columnConstraints>
+                <ColumnConstraints minWidth="150"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+            </columnConstraints>
+
+            <Label text="ID Apuesta:" GridPane.columnIndex="0" styleClass="info-label"/>
+            <Label fx:id="lblBetId" text="-" GridPane.columnIndex="1" styleClass="info-value"/>
+
+            <Label text="Fecha:" GridPane.columnIndex="0" styleClass="info-label"/>
+            <Label fx:id="lblBetDate" text="-" GridPane.columnIndex="1" styleClass="info-value"/>
+
+            <Label text="Estado:" GridPane.columnIndex="0" styleClass="info-label"/>
+            <Label fx:id="lblBetStatus" text="-" GridPane.columnIndex="1" styleClass="info-value"/>
+
+            <Label text="Tipo de Apuesta:" GridPane.columnIndex="0" styleClass="info-label"/>
+            <Label fx:id="lblBetType" text="-" GridPane.columnIndex="1" styleClass="info-value"/>
+
+            <Label text="Predicción:" GridPane.columnIndex="0" styleClass="info-label"/>
+            <Label fx:id="lblPrediction" text="-" GridPane.columnIndex="1" styleClass="info-value"/>
+
+            <Label text="Cantidad Apostada:" GridPane.columnIndex="0" styleClass="info-label"/>
+            <Label fx:id="lblBetAmount" text="-" GridPane.columnIndex="1" styleClass="info-value"/>
+
+            <Label text="Cuota:" GridPane.columnIndex="0" styleClass="info-label"/>
+            <Label fx:id="lblOdds" text="-" GridPane.columnIndex="1" styleClass="info-value"/>
+
+            <Label text="Ganancia Potencial:" GridPane.columnIndex="0" styleClass="info-label"/>
+            <Label fx:id="lblPotentialWin" text="-" GridPane.columnIndex="1" styleClass="info-value"/>
+
+            <Label text="Resultado:" GridPane.columnIndex="0" styleClass="info-label"/>
+            <Label fx:id="lblResult" text="-" GridPane.columnIndex="1" styleClass="info-value"/>
+
+            <Label text="Ganancia/Pérdida:" GridPane.columnIndex="0" styleClass="info-label"/>
+            <Label fx:id="lblProfitLoss" text="-" GridPane.columnIndex="1" styleClass="info-value"/>
+        </GridPane>
+    </VBox>
+
+    <!-- Información del partido -->
+    <VBox spacing="15" styleClass="match-info-card">
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
+
+        <Label text="Información del Partido" styleClass="section-title"/>
+
+        <HBox spacing="30" alignment="CENTER" prefWidth="Infinity">
+            <VBox alignment="CENTER" spacing="10" HBox.hgrow="ALWAYS">
+                <Label fx:id="lblHomeTeam" text="Equipo Local" styleClass="team-name"/>
+                <Label fx:id="lblHomeScore" text="0" styleClass="team-score"/>
+            </VBox>
+
+            <Label text="VS" styleClass="vs-label"/>
+
+            <VBox alignment="CENTER" spacing="10" HBox.hgrow="ALWAYS">
+                <Label fx:id="lblAwayTeam" text="Equipo Visitante" styleClass="team-name"/>
+                <Label fx:id="lblAwayScore" text="0" styleClass="team-score"/>
+            </VBox>
+        </HBox>
+
+        <Label fx:id="lblMatchDate" text="Fecha del partido" styleClass="match-date"/>
+    </VBox>
+
+</VBox>

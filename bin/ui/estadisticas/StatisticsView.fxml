@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.estadisticas.StatisticsController"
+      spacing="20"
+      styleClass="statistics-container">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="📊 Estadísticas" styleClass="page-title"/>
+
+    <!-- Pestañas para equipos y jugadores -->
+    <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+            <Tab text="🏀 Equipos">
+                <VBox spacing="15">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15"/>
+                    </padding>
+                    <HBox spacing="15" alignment="CENTER_LEFT">
+                        <TextField fx:id="txtSearchTeam" promptText="Buscar equipo..." prefWidth="300"/>
+                        <Button text="🔍 Buscar" onAction="#handleSearchTeam"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="Ver Todos" onAction="#handleViewAllTeams"/>
+                    </HBox>
+                    <ScrollPane fitToWidth="true" vbarPolicy="AS_NEEDED">
+                        <VBox fx:id="teamsContainer" spacing="10" alignment="TOP_CENTER">
+                            <!-- Los equipos se cargarán dinámicamente -->
+                        </VBox>
+                    </ScrollPane>
+                </VBox>
+            </Tab>
+            <Tab text="👤 Jugadores">
+                <VBox spacing="15">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15"/>
+                    </padding>
+                    <HBox spacing="15" alignment="CENTER_LEFT">
+                        <TextField fx:id="txtSearchPlayer" promptText="Buscar jugador..." prefWidth="300"/>
+                        <ComboBox fx:id="comboTeamFilter" promptText="Filtrar por equipo" prefWidth="200"/>
+                        <Button text="🔍 Buscar" onAction="#handleSearchPlayer"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="Ver Todos" onAction="#handleViewAllPlayers"/>
+                    </HBox>
+                    <TableView fx:id="tablePlayers" prefHeight="400">
+                        <columns>
+                            <TableColumn text="Nombre" prefWidth="200"/>
+                            <TableColumn text="Equipo" prefWidth="150"/>
+                            <TableColumn text="Posición" prefWidth="100"/>
+                            <TableColumn text="PPG" prefWidth="80"/>
+                            <TableColumn text="RPG" prefWidth="80"/>
+                            <TableColumn text="APG" prefWidth="80"/>
+                            <TableColumn text="Acción" prefWidth="100"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+            </Tab>
+        </tabs>
+    </TabPane>
+
+</VBox>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+<?import javafx.collections.FXCollections?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.admin.UserManagementController"
+      spacing="20"
+      styleClass="user-management-container">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <HBox spacing="15" alignment="CENTER_LEFT">
+        <Button text="← Volver" onAction="#handleBack"/>
+        <Label text="👥 Gestión de Usuarios" styleClass="page-title"/>
+    </HBox>
+
+    <!-- Filtros y búsqueda -->
+    <HBox spacing="15" alignment="CENTER_LEFT">
+        <TextField fx:id="txtSearch" promptText="Buscar usuario..." prefWidth="250"/>
+        <ComboBox fx:id="comboRoleFilter" promptText="Filtrar por rol" prefWidth="200">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="Todos"/>
+                    <String fx:value="Usuario"/>
+                    <String fx:value="Administrador"/>
+                </FXCollections>
+            </items>
+        </ComboBox>
+        <ComboBox fx:id="comboStatusFilter" promptText="Filtrar por estado" prefWidth="200">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="Todos"/>
+                    <String fx:value="Activo"/>
+                    <String fx:value="Inactivo"/>
+                    <String fx:value="Baneado"/>
+                </FXCollections>
+            </items>
+        </ComboBox>
+        <Button text="🔍 Buscar" onAction="#handleSearch"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="🔄 Actualizar" onAction="#handleRefresh"/>
+    </HBox>
+
+    <!-- Tabla de usuarios -->
+    <TableView fx:id="tableUsers" prefHeight="450">
+        <columns>
+            <TableColumn text="ID" prefWidth="80"/>
+            <TableColumn text="Usuario" prefWidth="150"/>
+            <TableColumn text="Correo" prefWidth="200"/>
+            <TableColumn text="Rol" prefWidth="120"/>
+            <TableColumn text="Puntos" prefWidth="100"/>
+            <TableColumn text="Estado" prefWidth="100"/>
+            <TableColumn text="Fecha Registro" prefWidth="150"/>
+            <TableColumn text="Último Acceso" prefWidth="150"/>
+            <TableColumn text="Acciones" prefWidth="200"/>
+        </columns>
+    </TableView>
+
+    <!-- Botones de acción masiva -->
+    <HBox spacing="15" alignment="CENTER_LEFT">
+        <Button text="✏️ Editar Seleccionado" onAction="#handleEditSelected" prefWidth="180"/>
+        <Button text="🔒 Cambiar Rol" onAction="#handleChangeRole" prefWidth="150"/>
+        <Button text="🚫 Desactivar Seleccionado" onAction="#handleDeactivateSelected" styleClass="danger-button" prefWidth="200"/>
+        <Button text="✅ Activar Seleccionado" onAction="#handleActivateSelected" prefWidth="180"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="lblSelectedCount" text="0 usuarios seleccionados" styleClass="info-label"/>
+    </HBox>
+
+    <!-- Estadísticas de usuarios -->
+    <HBox spacing="20" alignment="CENTER">
+        <VBox styleClass="stat-card" alignment="CENTER">
+            <padding>
+                <Insets top="15" right="20" bottom="15" left="20"/>
+            </padding>
+            <Label text="Total Usuarios" styleClass="stat-label"/>
+            <Label fx:id="lblTotalUsers" text="0" styleClass="stat-value"/>
+        </VBox>
+        <VBox styleClass="stat-card" alignment="CENTER">
+            <padding>
+                <Insets top="15" right="20" bottom="15" left="20"/>
+            </padding>
+            <Label text="Usuarios Activos" styleClass="stat-label"/>
+            <Label fx:id="lblActiveUsers" text="0" styleClass="stat-value"/>
+        </VBox>
+        <VBox styleClass="stat-card" alignment="CENTER">
+            <padding>
+                <Insets top="15" right="20" bottom="15" left="20"/>
+            </padding>
+            <Label text="Administradores" styleClass="stat-label"/>
+            <Label fx:id="lblAdmins" text="0" styleClass="stat-value"/>
+        </VBox>
+    </HBox>
+
+</VBox>

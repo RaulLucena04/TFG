@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+<?import javafx.collections.FXCollections?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.partidos.lista_partidos.MatchesController"
+      spacing="20"
+      styleClass="matches-container">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <HBox spacing="15" alignment="CENTER_LEFT">
+        <Label text="📅 Partidos de la NBA" styleClass="page-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <ComboBox fx:id="comboFilter" promptText="Filtrar por estado" prefWidth="200">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="Todos"/>
+                    <String fx:value="Próximos"/>
+                    <String fx:value="En curso"/>
+                    <String fx:value="Finalizados"/>
+                </FXCollections>
+            </items>
+        </ComboBox>
+        <Button text="🔄 Actualizar" onAction="#handleRefresh"/>
+    </HBox>
+
+    <ScrollPane fitToWidth="true" vbarPolicy="AS_NEEDED" styleClass="scroll-pane">
+        <VBox fx:id="matchesContainer" spacing="15" alignment="TOP_CENTER">
+            <!-- Los partidos se cargarán dinámicamente aquí -->
+        </VBox>
+    </ScrollPane>
+
+</VBox>

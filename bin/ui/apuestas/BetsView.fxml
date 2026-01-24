@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+<?import javafx.collections.FXCollections?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.apuestas.BetsController"
+      spacing="20"
+      styleClass="bets-container">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="💰 Apuestas" styleClass="page-title"/>
+
+    <!-- Pestañas para diferentes tipos de apuestas -->
+    <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+            <Tab text="📊 Apuestas Activas">
+                <VBox spacing="15">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15"/>
+                    </padding>
+                    <HBox spacing="15" alignment="CENTER_LEFT">
+                        <Label text="Filtrar por estado:"/>
+                        <ComboBox fx:id="comboFilterActive" prefWidth="200">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="Todas"/>
+                                    <String fx:value="Pendientes"/>
+                                    <String fx:value="En curso"/>
+                                </FXCollections>
+                            </items>
+                        </ComboBox>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="🔄 Actualizar" onAction="#handleRefreshActive"/>
+                    </HBox>
+                    <TableView fx:id="tableActiveBets" prefHeight="400">
+                        <columns>
+                            <TableColumn text="Partido" prefWidth="250"/>
+                            <TableColumn text="Tipo de Apuesta" prefWidth="150"/>
+                            <TableColumn text="Predicción" prefWidth="150"/>
+                            <TableColumn text="Cantidad" prefWidth="100"/>
+                            <TableColumn text="Cuota" prefWidth="80"/>
+                            <TableColumn text="Ganancia Potencial" prefWidth="130"/>
+                            <TableColumn text="Estado" prefWidth="100"/>
+                            <TableColumn text="Acción" prefWidth="100"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+            </Tab>
+            <Tab text="📜 Historial">
+                <VBox spacing="15">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15"/>
+                    </padding>
+                    <HBox spacing="15" alignment="CENTER_LEFT">
+                        <Label text="Filtrar por resultado:"/>
+                        <ComboBox fx:id="comboFilterHistory" prefWidth="200">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="Todas"/>
+                                    <String fx:value="Ganadas"/>
+                                    <String fx:value="Perdidas"/>
+                                </FXCollections>
+                            </items>
+                        </ComboBox>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="🔄 Actualizar" onAction="#handleRefreshHistory"/>
+                    </HBox>
+                    <TableView fx:id="tableBetHistory" prefHeight="400">
+                        <columns>
+                            <TableColumn text="Fecha" prefWidth="150"/>
+                            <TableColumn text="Partido" prefWidth="250"/>
+                            <TableColumn text="Tipo de Apuesta" prefWidth="150"/>
+                            <TableColumn text="Predicción" prefWidth="150"/>
+                            <TableColumn text="Cantidad" prefWidth="100"/>
+                            <TableColumn text="Resultado" prefWidth="100"/>
+                            <TableColumn text="Ganancia/Pérdida" prefWidth="130"/>
+                            <TableColumn text="Acción" prefWidth="100"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+            </Tab>
+        </tabs>
+    </TabPane>
+
+    <!-- Resumen de apuestas -->
+    <HBox spacing="20" alignment="CENTER">
+        <VBox styleClass="stat-card" alignment="CENTER">
+            <padding>
+                <Insets top="15" right="20" bottom="15" left="20"/>
+            </padding>
+            <Label text="Total Apostado" styleClass="stat-label"/>
+            <Label fx:id="lblTotalBet" text="0 puntos" styleClass="stat-value"/>
+        </VBox>
+        <VBox styleClass="stat-card" alignment="CENTER">
+            <padding>
+                <Insets top="15" right="20" bottom="15" left="20"/>
+            </padding>
+            <Label text="Ganancias Totales" styleClass="stat-label"/>
+            <Label fx:id="lblTotalWins" text="0 puntos" styleClass="stat-value"/>
+        </VBox>
+        <VBox styleClass="stat-card" alignment="CENTER">
+            <padding>
+                <Insets top="15" right="20" bottom="15" left="20"/>
+            </padding>
+            <Label text="Tasa de Aciertos" styleClass="stat-label"/>
+            <Label fx:id="lblWinRate" text="0%" styleClass="stat-value"/>
+        </VBox>
+    </HBox>
+
+</VBox>

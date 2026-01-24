@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+<?import javafx.collections.FXCollections?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.estadisticas.PlayersStatsController"
+      spacing="20"
+      styleClass="players-stats-container">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <HBox spacing="15" alignment="CENTER_LEFT">
+        <Button text="← Volver" onAction="#handleBack"/>
+        <Label text="👤 Estadísticas de Jugadores" styleClass="page-title"/>
+    </HBox>
+
+    <!-- Filtros -->
+    <HBox spacing="15" alignment="CENTER_LEFT">
+        <TextField fx:id="txtSearch" promptText="Buscar jugador..." prefWidth="250"/>
+        <ComboBox fx:id="comboTeam" promptText="Filtrar por equipo" prefWidth="200"/>
+        <ComboBox fx:id="comboPosition" promptText="Filtrar por posición" prefWidth="150">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="Todas"/>
+                    <String fx:value="PG"/>
+                    <String fx:value="SG"/>
+                    <String fx:value="SF"/>
+                    <String fx:value="PF"/>
+                    <String fx:value="C"/>
+                </FXCollections>
+            </items>
+        </ComboBox>
+        <Button text="🔍 Buscar" onAction="#handleSearch"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="🔄 Actualizar" onAction="#handleRefresh"/>
+    </HBox>
+
+    <TableView fx:id="tablePlayers" prefHeight="500">
+        <columns>
+            <TableColumn text="Nombre" prefWidth="200"/>
+            <TableColumn text="Equipo" prefWidth="150"/>
+            <TableColumn text="Posición" prefWidth="100"/>
+            <TableColumn text="PPG" prefWidth="80"/>
+            <TableColumn text="RPG" prefWidth="80"/>
+            <TableColumn text="APG" prefWidth="80"/>
+            <TableColumn text="SPG" prefWidth="80"/>
+            <TableColumn text="BPG" prefWidth="80"/>
+            <TableColumn text="FG%" prefWidth="80"/>
+            <TableColumn text="Acción" prefWidth="100"/>
+        </columns>
+    </TableView>
+
+</VBox>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.ImageView?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.estadisticas.PlayerDetailController"
+      spacing="20"
+      styleClass="player-detail-container">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Button text="← Volver" onAction="#handleBack" alignment="TOP_LEFT"/>
+
+    <!-- Información del jugador -->
+    <HBox spacing="30" alignment="CENTER_LEFT" styleClass="player-header-card">
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
+        <ImageView fx:id="imgPlayerPhoto" fitWidth="150" fitHeight="150" preserveRatio="true"/>
+        <VBox spacing="10">
+            <Label fx:id="lblPlayerName" text="Nombre del Jugador" styleClass="player-name-large"/>
+            <Label fx:id="lblTeam" text="Equipo" styleClass="info-label"/>
+            <Label fx:id="lblPosition" text="Posición" styleClass="info-label"/>
+            <Label fx:id="lblJerseyNumber" text="Número: #0" styleClass="info-value"/>
+            <Label fx:id="lblHeight" text="Altura: 0 cm" styleClass="info-value"/>
+            <Label fx:id="lblWeight" text="Peso: 0 kg" styleClass="info-value"/>
+        </VBox>
+    </HBox>
+
+    <!-- Estadísticas principales -->
+    <GridPane hgap="20" vgap="15" alignment="CENTER">
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="150"/>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="150"/>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="150"/>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="150"/>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="150"/>
+        </columnConstraints>
+
+        <VBox styleClass="stat-card" GridPane.columnIndex="0">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+            <Label text="PPG" styleClass="stat-label"/>
+            <Label fx:id="lblPPG" text="0.0" styleClass="stat-value"/>
+        </VBox>
+
+        <VBox styleClass="stat-card" GridPane.columnIndex="1">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+            <Label text="RPG" styleClass="stat-label"/>
+            <Label fx:id="lblRPG" text="0.0" styleClass="stat-value"/>
+        </VBox>
+
+        <VBox styleClass="stat-card" GridPane.columnIndex="2">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+            <Label text="APG" styleClass="stat-label"/>
+            <Label fx:id="lblAPG" text="0.0" styleClass="stat-value"/>
+        </VBox>
+
+        <VBox styleClass="stat-card" GridPane.columnIndex="3">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+            <Label text="SPG" styleClass="stat-label"/>
+            <Label fx:id="lblSPG" text="0.0" styleClass="stat-value"/>
+        </VBox>
+
+        <VBox styleClass="stat-card" GridPane.columnIndex="4">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+            <Label text="BPG" styleClass="stat-label"/>
+            <Label fx:id="lblBPG" text="0.0" styleClass="stat-value"/>
+        </VBox>
+    </GridPane>
+
+    <!-- Estadísticas detalladas -->
+    <VBox spacing="10">
+        <Label text="📊 Estadísticas Detalladas" styleClass="section-title"/>
+        <TableView fx:id="tableDetailedStats" prefHeight="250">
+            <columns>
+                <TableColumn text="Estadística" prefWidth="200"/>
+                <TableColumn text="Valor" prefWidth="150"/>
+                <TableColumn text="Promedio Liga" prefWidth="150"/>
+            </columns>
+        </TableView>
+    </VBox>
+
+    <!-- Gráfica de rendimiento -->
+    <VBox spacing="10">
+        <Label text="📈 Rendimiento por Temporada" styleClass="section-title"/>
+        <Pane fx:id="chartContainer" prefHeight="300" styleClass="chart-container"/>
+    </VBox>
+
+</VBox>

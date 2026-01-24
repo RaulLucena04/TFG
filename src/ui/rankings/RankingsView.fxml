@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+<?import javafx.collections.FXCollections?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.rankings.RankingsController"
+      spacing="20"
+      styleClass="rankings-container">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <HBox spacing="15" alignment="CENTER_LEFT">
+        <Label text="🏆 Rankings" styleClass="page-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <ComboBox fx:id="comboRankingType" prefWidth="200">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="Puntos Totales"/>
+                    <String fx:value="Tasa de Aciertos"/>
+                    <String fx:value="Ganancias Totales"/>
+                    <String fx:value="Apuestas Ganadas"/>
+                </FXCollections>
+            </items>
+        </ComboBox>
+        <Button text="🔄 Actualizar" onAction="#handleRefresh"/>
+    </HBox>
+
+    <!-- Top 3 -->
+    <HBox spacing="20" alignment="CENTER" styleClass="top-three-container">
+        <VBox styleClass="ranking-card-second" alignment="CENTER" spacing="10">
+            <padding>
+                <Insets top="20" right="15" bottom="20" left="15"/>
+            </padding>
+            <Label text="2" styleClass="ranking-position"/>
+            <Label fx:id="lblSecondPlace" text="Usuario" styleClass="ranking-name"/>
+            <Label fx:id="lblSecondPoints" text="0 puntos" styleClass="ranking-value"/>
+        </VBox>
+
+        <VBox styleClass="ranking-card-first" alignment="CENTER" spacing="10">
+            <padding>
+                <Insets top="30" right="20" bottom="30" left="20"/>
+            </padding>
+            <Label text="👑" styleClass="crown-icon"/>
+            <Label text="1" styleClass="ranking-position"/>
+            <Label fx:id="lblFirstPlace" text="Usuario" styleClass="ranking-name"/>
+            <Label fx:id="lblFirstPoints" text="0 puntos" styleClass="ranking-value"/>
+        </VBox>
+
+        <VBox styleClass="ranking-card-third" alignment="CENTER" spacing="10">
+            <padding>
+                <Insets top="20" right="15" bottom="20" left="15"/>
+            </padding>
+            <Label text="3" styleClass="ranking-position"/>
+            <Label fx:id="lblThirdPlace" text="Usuario" styleClass="ranking-name"/>
+            <Label fx:id="lblThirdPoints" text="0 puntos" styleClass="ranking-value"/>
+        </VBox>
+    </HBox>
+
+    <!-- Tabla de rankings -->
+    <VBox spacing="10">
+        <Label text="Ranking Completo" styleClass="section-title"/>
+        <TableView fx:id="tableRankings" prefHeight="400">
+            <columns>
+                <TableColumn text="Posición" prefWidth="100"/>
+                <TableColumn text="Usuario" prefWidth="200"/>
+                <TableColumn text="Puntos Totales" prefWidth="150"/>
+                <TableColumn text="Tasa de Aciertos" prefWidth="130"/>
+                <TableColumn text="Apuestas Totales" prefWidth="130"/>
+                <TableColumn text="Apuestas Ganadas" prefWidth="130"/>
+                <TableColumn text="Ganancias Totales" prefWidth="150"/>
+            </columns>
+        </TableView>
+    </VBox>
+
+    <!-- Posición del usuario actual -->
+    <HBox spacing="15" alignment="CENTER" styleClass="user-ranking-card">
+        <padding>
+            <Insets top="15" right="20" bottom="15" left="20"/>
+        </padding>
+        <Label text="Tu posición:" styleClass="info-label"/>
+        <Label fx:id="lblUserPosition" text="#0" styleClass="stat-value"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label text="Puntos:" styleClass="info-label"/>
+        <Label fx:id="lblUserPoints" text="0" styleClass="stat-value"/>
+    </HBox>
+
+</VBox>

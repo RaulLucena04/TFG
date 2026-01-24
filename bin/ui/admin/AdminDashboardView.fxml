@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.admin.AdminDashboardController"
+      spacing="20"
+      styleClass="admin-dashboard-container">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="⚙️ Panel de Administración" styleClass="page-title"/>
+
+    <!-- Tarjetas de resumen -->
+    <GridPane hgap="20" vgap="20" alignment="CENTER">
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="200"/>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="200"/>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="200"/>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="200"/>
+        </columnConstraints>
+
+        <VBox styleClass="stat-card" GridPane.columnIndex="0">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <Label text="👥 Usuarios Totales" styleClass="stat-label"/>
+            <Label fx:id="lblTotalUsers" text="0" styleClass="stat-value"/>
+        </VBox>
+
+        <VBox styleClass="stat-card" GridPane.columnIndex="1">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <Label text="📅 Partidos Activos" styleClass="stat-label"/>
+            <Label fx:id="lblActiveMatches" text="0" styleClass="stat-value"/>
+        </VBox>
+
+        <VBox styleClass="stat-card" GridPane.columnIndex="2">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <Label text="💰 Apuestas Totales" styleClass="stat-label"/>
+            <Label fx:id="lblTotalBets" text="0" styleClass="stat-value"/>
+        </VBox>
+
+        <VBox styleClass="stat-card" GridPane.columnIndex="3">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <Label text="🏀 Equipos" styleClass="stat-label"/>
+            <Label fx:id="lblTotalTeams" text="0" styleClass="stat-value"/>
+        </VBox>
+    </GridPane>
+
+    <!-- Acciones rápidas -->
+    <VBox spacing="15">
+        <Label text="Acciones Rápidas" styleClass="section-title"/>
+        <HBox spacing="15" alignment="CENTER_LEFT">
+            <Button text="📅 Gestionar Partidos" onAction="#handleManageMatches" styleClass="primary-button" prefWidth="200"/>
+            <Button text="👥 Gestionar Usuarios" onAction="#handleManageUsers" styleClass="primary-button" prefWidth="200"/>
+            <Button text="➕ Crear Partido" onAction="#handleCreateMatch" styleClass="primary-button" prefWidth="200"/>
+            <Button text="🔄 Actualizar Datos" onAction="#handleRefreshData" prefWidth="200"/>
+        </HBox>
+    </VBox>
+
+    <!-- Partidos pendientes de gestión -->
+    <VBox spacing="10">
+        <Label text="📅 Partidos Pendientes" styleClass="section-title"/>
+        <TableView fx:id="tablePendingMatches" prefHeight="200">
+            <columns>
+                <TableColumn text="Fecha" prefWidth="150"/>
+                <TableColumn text="Equipo Local" prefWidth="200"/>
+                <TableColumn text="Equipo Visitante" prefWidth="200"/>
+                <TableColumn text="Estado" prefWidth="100"/>
+                <TableColumn text="Acción" prefWidth="150"/>
+            </columns>
+        </TableView>
+    </VBox>
+
+    <!-- Actividad reciente -->
+    <VBox spacing="10">
+        <Label text="📊 Actividad Reciente" styleClass="section-title"/>
+        <TableView fx:id="tableRecentActivity" prefHeight="200">
+            <columns>
+                <TableColumn text="Fecha" prefWidth="150"/>
+                <TableColumn text="Tipo" prefWidth="150"/>
+                <TableColumn text="Descripción" prefWidth="300"/>
+                <TableColumn text="Usuario" prefWidth="150"/>
+            </columns>
+        </TableView>
+    </VBox>
+
+</VBox>

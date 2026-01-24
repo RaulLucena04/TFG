@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+<?import javafx.collections.FXCollections?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.admin.MatchFormController"
+      spacing="20"
+      styleClass="match-form-container">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <HBox spacing="15" alignment="CENTER_LEFT">
+        <Button text="← Volver" onAction="#handleBack"/>
+        <Label fx:id="lblFormTitle" text="Crear Partido" styleClass="page-title"/>
+    </HBox>
+
+    <!-- Formulario -->
+    <VBox spacing="15" styleClass="form-container">
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
+
+        <GridPane hgap="15" vgap="15" alignment="TOP_LEFT">
+            <columnConstraints>
+                <ColumnConstraints minWidth="150"/>
+                <ColumnConstraints hgrow="ALWAYS" minWidth="300"/>
+            </columnConstraints>
+
+            <Label text="Equipo Local:" GridPane.columnIndex="0" styleClass="form-label"/>
+            <ComboBox fx:id="comboHomeTeam" promptText="Seleccionar equipo local" prefWidth="Infinity" GridPane.columnIndex="1"/>
+
+            <Label text="Equipo Visitante:" GridPane.columnIndex="0" styleClass="form-label"/>
+            <ComboBox fx:id="comboAwayTeam" promptText="Seleccionar equipo visitante" prefWidth="Infinity" GridPane.columnIndex="1"/>
+
+            <Label text="Fecha del Partido:" GridPane.columnIndex="0" styleClass="form-label"/>
+            <HBox spacing="10" GridPane.columnIndex="1">
+                <DatePicker fx:id="dateMatch" prefWidth="200"/>
+                <TextField fx:id="txtTime" promptText="HH:mm" prefWidth="100"/>
+            </HBox>
+
+            <Label text="Estado:" GridPane.columnIndex="0" styleClass="form-label"/>
+            <ComboBox fx:id="comboStatus" prefWidth="Infinity" GridPane.columnIndex="1">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Programado"/>
+                        <String fx:value="En curso"/>
+                        <String fx:value="Finalizado"/>
+                    </FXCollections>
+                </items>
+            </ComboBox>
+
+            <Label text="Puntos Equipo Local:" GridPane.columnIndex="0" styleClass="form-label"/>
+            <TextField fx:id="txtHomeScore" promptText="0" prefWidth="Infinity" GridPane.columnIndex="1"/>
+
+            <Label text="Puntos Equipo Visitante:" GridPane.columnIndex="0" styleClass="form-label"/>
+            <TextField fx:id="txtAwayScore" promptText="0" prefWidth="Infinity" GridPane.columnIndex="1"/>
+
+            <Label text="Descripción:" GridPane.columnIndex="0" styleClass="form-label"/>
+            <TextArea fx:id="txtDescription" promptText="Descripción opcional del partido" prefRowCount="3" prefWidth="Infinity" wrapText="true" GridPane.columnIndex="1"/>
+        </GridPane>
+
+        <Label fx:id="lblError" text="" styleClass="error-label" visible="false" managed="false"/>
+
+        <HBox spacing="15" alignment="CENTER">
+            <Button text="Cancelar" onAction="#handleCancel" prefWidth="150"/>
+            <Button text="Guardar" onAction="#handleSave" styleClass="primary-button" prefWidth="150"/>
+        </HBox>
+    </VBox>
+
+</VBox>

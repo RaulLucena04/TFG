@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.auth.login.LoginController"
+      alignment="CENTER"
+      spacing="20"
+      styleClass="auth-container"
+      prefWidth="400" prefHeight="500">
+
+    <padding>
+        <Insets top="40" right="40" bottom="40" left="40"/>
+    </padding>
+
+    <Label text="NBA Predictor" styleClass="auth-title"/>
+
+    <Label text="Iniciar Sesión" styleClass="auth-subtitle"/>
+
+    <VBox spacing="15" alignment="CENTER" prefWidth="Infinity">
+        <TextField fx:id="txtUsername" promptText="Nombre de usuario" prefWidth="Infinity" prefHeight="40"/>
+        <PasswordField fx:id="txtPassword" promptText="Contraseña" prefWidth="Infinity" prefHeight="40"/>
+        <Label fx:id="lblError" text="" styleClass="error-label" visible="false" managed="false"/>
+        <Button text="Iniciar Sesión" onAction="#handleLogin" prefWidth="Infinity" prefHeight="40" styleClass="primary-button"/>
+        <Hyperlink text="¿No tienes cuenta? Regístrate" onAction="#handleRegister"/>
+    </VBox>
+
+</VBox>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+<?import javafx.collections.FXCollections?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.admin.MatchManagementController"
+      spacing="20"
+      styleClass="match-management-container">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <HBox spacing="15" alignment="CENTER_LEFT">
+        <Button text="← Volver" onAction="#handleBack"/>
+        <Label text="📅 Gestión de Partidos" styleClass="page-title"/>
+    </HBox>
+
+    <!-- Filtros y búsqueda -->
+    <HBox spacing="15" alignment="CENTER_LEFT">
+        <TextField fx:id="txtSearch" promptText="Buscar partido..." prefWidth="250"/>
+        <ComboBox fx:id="comboStatusFilter" promptText="Filtrar por estado" prefWidth="200">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="Todos"/>
+                    <String fx:value="Programados"/>
+                    <String fx:value="En curso"/>
+                    <String fx:value="Finalizados"/>
+                </FXCollections>
+            </items>
+        </ComboBox>
+        <DatePicker fx:id="dateFilter" promptText="Filtrar por fecha" prefWidth="150"/>
+        <Button text="🔍 Buscar" onAction="#handleSearch"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="➕ Crear Partido" onAction="#handleCreateMatch" styleClass="primary-button"/>
+        <Button text="🔄 Actualizar" onAction="#handleRefresh"/>
+    </HBox>
+
+    <!-- Tabla de partidos -->
+    <TableView fx:id="tableMatches" prefHeight="450">
+        <columns>
+            <TableColumn text="ID" prefWidth="80"/>
+            <TableColumn text="Fecha" prefWidth="150"/>
+            <TableColumn text="Equipo Local" prefWidth="200"/>
+            <TableColumn text="Equipo Visitante" prefWidth="200"/>
+            <TableColumn text="Puntos Local" prefWidth="100"/>
+            <TableColumn text="Puntos Visitante" prefWidth="100"/>
+            <TableColumn text="Estado" prefWidth="120"/>
+            <TableColumn text="Acciones" prefWidth="200"/>
+        </columns>
+    </TableView>
+
+    <!-- Botones de acción masiva -->
+    <HBox spacing="15" alignment="CENTER_LEFT">
+        <Button text="✏️ Editar Seleccionado" onAction="#handleEditSelected" prefWidth="180"/>
+        <Button text="🗑️ Eliminar Seleccionado" onAction="#handleDeleteSelected" styleClass="danger-button" prefWidth="200"/>
+        <Button text="✅ Finalizar Seleccionado" onAction="#handleFinishSelected" prefWidth="200"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="lblSelectedCount" text="0 partidos seleccionados" styleClass="info-label"/>
+    </HBox>
+
+</VBox>

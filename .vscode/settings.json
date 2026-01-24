@@ -1,0 +1,15 @@
+{
+    "java.project.sourcePaths": ["src"],
+    "java.project.outputPath": "bin",
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "c:\\Users\\usuario\\Desktop\\DAM\\LibreriasJavaFX\\javafx.base.jar",
+        "c:\\Users\\usuario\\Desktop\\DAM\\LibreriasJavaFX\\javafx.controls.jar",
+        "c:\\Users\\usuario\\Desktop\\DAM\\LibreriasJavaFX\\javafx.fxml.jar",
+        "c:\\Users\\usuario\\Desktop\\DAM\\LibreriasJavaFX\\javafx.graphics.jar",
+        "c:\\Users\\usuario\\Desktop\\DAM\\LibreriasJavaFX\\javafx.media.jar",
+        "c:\\Users\\usuario\\Desktop\\DAM\\LibreriasJavaFX\\javafx.swing.jar",
+        "c:\\Users\\usuario\\Desktop\\DAM\\LibreriasJavaFX\\javafx.web.jar",
+        "c:\\Users\\usuario\\Desktop\\DAM\\LibreriasJavaFX\\javafx-swt.jar"
+    ]
+}
