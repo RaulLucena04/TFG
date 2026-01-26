@@ -14,7 +14,8 @@ import javafx.scene.layout.StackPane;
 // Import de tu clase modelo (VERIFICA ESTA LÍNEA)
 // Si tu clase User está en "package model;", esto funcionará.
 // Si está en otro paquete, cambia "model" por el nombre correcto.
-import model.User; 
+import model.User;
+import util.NavigationUtils; 
 
 public class MainLayoutController {
 
@@ -26,6 +27,29 @@ public class MainLayoutController {
 
     @FXML
     private Label lblUser, lblPoints;
+
+    // Instancia estática para acceso desde otros controladores
+    private static MainLayoutController instance;
+
+    public MainLayoutController() {
+        instance = this;
+    }
+
+    /**
+     * Obtiene la instancia del MainLayoutController para acceso desde otros controladores.
+     * @return La instancia del controlador
+     */
+    public static MainLayoutController getInstance() {
+        return instance;
+    }
+
+    /**
+     * Obtiene el StackPane del contenido principal.
+     * @return El StackPane donde se cargan las vistas
+     */
+    public StackPane getContentPane() {
+        return contentPane;
+    }
 
     public void initialize() {
         // Asegúrate de que este FXML existe, si no dará error al arrancar
@@ -51,12 +75,12 @@ public class MainLayoutController {
 
     @FXML
     private void loadDashboard() {
-        loadView("/ui/dashboard/DashboardView.fxml");
+        loadView("/ui/dashborad/DashboardView.fxml");
     }
 
     @FXML
     private void loadMatches() {
-        loadView("/ui/partidos/MatchesView.fxml");
+        loadView("/ui/partidos/lista_partidos/MatchesView.fxml");
     }
 
     @FXML
@@ -85,18 +109,7 @@ public class MainLayoutController {
     }
 
     private void loadView(String fxml) {
-        try {
-            // Carga el archivo FXML
-            Parent view = FXMLLoader.load(getClass().getResource(fxml));
-            // Limpia el panel y añade la nueva vista
-            contentPane.getChildren().setAll(view);
-        } catch (IOException e) {
-            System.err.println("Error cargando la vista: " + fxml);
-            e.printStackTrace();
-        } catch (NullPointerException e) {
-            System.err.println("No se encontró el archivo FXML: " + fxml);
-            e.printStackTrace();
-        }
+        NavigationUtils.loadView(contentPane, fxml);
     }
 
     @FXML
