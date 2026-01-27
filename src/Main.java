@@ -10,13 +10,12 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
 
         FXMLLoader loader = new FXMLLoader(
-            getClass().getResource("/ui/layout/MainLayout.fxml")
+            getClass().getResource("/ui/auth/login/LoginView.fxml")
         );
         Parent root = loader.load();
 
-        Scene scene = new Scene(root, 1920, 1080);  // <-- Definir tamaño aquí
+        Scene scene = new Scene(root);  
 
-        // 👉 AQUÍ se añade el CSS
         scene.getStylesheets().add(
             getClass().getResource("/resources/styles/main.css").toExternalForm()
         );

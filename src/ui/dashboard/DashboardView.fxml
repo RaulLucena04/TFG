@@ -6,7 +6,7 @@
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="controller.dashborad.DashboardController"
+      fx:controller="controller.dashboard.DashboardController"
       spacing="20"
       styleClass="dashboard-container">
 

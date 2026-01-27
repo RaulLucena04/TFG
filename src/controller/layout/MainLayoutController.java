@@ -1,7 +1,9 @@
 package controller.layout;
 
+import java.io.File;
 // --- AÑADE ESTOS IMPORTS ---
 import java.io.IOException;
+import java.net.URL;
 
 // Imports de JavaFX necesarios para los controles y anotaciones
 import javafx.fxml.FXML;
@@ -15,7 +17,6 @@ import javafx.scene.layout.StackPane;
 // Si tu clase User está en "package model;", esto funcionará.
 // Si está en otro paquete, cambia "model" por el nombre correcto.
 import model.User;
-import util.NavigationUtils; 
 
 public class MainLayoutController {
 
@@ -28,32 +29,9 @@ public class MainLayoutController {
     @FXML
     private Label lblUser, lblPoints;
 
-    // Instancia estática para acceso desde otros controladores
-    private static MainLayoutController instance;
-
-    public MainLayoutController() {
-        instance = this;
-    }
-
-    /**
-     * Obtiene la instancia del MainLayoutController para acceso desde otros controladores.
-     * @return La instancia del controlador
-     */
-    public static MainLayoutController getInstance() {
-        return instance;
-    }
-
-    /**
-     * Obtiene el StackPane del contenido principal.
-     * @return El StackPane donde se cargan las vistas
-     */
-    public StackPane getContentPane() {
-        return contentPane;
-    }
-
     public void initialize() {
         // Asegúrate de que este FXML existe, si no dará error al arrancar
-        loadDashboard(); 
+        loadDashboard();
     }
 
     public void setUser(User user) {
@@ -75,7 +53,7 @@ public class MainLayoutController {
 
     @FXML
     private void loadDashboard() {
-        loadView("/ui/dashborad/DashboardView.fxml");
+        loadView("/ui/dashboard/DashboardView.fxml");
     }
 
     @FXML
@@ -108,9 +86,17 @@ public class MainLayoutController {
         loadView("/ui/admin/AdminDashboardView.fxml");
     }
 
-    private void loadView(String fxml) {
-        NavigationUtils.loadView(contentPane, fxml);
+   private void loadView(String fxml) {
+    try {
+        File file = new File("src" + fxml);
+        FXMLLoader loader = new FXMLLoader(file.toURI().toURL());
+        Parent view = loader.load();
+        contentPane.getChildren().setAll(view);
+    } catch (IOException e) {
+        e.printStackTrace();
     }
+}
+
 
     @FXML
     private void handleLogout() {

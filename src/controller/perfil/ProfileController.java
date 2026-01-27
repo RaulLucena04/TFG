@@ -3,73 +3,56 @@ package controller.perfil;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import util.NavigationUtils;
-import controller.layout.MainLayoutController;
+import javafx.scene.layout.Pane;
 
 public class ProfileController {
 
     @FXML
     private Label lblUsername;
-    
-    @FXML
-    private Label lblPoints;
-    
-    @FXML
-    private TableView<?> tableBetHistory;
-    
-    @FXML
-    private VBox root;
 
-    /**
-     * Navega a la vista de rankings.
-     */
     @FXML
-    private void navigateToRankings() {
-        StackPane contentPane = getContentPane();
-        if (contentPane != null) {
-            NavigationUtils.loadView(contentPane, "/ui/rankings/RankingsView.fxml");
-        }
-    }
+    private Label lblEmail;
 
-    /**
-     * Navega a la vista de apuestas.
-     */
     @FXML
-    private void navigateToBets() {
-        StackPane contentPane = getContentPane();
-        if (contentPane != null) {
-            NavigationUtils.loadView(contentPane, "/ui/apuestas/BetsView.fxml");
-        }
-    }
+    private Label lblRegistrationDate;
 
-    /**
-     * Navega a la vista de detalle de una apuesta.
-     * @param betId El ID de la apuesta a mostrar
-     */
-    public void navigateToBetDetail(int betId) {
-        StackPane contentPane = getContentPane();
-        if (contentPane != null) {
-            NavigationUtils.loadView(contentPane, "/ui/apuestas/BetDetailView.fxml");
-            // TODO: Pasar el betId al controlador de detalle
-        }
+    @FXML
+    private Label lblTotalPoints;
+
+    @FXML
+    private Label lblTotalBets;
+
+    @FXML
+    private Label lblWinRate;
+
+    @FXML
+    private Label lblRanking;
+
+    @FXML
+    private Pane chartContainer;
+
+    @FXML
+    private TableView<?> tableRecentBets;
+
+    @FXML
+    private void initialize() {
+        // Inicialización del controlador
+        // TODO: Cargar datos del usuario actual
     }
 
     @FXML
-    private void handleSave() {
-        // TODO: Implementar lógica de guardado de perfil
-        System.out.println("Guardando perfil...");
+    private void handleEditProfile() {
+        // Lógica para editar el perfil
+        System.out.println("Editando perfil...");
+        // TODO: Implementar lógica de edición de perfil
+        // Por ejemplo, abrir un diálogo o cambiar a una vista de edición
     }
 
-    /**
-     * Obtiene el StackPane del contenido principal desde MainLayoutController.
-     */
-    private StackPane getContentPane() {
-        MainLayoutController mainController = MainLayoutController.getInstance();
-        if (mainController != null) {
-            return mainController.getContentPane();
-        }
-        return NavigationUtils.findContentPane(root);
+    @FXML
+    private void handleChangePassword() {
+        // Lógica para cambiar la contraseña
+        System.out.println("Cambiando contraseña...");
+        // TODO: Implementar lógica de cambio de contraseña
+        // Por ejemplo, abrir un diálogo de cambio de contraseña
     }
 }

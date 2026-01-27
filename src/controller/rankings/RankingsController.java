@@ -1,54 +1,54 @@
 package controller.rankings;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import util.NavigationUtils;
-import controller.layout.MainLayoutController;
 
 public class RankingsController {
 
     @FXML
+    private ComboBox<String> comboRankingType;
+
+    @FXML
+    private Label lblFirstPlace;
+
+    @FXML
+    private Label lblFirstPoints;
+
+    @FXML
+    private Label lblSecondPlace;
+
+    @FXML
+    private Label lblSecondPoints;
+
+    @FXML
+    private Label lblThirdPlace;
+
+    @FXML
+    private Label lblThirdPoints;
+
+    @FXML
     private TableView<?> tableRankings;
-    
-    @FXML
-    private VBox root;
 
-    /**
-     * Navega a la vista de perfil de un usuario.
-     * @param userId El ID del usuario a mostrar
-     */
-    public void navigateToProfile(int userId) {
-        StackPane contentPane = getContentPane();
-        if (contentPane != null) {
-            NavigationUtils.loadView(contentPane, "/ui/perfil/ProfileView.fxml");
-            // TODO: Pasar el userId al controlador de perfil
+    @FXML
+    private Label lblUserPosition;
+
+    @FXML
+    private Label lblUserPoints;
+
+    @FXML
+    private void initialize() {
+        // Inicialización del controlador
+        if (comboRankingType != null) {
+            comboRankingType.getSelectionModel().selectFirst();
         }
-    }
-
-    /**
-     * Navega a la vista de perfil de un usuario (sobrecarga sin parámetros).
-     */
-    @FXML
-    private void navigateToProfile() {
-        navigateToProfile(0);
     }
 
     @FXML
     private void handleRefresh() {
-        // TODO: Implementar lógica de actualización
+        // Lógica para actualizar el ranking
         System.out.println("Actualizando rankings...");
-    }
-
-    /**
-     * Obtiene el StackPane del contenido principal desde MainLayoutController.
-     */
-    private StackPane getContentPane() {
-        MainLayoutController mainController = MainLayoutController.getInstance();
-        if (mainController != null) {
-            return mainController.getContentPane();
-        }
-        return NavigationUtils.findContentPane(root);
+        // TODO: Implementar lógica de actualización
     }
 }
