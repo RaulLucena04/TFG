@@ -3,7 +3,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.*?>
-<?import javafx.collections.FXCollections?>
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
@@ -15,28 +14,30 @@
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
 
+    <!-- Cabecera -->
     <HBox spacing="15" alignment="CENTER_LEFT">
         <Button text="← Volver" onAction="#handleBack"/>
         <Label text="📊 Apuestas Activas" styleClass="page-title"/>
     </HBox>
 
+    <!-- Filtro -->
     <HBox spacing="15" alignment="CENTER_LEFT">
         <Label text="Filtrar:"/>
-        <ComboBox fx:id="comboFilter" prefWidth="200">
-            <items>
-                <FXCollections fx:factory="observableArrayList">
-                    <String fx:value="Todas"/>
-                    <String fx:value="Pendientes"/>
-                    <String fx:value="En curso"/>
-                </FXCollections>
-            </items>
-        </ComboBox>
+
+        <ComboBox fx:id="comboFilter"
+                  prefWidth="200"
+                  promptText="Selecciona filtro"/>
+
         <Region HBox.hgrow="ALWAYS"/>
+
         <Button text="🔄 Actualizar" onAction="#handleRefresh"/>
     </HBox>
 
+    <!-- Contenido -->
     <ScrollPane fitToWidth="true" vbarPolicy="AS_NEEDED">
-        <VBox fx:id="betsContainer" spacing="15" alignment="TOP_CENTER">
+        <VBox fx:id="betsContainer"
+              spacing="15"
+              alignment="TOP_CENTER">
             <!-- Las apuestas activas se cargarán dinámicamente aquí -->
         </VBox>
     </ScrollPane>

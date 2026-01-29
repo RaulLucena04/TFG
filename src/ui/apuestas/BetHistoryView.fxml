@@ -4,6 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.*?>
 <?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
@@ -20,9 +21,9 @@
         <Label text="📜 Historial de Apuestas" styleClass="page-title"/>
     </HBox>
 
-    <!-- Filtros -->
     <HBox spacing="15" alignment="CENTER_LEFT">
         <Label text="Filtrar por:"/>
+        
         <ComboBox fx:id="comboResultFilter" promptText="Resultado" prefWidth="150">
             <items>
                 <FXCollections fx:factory="observableArrayList">
@@ -32,10 +33,13 @@
                 </FXCollections>
             </items>
         </ComboBox>
+        
         <DatePicker fx:id="dateFrom" promptText="Desde" prefWidth="150"/>
         <DatePicker fx:id="dateTo" promptText="Hasta" prefWidth="150"/>
         <Button text="🔍 Filtrar" onAction="#handleFilter"/>
+
         <Region HBox.hgrow="ALWAYS"/>
+
         <Button text="🔄 Actualizar" onAction="#handleRefresh"/>
     </HBox>
 
@@ -53,7 +57,6 @@
         </columns>
     </TableView>
 
-    <!-- Resumen -->
     <HBox spacing="20" alignment="CENTER">
         <VBox styleClass="stat-card" alignment="CENTER">
             <padding>
@@ -62,6 +65,7 @@
             <Label text="Total Apuestas" styleClass="stat-label"/>
             <Label fx:id="lblTotalBets" text="0" styleClass="stat-value"/>
         </VBox>
+        
         <VBox styleClass="stat-card" alignment="CENTER">
             <padding>
                 <Insets top="15" right="20" bottom="15" left="20"/>
@@ -69,6 +73,7 @@
             <Label text="Apuestas Ganadas" styleClass="stat-label"/>
             <Label fx:id="lblWonBets" text="0" styleClass="stat-value"/>
         </VBox>
+        
         <VBox styleClass="stat-card" alignment="CENTER">
             <padding>
                 <Insets top="15" right="20" bottom="15" left="15"/>
@@ -76,6 +81,7 @@
             <Label text="Apuestas Perdidas" styleClass="stat-label"/>
             <Label fx:id="lblLostBets" text="0" styleClass="stat-value"/>
         </VBox>
+        
         <VBox styleClass="stat-card" alignment="CENTER">
             <padding>
                 <Insets top="15" right="20" bottom="15" left="20"/>

@@ -1,4 +1,4 @@
-package controller.partidos.lista_partidos;
+package controller.partidos;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

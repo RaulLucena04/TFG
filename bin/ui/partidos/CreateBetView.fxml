@@ -14,9 +14,12 @@
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
 
+    <fx:define>
+        <ToggleGroup fx:id="betTypeGroup"/>
+    </fx:define>
+
     <Label text="💰 Crear Nueva Apuesta" styleClass="page-title"/>
 
-    <!-- Información del partido -->
     <VBox spacing="10" styleClass="info-card">
         <padding>
             <Insets top="15" right="15" bottom="15" left="15"/>
@@ -27,26 +30,21 @@
         <Label fx:id="lblMatchDate" text="Fecha del partido" styleClass="info-value"/>
     </VBox>
 
-    <!-- Selección de apuesta -->
     <VBox spacing="15">
         <Label text="Selecciona tu predicción:" styleClass="section-title"/>
         
-        <ToggleGroup fx:id="betTypeGroup"/>
         <RadioButton text="Ganador del partido" toggleGroup="$betTypeGroup" selected="true" fx:id="radioWinner"/>
         <RadioButton text="Diferencia de puntos" toggleGroup="$betTypeGroup" fx:id="radioPointDiff"/>
         <RadioButton text="Total de puntos" toggleGroup="$betTypeGroup" fx:id="radioTotalPoints"/>
     </VBox>
 
-    <!-- Opciones de apuesta según el tipo -->
     <VBox fx:id="betOptionsContainer" spacing="15">
-        <!-- Se mostrará dinámicamente según el tipo de apuesta -->
         <HBox spacing="15" alignment="CENTER_LEFT">
             <Label text="Selecciona equipo ganador:"/>
             <ComboBox fx:id="comboWinner" prefWidth="200" visible="true"/>
         </HBox>
     </VBox>
 
-    <!-- Cantidad de puntos -->
     <VBox spacing="10">
         <Label text="Cantidad de puntos a apostar:" styleClass="section-title"/>
         <HBox spacing="15" alignment="CENTER_LEFT">
@@ -56,7 +54,6 @@
         <Slider fx:id="sliderBetAmount" min="10" max="1000" value="100" showTickLabels="true" showTickMarks="true" majorTickUnit="100" prefWidth="Infinity"/>
     </VBox>
 
-    <!-- Cuotas y ganancia potencial -->
     <VBox spacing="10" styleClass="info-card">
         <padding>
             <Insets top="15" right="15" bottom="15" left="15"/>
@@ -67,7 +64,6 @@
         <Label fx:id="lblPotentialWin" text="0 puntos" styleClass="info-value"/>
     </VBox>
 
-    <!-- Botones de acción -->
     <HBox spacing="15" alignment="CENTER">
         <Button text="Cancelar" onAction="#handleCancel" prefWidth="150"/>
         <Button text="Confirmar Apuesta" onAction="#handleConfirmBet" styleClass="primary-button" prefWidth="200"/>
