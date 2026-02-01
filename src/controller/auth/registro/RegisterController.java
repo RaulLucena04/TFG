@@ -13,6 +13,10 @@ import javafx.scene.Node;
 
 import java.io.IOException;
 
+/**
+ * Controlador encargado de gestionar el registro de nuevos usuarios.
+ * Maneja la validación básica y la navegación entre vistas de autenticación.
+ */
 public class RegisterController {
 
     @FXML
@@ -30,24 +34,33 @@ public class RegisterController {
     @FXML
     private Label lblError;
 
+    /**
+     * Gestiona el proceso de registro del usuario.
+     * En este método se integrará la lógica de validación y persistencia.
+     */
     @FXML
     private void handleRegister(ActionEvent event) {
-        // Aquí iría la lógica de validación y registro de usuario.
-        // Por ahora, solo muestra un mensaje o puedes avanzar a otra pantalla.
-
         System.out.println("Registrando usuario: " + txtUsername.getText());
     }
 
+    /**
+     * Redirige al usuario a la pantalla de inicio de sesión.
+     */
     @FXML
     private void handleLogin(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/auth/login/LoginView.fxml"));
+            FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/ui/auth/login/LoginView.fxml")
+            );
             Parent root = loader.load();
 
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Stage stage = (Stage) ((Node) event.getSource())
+                    .getScene().getWindow();
 
             Scene scene = new Scene(root, 400, 500);
-            scene.getStylesheets().add(getClass().getResource("/resources/styles/main.css").toExternalForm());
+            scene.getStylesheets().add(
+                getClass().getResource("/resources/styles/main.css").toExternalForm()
+            );
 
             stage.setScene(scene);
             stage.centerOnScreen();
@@ -55,10 +68,10 @@ public class RegisterController {
             stage.show();
 
         } catch (IOException e) {
-            e.printStackTrace();
             lblError.setText("Error cargando la pantalla de login.");
             lblError.setVisible(true);
             lblError.setManaged(true);
+            e.printStackTrace();
         }
     }
 }

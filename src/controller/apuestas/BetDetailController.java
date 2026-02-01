@@ -6,23 +6,38 @@ import javafx.scene.control.Label;
 public class BetDetailController {
 
     // Información de la apuesta
-    @FXML private Label lblBetId;
-    @FXML private Label lblBetDate;
-    @FXML private Label lblBetStatus;
-    @FXML private Label lblBetType;
-    @FXML private Label lblPrediction;
-    @FXML private Label lblBetAmount;
-    @FXML private Label lblOdds;
-    @FXML private Label lblPotentialWin;
-    @FXML private Label lblResult;
-    @FXML private Label lblProfitLoss;
+    @FXML
+    private Label lblBetId;
+    @FXML
+    private Label lblBetDate;
+    @FXML
+    private Label lblBetStatus;
+    @FXML
+    private Label lblBetType;
+    @FXML
+    private Label lblPrediction;
+    @FXML
+    private Label lblBetAmount;
+    @FXML
+    private Label lblOdds;
+    @FXML
+    private Label lblPotentialWin;
+    @FXML
+    private Label lblResult;
+    @FXML
+    private Label lblProfitLoss;
 
     // Información del partido
-    @FXML private Label lblHomeTeam;
-    @FXML private Label lblHomeScore;
-    @FXML private Label lblAwayTeam;
-    @FXML private Label lblAwayScore;
-    @FXML private Label lblMatchDate;
+    @FXML
+    private Label lblHomeTeam;
+    @FXML
+    private Label lblHomeScore;
+    @FXML
+    private Label lblAwayTeam;
+    @FXML
+    private Label lblAwayScore;
+    @FXML
+    private Label lblMatchDate;
 
     @FXML
     private void initialize() {

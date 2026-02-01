@@ -2,21 +2,22 @@ package controller.layout;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-
-// --- NUEVOS IMPORTS NECESARIOS PARA EL LOGOUT ---
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 
 import model.User;
 
+/**
+ * Controlador principal del layout de la aplicación.
+ * Gestiona la navegación entre vistas y la información del usuario activo.
+ */
 public class MainLayoutController {
 
     @FXML
@@ -28,22 +29,24 @@ public class MainLayoutController {
     @FXML
     private Label lblUser, lblPoints;
 
+    /**
+     * Inicializa la vista principal cargando el panel de inicio.
+     */
     public void initialize() {
         loadDashboard();
     }
 
+    /**
+     * Establece la información del usuario autenticado y ajusta
+     * la interfaz según su rol.
+     */
     public void setUser(User user) {
         if (user != null) {
             lblUser.setText(user.getUsername());
             lblPoints.setText("Puntos: " + user.getPoints());
 
-            if (user.isAdmin()) {
-                btnAdmin.setVisible(true);
-                btnAdmin.setManaged(true);
-            } else {
-                btnAdmin.setVisible(false);
-                btnAdmin.setManaged(false);
-            }
+            btnAdmin.setVisible(user.isAdmin());
+            btnAdmin.setManaged(user.isAdmin());
         }
     }
 
@@ -82,10 +85,11 @@ public class MainLayoutController {
         loadView("/ui/admin/AdminDashboardView.fxml");
     }
 
+    /**
+     * Carga una vista FXML dentro del contenedor principal.
+     */
     private void loadView(String fxml) {
         try {
-            // NOTA: Usar "src" + fxml funciona en desarrollo, pero fallará al crear el JAR final.
-            // Para el futuro, considera usar getClass().getResource()
             File file = new File("src" + fxml);
             FXMLLoader loader = new FXMLLoader(file.toURI().toURL());
             Parent view = loader.load();
@@ -96,30 +100,30 @@ public class MainLayoutController {
         }
     }
 
+    /**
+     * Finaliza la sesión actual y redirige al usuario a la pantalla de login.
+     */
     @FXML
     private void handleLogout() {
         try {
-            System.out.println("Cerrando sesión...");
-
-            // 1. Cargar el FXML del Login
-            // Asegúrate de que la ruta sea correcta según tu estructura de carpetas
-            File file = new File("src/ui/auth/login/LoginView.fxml"); 
-            FXMLLoader loader = new FXMLLoader(file.toURI().toURL());
+            File fxmlFile = new File("src/ui/auth/login/LoginView.fxml");
+            FXMLLoader loader = new FXMLLoader(fxmlFile.toURI().toURL());
             Parent root = loader.load();
 
-            // 2. Obtener el escenario (Stage) actual usando cualquier nodo visible (ej. contentPane)
-            Stage stage = (Stage) contentPane.getScene().getWindow();
-
-            // 3. Crear la nueva escena y asignarla al escenario
             Scene scene = new Scene(root);
+
+            File cssFile = new File("src/resources/styles/main.css");
+            if (cssFile.exists()) {
+                scene.getStylesheets().add(cssFile.toURI().toURL().toExternalForm());
+            }
+
+            Stage stage = (Stage) contentPane.getScene().getWindow();
             stage.setScene(scene);
-            
-            // Opcional: Centrar la ventana en la pantalla
             stage.centerOnScreen();
             stage.show();
 
         } catch (IOException e) {
-            System.err.println("Error al cargar LoginView.fxml. Revisa la ruta.");
+            System.err.println("Error al cargar la pantalla de Login.");
             e.printStackTrace();
         }
     }

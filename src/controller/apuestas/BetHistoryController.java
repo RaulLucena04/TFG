@@ -6,8 +6,11 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TableColumn;
 
+/**
+ * Controlador de la vista de historial de apuestas.
+ * Gestiona la inicialización de la interfaz y las acciones del usuario.
+ */
 public class BetHistoryController {
 
     @FXML
@@ -37,34 +40,39 @@ public class BetHistoryController {
     @FXML
     private Label lblTotalBalance;
 
+    /**
+     * Inicializa los valores por defecto mostrados en la interfaz.
+     */
     @FXML
     private void initialize() {
-        // Inicializar combo con valores si quieres, aunque ya está en FXML
-        // comboResultFilter.getItems().addAll("Todas", "Ganadas", "Perdidas");
-
-        // Inicializar estadísticas con valores por defecto
         lblTotalBets.setText("0");
         lblWonBets.setText("0");
         lblLostBets.setText("0");
         lblTotalBalance.setText("0 puntos");
     }
 
+    /**
+     * Permite volver a la pantalla anterior.
+     */
     @FXML
     private void handleBack() {
-        // Lógica para volver a la pantalla anterior
         System.out.println("Volver a la pantalla anterior");
     }
 
+    /**
+     * Aplica los filtros seleccionados al historial de apuestas.
+     */
     @FXML
     private void handleFilter() {
-        // Lógica para filtrar la tabla según los criterios seleccionados
-        System.out.println("Filtrando apuestas con resultado: " + comboResultFilter.getValue() +
-            ", desde: " + dateFrom.getValue() + ", hasta: " + dateTo.getValue());
+        System.out.println(
+                "Filtrando apuestas con resultado: " + comboResultFilter.getValue());
     }
 
+    /**
+     * Actualiza la tabla y las estadísticas mostradas.
+     */
     @FXML
     private void handleRefresh() {
-        // Lógica para refrescar la tabla y estadísticas
         System.out.println("Actualizando datos de apuestas");
     }
 }

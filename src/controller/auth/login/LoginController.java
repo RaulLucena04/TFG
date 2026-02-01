@@ -31,7 +31,7 @@ public class LoginController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/layout/MainLayout.fxml"));
             Parent root = loader.load();
 
-            // Obtiene el Stage desde el evento (botón)
+            // Obtiene el Stage desde el evento 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
             // Crea una nueva escena y la pone en el stage
@@ -58,7 +58,7 @@ public class LoginController {
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-            Scene scene = new Scene(root, 400, 500); // Ajusta tamaño según tu RegisterView
+            Scene scene = new Scene(root, 400, 500); 
             scene.getStylesheets().add(getClass().getResource("/resources/styles/main.css").toExternalForm());
 
             stage.setScene(scene);
