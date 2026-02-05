@@ -12,11 +12,11 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-import model.User;
+import  TFG.src.main.java.model.User;
 
 /**
- * Controlador principal del layout de la aplicación.
- * Gestiona la navegación entre vistas y la información del usuario activo.
+ * Controlador principal del layout de la aplicación. Gestiona la navegación
+ * entre vistas y la información del usuario activo.
  */
 public class MainLayoutController {
 
@@ -37,8 +37,8 @@ public class MainLayoutController {
     }
 
     /**
-     * Establece la información del usuario autenticado y ajusta
-     * la interfaz según su rol.
+     * Establece la información del usuario autenticado y ajusta la interfaz
+     * según su rol.
      */
     public void setUser(User user) {
         if (user != null) {
@@ -106,8 +106,10 @@ public class MainLayoutController {
     @FXML
     private void handleLogout() {
         try {
-            File fxmlFile = new File("src/ui/auth/login/LoginView.fxml");
-            FXMLLoader loader = new FXMLLoader(fxmlFile.toURI().toURL());
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/ui/auth/login/LoginView.fxml")
+            );
+
             Parent root = loader.load();
 
             Scene scene = new Scene(root);

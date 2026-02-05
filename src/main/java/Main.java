@@ -1,3 +1,4 @@
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,14 +11,14 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
 
         FXMLLoader loader = new FXMLLoader(
-            getClass().getResource("/ui/auth/login/LoginView.fxml")
+                getClass().getResource("/ui/auth/login/LoginView.fxml")
         );
         Parent root = loader.load();
 
-        Scene scene = new Scene(root);  
+        Scene scene = new Scene(root);
 
         scene.getStylesheets().add(
-            getClass().getResource("/resources/styles/main.css").toExternalForm()
+                getClass().getResource("/styles/main.css").toExternalForm()
         );
 
         stage.setTitle("NBA Predictor");
