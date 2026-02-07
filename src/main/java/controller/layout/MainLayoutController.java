@@ -1,6 +1,5 @@
 package controller.layout;
 
-import java.io.File;
 import java.io.IOException;
 
 import javafx.fxml.FXML;
@@ -11,8 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import model.User;
 
-import  TFG.src.main.java.model.User;
 
 /**
  * Controlador principal del layout de la aplicación. Gestiona la navegación
@@ -90,8 +89,25 @@ public class MainLayoutController {
      */
     private void loadView(String fxml) {
         try {
-            File file = new File("src" + fxml);
-            FXMLLoader loader = new FXMLLoader(file.toURI().toURL());
+            // Prueba varias rutas posibles según cómo esté configurado el classpath
+            java.net.URL fxmlUrl = getClass().getResource(fxml);
+            if (fxmlUrl == null) {
+                // Si la ruta empieza con /ui, intenta con /main/resources
+                if (fxml.startsWith("/ui")) {
+                    fxmlUrl = getClass().getResource("/main/resources" + fxml);
+                }
+            }
+            if (fxmlUrl == null) {
+                // Intenta sin el / inicial usando ClassLoader
+                String resourcePath = fxml.startsWith("/") ? fxml.substring(1) : fxml;
+                fxmlUrl = getClass().getClassLoader().getResource(resourcePath);
+            }
+            if (fxmlUrl == null) {
+                System.err.println("No se encontró el archivo FXML: " + fxml);
+                return;
+            }
+
+            FXMLLoader loader = new FXMLLoader(fxmlUrl);
             Parent view = loader.load();
             contentPane.getChildren().setAll(view);
         } catch (IOException e) {
@@ -106,22 +122,40 @@ public class MainLayoutController {
     @FXML
     private void handleLogout() {
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/ui/auth/login/LoginView.fxml")
-            );
+            // Prueba varias rutas posibles
+            java.net.URL fxmlUrl = getClass().getResource("/ui/auth/login/LoginView.fxml");
+            if (fxmlUrl == null) {
+                fxmlUrl = getClass().getResource("/main/resources/ui/auth/login/LoginView.fxml");
+            }
+            if (fxmlUrl == null) {
+                fxmlUrl = getClass().getClassLoader().getResource("ui/auth/login/LoginView.fxml");
+            }
+            if (fxmlUrl == null) {
+                System.err.println("No se encontró LoginView.fxml");
+                return;
+            }
 
+            FXMLLoader loader = new FXMLLoader(fxmlUrl);
             Parent root = loader.load();
 
-            Scene scene = new Scene(root);
-
-            File cssFile = new File("src/resources/styles/main.css");
-            if (cssFile.exists()) {
-                scene.getStylesheets().add(cssFile.toURI().toURL().toExternalForm());
+            Scene scene = new Scene(root, 400, 500);
+            
+            // Carga el CSS con múltiples rutas posibles
+            java.net.URL cssUrl = getClass().getResource("styles/main.css");
+            if (cssUrl == null) {
+                cssUrl = getClass().getResource("styles/main.css");
+            }
+            if (cssUrl == null) {
+                cssUrl = getClass().getClassLoader().getResource("styles/main.css");
+            }
+            if (cssUrl != null) {
+                scene.getStylesheets().add(cssUrl.toExternalForm());
             }
 
             Stage stage = (Stage) contentPane.getScene().getWindow();
             stage.setScene(scene);
             stage.centerOnScreen();
+            stage.setTitle("NBA Predictor - Login");
             stage.show();
 
         } catch (IOException e) {

@@ -1,4 +1,5 @@
 
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,13 +11,11 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        FXMLLoader loader = new FXMLLoader(
+        Parent root = FXMLLoader.load(
                 getClass().getResource("/ui/auth/login/LoginView.fxml")
         );
-        Parent root = loader.load();
 
         Scene scene = new Scene(root);
-
         scene.getStylesheets().add(
                 getClass().getResource("/styles/main.css").toExternalForm()
         );

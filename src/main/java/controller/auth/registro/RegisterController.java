@@ -49,26 +49,45 @@ public class RegisterController {
     @FXML
     private void handleLogin(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/ui/auth/login/LoginView.fxml")
-            );
+            // Prueba varias rutas posibles
+            java.net.URL fxmlUrl = getClass().getResource("/ui/auth/login/LoginView.fxml");
+            if (fxmlUrl == null) {
+                fxmlUrl = getClass().getResource("/main/resources/ui/auth/login/LoginView.fxml");
+            }
+            if (fxmlUrl == null) {
+                fxmlUrl = getClass().getClassLoader().getResource("ui/auth/login/LoginView.fxml");
+            }
+            if (fxmlUrl == null) {
+                throw new IllegalStateException("No se encontró LoginView.fxml");
+            }
+
+            FXMLLoader loader = new FXMLLoader(fxmlUrl);
             Parent root = loader.load();
 
             Stage stage = (Stage) ((Node) event.getSource())
                     .getScene().getWindow();
 
             Scene scene = new Scene(root, 400, 500);
-            scene.getStylesheets().add(
-                getClass().getResource("/resources/styles/main.css").toExternalForm()
-            );
+            
+            // Carga el CSS con múltiples rutas posibles
+            java.net.URL cssUrl = getClass().getResource("styles/main.css");
+            if (cssUrl == null) {
+                cssUrl = getClass().getResource("/styles/main.css");
+            }
+            if (cssUrl == null) {
+                cssUrl = getClass().getClassLoader().getResource("/styles/main.css");
+            }
+            if (cssUrl != null) {
+                scene.getStylesheets().add(cssUrl.toExternalForm());
+            }
 
             stage.setScene(scene);
             stage.centerOnScreen();
             stage.setTitle("NBA Predictor - Iniciar Sesión");
             stage.show();
 
-        } catch (IOException e) {
-            lblError.setText("Error cargando la pantalla de login.");
+        } catch (IOException | IllegalStateException e) {
+            lblError.setText("Error cargando la pantalla de login: " + e.getMessage());
             lblError.setVisible(true);
             lblError.setManaged(true);
             e.printStackTrace();
