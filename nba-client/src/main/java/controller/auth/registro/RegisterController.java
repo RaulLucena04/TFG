@@ -40,7 +40,64 @@ public class RegisterController {
      */
     @FXML
     private void handleRegister(ActionEvent event) {
-        System.out.println("Registrando usuario: " + txtUsername.getText());
+        String username = txtUsername.getText();
+        String email = txtEmail.getText();
+        String password = txtPassword.getText();
+        String confirmPassword = txtConfirmPassword.getText();
+
+        // Validaciones básicas
+        if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            lblError.setText("Todos los campos son obligatorios");
+            lblError.setVisible(true);
+            lblError.setManaged(true);
+            return;
+        }
+
+        if (!password.equals(confirmPassword)) {
+            lblError.setText("Las contraseñas no coinciden");
+            lblError.setVisible(true);
+            lblError.setManaged(true);
+            return;
+        }
+
+        try {
+            // Crear JSON
+            String json = String.format(
+                    "{\"username\":\"%s\", \"email\":\"%s\", \"password\":\"%s\"}",
+                    username, email, password);
+
+            // Enviar POST al backend
+            java.net.URL url = new java.net.URL("http://localhost:8080/usuarios/register");
+            java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setDoOutput(true);
+
+            // Enviar JSON
+            try (java.io.OutputStream os = conn.getOutputStream()) {
+                byte[] input = json.getBytes("utf-8");
+                os.write(input, 0, input.length);
+            }
+
+            int responseCode = conn.getResponseCode();
+
+            if (responseCode == 200 || responseCode == 201) {
+                System.out.println("Usuario registrado correctamente");
+
+                // Redirigir a login
+                handleLogin(event);
+            } else {
+                lblError.setText("Error al registrar usuario");
+                lblError.setVisible(true);
+                lblError.setManaged(true);
+            }
+
+        } catch (Exception e) {
+            lblError.setText("Error de conexión con el servidor");
+            lblError.setVisible(true);
+            lblError.setManaged(true);
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -68,7 +125,7 @@ public class RegisterController {
                     .getScene().getWindow();
 
             Scene scene = new Scene(root, 400, 500);
-            
+
             // Carga el CSS con múltiples rutas posibles
             java.net.URL cssUrl = getClass().getResource("styles/main.css");
             if (cssUrl == null) {

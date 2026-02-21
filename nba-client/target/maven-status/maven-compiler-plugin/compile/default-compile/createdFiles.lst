@@ -2,7 +2,6 @@ controller\layout\MainLayoutController.class
 controller\auth\login\LoginController.class
 controller\perfil\ProfileController.class
 controller\auth\registro\RegisterController.class
-Main.class
 controller\admin\MatchFormController.class
 controller\partidos\MatchesController.class
 model\User.class
@@ -10,9 +9,11 @@ controller\admin\MatchManagementController.class
 controller\apuestas\BetHistoryController.class
 controller\dashboard\DashboardController.class
 controller\rankings\RankingsController.class
+start\Main.class
 controller\apuestas\BetDetailController.class
 controller\estadisticas\StatisticsController.class
 controller\apuestas\ActiveBetsController.class
 controller\admin\AdminDashboardController.class
+service\ApiService.class
 controller\admin\UserManagementController.class
 controller\apuestas\BetsController.class

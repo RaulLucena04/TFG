@@ -11,12 +11,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import model.User;
+import session.Session;
 
-
-/**
- * Controlador principal del layout de la aplicación. Gestiona la navegación
- * entre vistas y la información del usuario activo.
- */
 public class MainLayoutController {
 
     @FXML
@@ -28,17 +24,15 @@ public class MainLayoutController {
     @FXML
     private Label lblUser, lblPoints;
 
-    /**
-     * Inicializa la vista principal cargando el panel de inicio.
-     */
     public void initialize() {
+        // Cargar dashboard
         loadDashboard();
+
+        // Cargar usuario desde sesión
+        User user = Session.getCurrentUser();
+        setUser(user);
     }
 
-    /**
-     * Establece la información del usuario autenticado y ajusta la interfaz
-     * según su rol.
-     */
     public void setUser(User user) {
         if (user != null) {
             lblUser.setText(user.getUsername());
@@ -84,23 +78,11 @@ public class MainLayoutController {
         loadView("/ui/admin/AdminDashboardView.fxml");
     }
 
-    /**
-     * Carga una vista FXML dentro del contenedor principal.
-     */
     private void loadView(String fxml) {
         try {
-            // Prueba varias rutas posibles según cómo esté configurado el classpath
             java.net.URL fxmlUrl = getClass().getResource(fxml);
             if (fxmlUrl == null) {
-                // Si la ruta empieza con /ui, intenta con /main/resources
-                if (fxml.startsWith("/ui")) {
-                    fxmlUrl = getClass().getResource("/main/resources" + fxml);
-                }
-            }
-            if (fxmlUrl == null) {
-                // Intenta sin el / inicial usando ClassLoader
-                String resourcePath = fxml.startsWith("/") ? fxml.substring(1) : fxml;
-                fxmlUrl = getClass().getClassLoader().getResource(resourcePath);
+                fxmlUrl = getClass().getClassLoader().getResource(fxml.substring(1));
             }
             if (fxmlUrl == null) {
                 System.err.println("No se encontró el archivo FXML: " + fxml);
@@ -110,44 +92,29 @@ public class MainLayoutController {
             FXMLLoader loader = new FXMLLoader(fxmlUrl);
             Parent view = loader.load();
             contentPane.getChildren().setAll(view);
+
         } catch (IOException e) {
             System.err.println("Error cargando vista: " + fxml);
             e.printStackTrace();
         }
     }
 
-    /**
-     * Finaliza la sesión actual y redirige al usuario a la pantalla de login.
-     */
     @FXML
     private void handleLogout() {
         try {
-            // Prueba varias rutas posibles
+            Session.clear();
+
             java.net.URL fxmlUrl = getClass().getResource("/ui/auth/login/LoginView.fxml");
             if (fxmlUrl == null) {
-                fxmlUrl = getClass().getResource("/main/resources/ui/auth/login/LoginView.fxml");
-            }
-            if (fxmlUrl == null) {
                 fxmlUrl = getClass().getClassLoader().getResource("ui/auth/login/LoginView.fxml");
-            }
-            if (fxmlUrl == null) {
-                System.err.println("No se encontró LoginView.fxml");
-                return;
             }
 
             FXMLLoader loader = new FXMLLoader(fxmlUrl);
             Parent root = loader.load();
 
             Scene scene = new Scene(root, 400, 500);
-            
-            // Carga el CSS con múltiples rutas posibles
-            java.net.URL cssUrl = getClass().getResource("styles/main.css");
-            if (cssUrl == null) {
-                cssUrl = getClass().getResource("styles/main.css");
-            }
-            if (cssUrl == null) {
-                cssUrl = getClass().getClassLoader().getResource("styles/main.css");
-            }
+
+            java.net.URL cssUrl = getClass().getResource("/styles/main.css");
             if (cssUrl != null) {
                 scene.getStylesheets().add(cssUrl.toExternalForm());
             }
