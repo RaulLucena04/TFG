@@ -1,6 +1,9 @@
 package com.tfg.nbabackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "usuarios")
@@ -21,14 +24,14 @@ public class Usuario {
 
     private int puntos;
 
-    // GETTERS Y SETTERS
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Apuesta> apuestas;
+
+    // ----- GETTERS Y SETTERS -----
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getUsername() {
@@ -47,12 +50,20 @@ public class Usuario {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<Apuesta> getApuestas() {
+        return apuestas;
+    }
+
+    public void setApuestas(List<Apuesta> apuestas) {
+        this.apuestas = apuestas;
     }
 
     public int getPuntos() {
@@ -61,5 +72,9 @@ public class Usuario {
 
     public void setPuntos(int puntos) {
         this.puntos = puntos;
+    }
+
+    public String getPassword() {
+        return password;
     }
 }

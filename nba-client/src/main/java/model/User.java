@@ -1,17 +1,21 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
 
     private Long id;
     private String username;
     private String password;
 
-    @JsonProperty("puntos")   // ← Mapea "puntos" del backend a "points" del cliente
+    @JsonProperty("puntos")
     private int points;
 
     private boolean admin;
+
+    private String email; // ← Añadido
 
     public User() {}
 
@@ -53,5 +57,13 @@ public class User {
 
     public void setAdmin(boolean admin) {
         this.admin = admin;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
