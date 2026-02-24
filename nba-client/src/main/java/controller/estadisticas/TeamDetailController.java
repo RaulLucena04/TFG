@@ -33,54 +33,60 @@ public class TeamDetailController {
     private Equipo equipoActual;
 
     public void setEquipo(Equipo equipo) {
-        this.equipoActual = equipo;
+    this.equipoActual = equipo;
 
-        // Llenar info del equipo
-        lblTeamName.setText(equipo.getNombre());
-        lblConference.setText(equipo.getConferencia());
-        lblDivision.setText(equipo.getDivision());
-        lblRecord.setText("Record: " + equipo.getVictorias() + "-" + equipo.getDerrotas());
-        lblPPG.setText(String.valueOf(equipo.getPpg()));
-        lblRPG.setText(String.valueOf(equipo.getRpg()));
-        lblAPG.setText(String.valueOf(equipo.getApg()));
+    // Llenar info del equipo
+    lblTeamName.setText(equipo.getNombre());
+    lblConference.setText(equipo.getConferencia());
+    lblDivision.setText(equipo.getDivision());
+    lblRecord.setText("Record: " + equipo.getVictorias() + "-" + equipo.getDerrotas());
+    lblPPG.setText(String.valueOf(equipo.getPpg()));
+    lblRPG.setText(String.valueOf(equipo.getRpg()));
+    lblAPG.setText(String.valueOf(equipo.getApg()));
 
-        // Llenar tabla de jugadores
-        try {
-            List<Jugador> jugadores = apiService.obtenerJugadoresEquipo(equipo.getId());
-            ObservableList<Jugador> obsJugadores = FXCollections.observableArrayList(jugadores);
-            tablePlayers.setItems(obsJugadores);
+    // Llenar tabla de jugadores
+    try {
+        List<Jugador> jugadores = apiService.obtenerJugadoresEquipo(equipo.getId());
+        ObservableList<Jugador> obsJugadores = FXCollections.observableArrayList(jugadores);
+        tablePlayers.setItems(obsJugadores);
 
-            colPlayerName.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getNombre()));
-            colPlayerPosition.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getPosicion()));
-            colPlayerNumber.setCellValueFactory(data -> new javafx.beans.property.SimpleIntegerProperty(data.getValue().getNumero()).asObject());
-            colPlayerPPG.setCellValueFactory(data -> new javafx.beans.property.SimpleDoubleProperty(data.getValue().getPpg()).asObject());
-            colPlayerRPG.setCellValueFactory(data -> new javafx.beans.property.SimpleDoubleProperty(data.getValue().getRpg()).asObject());
-            colPlayerAPG.setCellValueFactory(data -> new javafx.beans.property.SimpleDoubleProperty(data.getValue().getApg()).asObject());
+        colPlayerName.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getNombre()));
+        colPlayerPosition.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getPosicion()));
+        colPlayerNumber.setCellValueFactory(data -> new javafx.beans.property.SimpleIntegerProperty(data.getValue().getNumero()).asObject());
+        colPlayerPPG.setCellValueFactory(data -> new javafx.beans.property.SimpleDoubleProperty(data.getValue().getPpg()).asObject());
+        colPlayerRPG.setCellValueFactory(data -> new javafx.beans.property.SimpleDoubleProperty(data.getValue().getRpg()).asObject());
+        colPlayerAPG.setCellValueFactory(data -> new javafx.beans.property.SimpleDoubleProperty(data.getValue().getApg()).asObject());
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // Llenar tabla de partidos recientes
-        try {
-            List<Partido> partidos = apiService.obtenerPartidosEquipo(equipo.getId());
-            ObservableList<Partido> obsPartidos = FXCollections.observableArrayList(partidos);
-            tableRecentMatches.setItems(obsPartidos);
-
-            colMatchDate.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(
-                    data.getValue().getFecha() != null ? data.getValue().getFecha().toString() : "N/A"
-            ));
-            colMatchRival.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(
-                    data.getValue().getRival(equipo.getId())
-            ));
-            colMatchResult.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(
-                    data.getValue().getResultado(equipo.getId())
-            ));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+
+    // Llenar tabla de partidos recientes (filtrando los PROGRAMADO)
+    try {
+        List<Partido> partidos = apiService.obtenerPartidosEquipo(equipo.getId());
+
+        // Filtrar solo los que no estén programados
+        List<Partido> partidosJugados = partidos.stream()
+                .filter(p -> p.getEstado() != null && !"PROGRAMADO".equalsIgnoreCase(p.getEstado()))
+                .toList();
+
+        ObservableList<Partido> obsPartidos = FXCollections.observableArrayList(partidosJugados);
+        tableRecentMatches.setItems(obsPartidos);
+
+        colMatchDate.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(
+                data.getValue().getFecha() != null ? data.getValue().getFecha().toString() : "N/A"
+        ));
+        colMatchRival.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(
+                data.getValue().getRival(equipo.getId())
+        ));
+        colMatchResult.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(
+                data.getValue().getResultado(equipo.getId())
+        ));
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
 
     @FXML
     private void handleBack() {

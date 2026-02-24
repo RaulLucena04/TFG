@@ -26,6 +26,10 @@ public class Partido {
     @JsonProperty("puntosVisitante")
     private final IntegerProperty puntosVisitante = new SimpleIntegerProperty();
 
+    // NUEVO: campo estado para filtrar partidos PROGRAMADO
+    @JsonProperty("estado")
+    private String estado;
+
     // Constructor vacío
     public Partido() {}
 
@@ -51,6 +55,9 @@ public class Partido {
     public int getPuntosVisitante() { return puntosVisitante.get(); }
     public void setPuntosVisitante(int puntosVisitante) { this.puntosVisitante.set(puntosVisitante); }
     public IntegerProperty puntosVisitanteProperty() { return puntosVisitante; }
+
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
 
     // Método auxiliar para mostrar el rival según el equipo actual
     public String getRival(Long equipoId) {
