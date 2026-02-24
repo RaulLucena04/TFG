@@ -21,16 +21,14 @@
 
     <TableView fx:id="tableTeams" prefHeight="500">
         <columns>
-            <TableColumn text="Equipo" prefWidth="200"/>
-            <TableColumn text="Conferencia" prefWidth="150"/>
-            <TableColumn text="División" prefWidth="120"/>
-            <TableColumn text="Victorias" prefWidth="100"/>
-            <TableColumn text="Derrotas" prefWidth="100"/>
-            <TableColumn text="% Victorias" prefWidth="100"/>
-            <TableColumn text="PPG" prefWidth="80"/>
-            <TableColumn text="RPG" prefWidth="80"/>
-            <TableColumn text="APG" prefWidth="80"/>
-            <TableColumn text="Acción" prefWidth="100"/>
+            <TableColumn fx:id="colEquipo" text="Equipo" prefWidth="200"/>
+            <TableColumn fx:id="colConferencia" text="Conferencia" prefWidth="150"/>
+            <TableColumn fx:id="colDivision" text="División" prefWidth="120"/>
+            <TableColumn fx:id="colVictorias" text="Victorias" prefWidth="100"/>
+            <TableColumn fx:id="colDerrotas" text="Derrotas" prefWidth="100"/>
+            <TableColumn fx:id="colPPG" text="PPG" prefWidth="80"/>
+            <TableColumn fx:id="colRPG" text="RPG" prefWidth="80"/>
+            <TableColumn fx:id="colAPG" text="APG" prefWidth="80"/>
         </columns>
     </TableView>
 

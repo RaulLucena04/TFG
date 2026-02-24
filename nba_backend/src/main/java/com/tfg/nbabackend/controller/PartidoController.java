@@ -5,6 +5,7 @@ import com.tfg.nbabackend.service.PartidoService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/partidos")
@@ -28,9 +29,19 @@ public class PartidoController {
 
     @PutMapping("/{id}/finalizar")
     public Partido finalizar(@PathVariable Long id,
-                             @RequestParam Integer puntosLocal,
-                             @RequestParam Integer puntosVisitante) {
+            @RequestParam Integer puntosLocal,
+            @RequestParam Integer puntosVisitante) {
 
         return partidoService.finalizarPartido(id, puntosLocal, puntosVisitante);
+    }
+
+    @GetMapping("/equipo/{equipoId}")
+    @CrossOrigin(origins = "*")
+    public List<Partido> obtenerPartidosPorEquipo(@PathVariable Long equipoId) {
+        // Filtramos los partidos donde el equipo es local o visitante
+        return partidoService.listarPartidos().stream()
+                .filter(p -> p.getEquipoLocal().getId().equals(equipoId)
+                        || p.getEquipoVisitante().getId().equals(equipoId))
+                .collect(Collectors.toList());
     }
 }
