@@ -1,9 +1,13 @@
 package controller.perfil;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 public class ProfileController {
 
@@ -50,9 +54,20 @@ public class ProfileController {
 
     @FXML
     private void handleChangePassword() {
-        // Lógica para cambiar la contraseña
-        System.out.println("Cambiando contraseña...");
-        // TODO: Implementar lógica de cambio de contraseña
-        // Por ejemplo, abrir un diálogo de cambio de contraseña
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/auth/password/ChangePasswordView.fxml"));
+            Parent root = loader.load();
+
+            Stage dialog = new Stage();
+            dialog.setTitle("Cambiar Contraseña");
+            dialog.setScene(new Scene(root));
+            dialog.setResizable(false);
+            dialog.initOwner(lblUsername.getScene().getWindow());
+            dialog.showAndWait();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
 }

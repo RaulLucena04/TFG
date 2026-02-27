@@ -6,8 +6,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controller.layout.MainLayoutController"
-            prefWidth="1920" prefHeight="1080">
+            fx:controller="controller.layout.MainLayoutController">
 
     <!-- Barra superior -->
     <top>

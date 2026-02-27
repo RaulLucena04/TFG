@@ -1,16 +1,16 @@
 package controller.auth.login;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 import model.User;
-import javafx.event.ActionEvent;
-import javafx.scene.Node;
 import service.UsuarioService;
 import session.Session;
 
@@ -64,15 +64,19 @@ public class LoginController {
             controller.setUser(usuario);
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root, 1920, 1080);
 
-            // CSS
+// Crear la escena SIN tamaños fijos
+            Scene scene = new Scene(root);
+
+// CSS
             java.net.URL cssUrl = getClass().getResource("/styles/main.css");
             if (cssUrl != null) {
                 scene.getStylesheets().add(cssUrl.toExternalForm());
             }
-
             stage.setScene(scene);
+            stage.sizeToScene();   // Ajusta al contenido
+            stage.setWidth(1400);  // 🔥 Tamaño inicial más pequeño
+            stage.setHeight(850);  // 🔥 Ajuste vertical
             stage.centerOnScreen();
             stage.setTitle("NBA Predictor - Principal");
             stage.show();
