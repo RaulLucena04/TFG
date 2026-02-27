@@ -55,4 +55,14 @@ public class EquipoApiService {
         Partido[] partidos = mapper.readValue(input, Partido[].class);
         return Arrays.asList(partidos);
     }
+
+    public List<Jugador> obtenerTodosJugadores() throws Exception {
+    URL url = new URL("http://localhost:8080/jugadores");
+    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+    connection.setRequestMethod("GET");
+
+    InputStream input = connection.getInputStream();
+    Jugador[] jugadores = mapper.readValue(input, Jugador[].class);
+    return Arrays.asList(jugadores);
+}
 }

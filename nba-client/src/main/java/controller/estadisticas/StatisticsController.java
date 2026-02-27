@@ -4,36 +4,59 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
+import javafx.scene.control.TextField;
 
 public class StatisticsController {
 
     @FXML
-    private TabPane tabPane;
+    private TextField txtSearchTeam;
 
     @FXML
-    public void initialize() {
-        System.out.println("StatisticsController iniciado");
-    }
+    private TextField txtSearchPlayer;
 
     @FXML
     private void handleSearchTeam() {
-        System.out.println("Botón Buscar Equipo pulsado");
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/ui/estadisticas/TeamsStatsView.fxml"));
+            Parent root = loader.load();
+
+            TeamsStatsController controller = loader.getController();
+            controller.searchTeam(txtSearchTeam.getText());
+
+            Stage stage = (Stage) txtSearchTeam.getScene().getWindow();
+            stage.setScene(new Scene(root));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
     private void handleViewAllTeams() {
-        System.out.println("Botón Ver Todos Equipos pulsado");
-
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/estadisticas/TeamsStatsView.fxml"));
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/ui/estadisticas/TeamsStatsView.fxml"));
             Parent root = loader.load();
 
-            Stage stage = new Stage();
+            Stage stage = (Stage) txtSearchTeam.getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle("Estadísticas de Equipos");
-            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleViewAllPlayers() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/ui/estadisticas/PlayersStatsView.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) txtSearchTeam.getScene().getWindow();
+            stage.setScene(new Scene(root));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -42,11 +65,19 @@ public class StatisticsController {
 
     @FXML
     private void handleSearchPlayer() {
-        System.out.println("Botón Buscar Jugador pulsado");
-    }
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/ui/estadisticas/PlayersStatsView.fxml"));
+            Parent root = loader.load();
 
-    @FXML
-    private void handleViewAllPlayers() {
-        System.out.println("Botón Ver Todos Jugadores pulsado");
+            PlayersStatsController controller = loader.getController();
+            controller.searchPlayer(txtSearchPlayer.getText());
+
+            Stage stage = (Stage) txtSearchPlayer.getScene().getWindow();
+            stage.setScene(new Scene(root));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -103,8 +103,17 @@ public class TeamDetailController {
 
     @FXML
     private void handleBack() {
-        Stage stage = (Stage) lblTeamName.getScene().getWindow();
-        stage.close();
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
+                    getClass().getResource("/ui/estadisticas/TeamsStatsView.fxml"));
+            javafx.scene.Parent root = loader.load();
+
+            Stage stage = (Stage) lblTeamName.getScene().getWindow();
+            stage.setScene(new javafx.scene.Scene(root));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

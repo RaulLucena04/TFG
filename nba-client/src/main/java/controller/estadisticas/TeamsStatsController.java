@@ -14,15 +14,24 @@ import java.util.ResourceBundle;
 
 public class TeamsStatsController implements Initializable {
 
-    @FXML private TableView<Equipo> tableTeams;
-    @FXML private TableColumn<Equipo, String> colEquipo;
-    @FXML private TableColumn<Equipo, String> colConferencia;
-    @FXML private TableColumn<Equipo, String> colDivision;
-    @FXML private TableColumn<Equipo, Integer> colVictorias;
-    @FXML private TableColumn<Equipo, Integer> colDerrotas;
-    @FXML private TableColumn<Equipo, Double> colPPG;
-    @FXML private TableColumn<Equipo, Double> colRPG;
-    @FXML private TableColumn<Equipo, Double> colAPG;
+    @FXML
+    private TableView<Equipo> tableTeams;
+    @FXML
+    private TableColumn<Equipo, String> colEquipo;
+    @FXML
+    private TableColumn<Equipo, String> colConferencia;
+    @FXML
+    private TableColumn<Equipo, String> colDivision;
+    @FXML
+    private TableColumn<Equipo, Integer> colVictorias;
+    @FXML
+    private TableColumn<Equipo, Integer> colDerrotas;
+    @FXML
+    private TableColumn<Equipo, Double> colPPG;
+    @FXML
+    private TableColumn<Equipo, Double> colRPG;
+    @FXML
+    private TableColumn<Equipo, Double> colAPG;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -63,27 +72,46 @@ public class TeamsStatsController implements Initializable {
     private void abrirDetalle(Equipo equipo) {
         try {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
-                    getClass().getResource("/ui/estadisticas/TeamDetailView.fxml")
-            );
+                    getClass().getResource("/ui/estadisticas/TeamDetailView.fxml"));
             javafx.scene.Parent root = loader.load();
 
-            controller.estadisticas.TeamDetailController controller = loader.getController();
+            TeamDetailController controller = loader.getController();
             controller.setEquipo(equipo);
 
-            Stage stage = new Stage();
+            Stage stage = (Stage) tableTeams.getScene().getWindow();
             stage.setScene(new javafx.scene.Scene(root));
-            stage.setTitle("Detalle del Equipo");
-            stage.show();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // ✅ Este es el método que faltaba
     @FXML
     private void handleBack() {
-        // Cierra la ventana actual
-        Stage stage = (Stage) tableTeams.getScene().getWindow();
-        stage.close();
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
+                    getClass().getResource("/ui/estadisticas/StatisticsView.fxml"));
+            javafx.scene.Parent root = loader.load();
+
+            Stage stage = (Stage) tableTeams.getScene().getWindow();
+            stage.setScene(new javafx.scene.Scene(root));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
+    public void searchTeam(String name) {
+
+    if (name == null || name.isEmpty()) {
+        cargarEquipos(); // recarga desde API
+        return;
+    }
+
+    tableTeams.setItems(
+            tableTeams.getItems().filtered(team ->
+                    team.getNombre().toLowerCase().contains(name.toLowerCase())
+            )
+    );
+}
 }
