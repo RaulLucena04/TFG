@@ -55,15 +55,15 @@ public class ProfileController {
     @FXML
     private void handleChangePassword() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/auth/password/ChangePasswordView.fxml"));
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/ui/auth/password/ChangePassword.fxml"));
+
             Parent root = loader.load();
 
-            Stage dialog = new Stage();
-            dialog.setTitle("Cambiar Contraseña");
-            dialog.setScene(new Scene(root));
-            dialog.setResizable(false);
-            dialog.initOwner(lblUsername.getScene().getWindow());
-            dialog.showAndWait();
+            Stage stage = new Stage();
+            stage.setTitle("Cambiar contraseña");
+            stage.setScene(new Scene(root));
+            stage.show();
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -5,12 +5,18 @@ import model.User;
 
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.Scanner;
 
 public class UsuarioService {
 
     private static final String BASE_URL = "http://localhost:8080/usuarios";
+
+    private final HttpClient httpClient = HttpClient.newHttpClient();
 
     public User login(String username, String password) {
         try {
@@ -48,4 +54,29 @@ public class UsuarioService {
 
         return null;
     }
+
+    public boolean updatePassword(Long id, String newPassword) {
+    String url = BASE_URL + "/" + id + "/password";
+
+    try {
+        String json = "{ \"password\": \"" + newPassword + "\" }";
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .PUT(HttpRequest.BodyPublishers.ofString(json))
+                .header("Content-Type", "application/json")
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        return response.statusCode() == 200;
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        return false;
+    }
 }
+
+}
+
+

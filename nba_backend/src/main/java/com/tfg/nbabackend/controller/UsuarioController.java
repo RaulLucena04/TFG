@@ -42,4 +42,14 @@ public class UsuarioController {
     public List<Usuario> obtenerUsuarios() {
         return usuarioService.obtenerTodos();
     }
+
+    @PutMapping("/{id}/password")
+    public ResponseEntity<?> cambiarPassword(
+            @PathVariable Long id,
+            @RequestBody PasswordRequest request) {
+
+        usuarioService.cambiarPassword(id, request.getPassword());
+        return ResponseEntity.ok("Contraseña actualizada");
+    }
+
 }

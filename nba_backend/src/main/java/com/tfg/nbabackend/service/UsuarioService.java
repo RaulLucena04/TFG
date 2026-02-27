@@ -15,9 +15,6 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    /**
-     * Crear usuario con validación de email y username
-     */
     public Usuario guardarUsuario(Usuario usuario) {
 
         if (usuarioRepository.existsByUsername(usuario.getUsername())) {
@@ -28,7 +25,7 @@ public class UsuarioService {
             throw new RuntimeException("El email ya está registrado");
         }
 
-        usuario.setPuntos(1000); // puntos iniciales
+        usuario.setPuntos(1000);
         return usuarioRepository.save(usuario);
     }
 
@@ -52,5 +49,14 @@ public class UsuarioService {
 
     public void eliminarUsuario(Long id) {
         usuarioRepository.deleteById(id);
+    }
+
+    // 🔥 NUEVO MÉTODO PARA CAMBIAR CONTRASEÑA
+    public void cambiarPassword(Long id, String nuevaPassword) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        usuario.setPassword(nuevaPassword);
+        usuarioRepository.save(usuario);
     }
 }

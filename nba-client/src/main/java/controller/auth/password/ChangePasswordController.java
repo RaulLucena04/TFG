@@ -25,38 +25,44 @@ public class ChangePasswordController {
     private final UsuarioService usuarioService = new UsuarioService();
 
     @FXML
-    private void handleSave() {
+private void handleSave() {
 
-        User user = Session.getCurrentUser();
+    User user = Session.getCurrentUser();
 
-        String oldPass = txtOldPassword.getText();
-        String newPass = txtNewPassword.getText();
-        String confirm = txtConfirmPassword.getText();
+    String oldPass = txtOldPassword.getText();
+    String newPass = txtNewPassword.getText();
+    String confirm = txtConfirmPassword.getText();
 
-        if (oldPass.isEmpty() || newPass.isEmpty() || confirm.isEmpty()) {
-            showError("Rellena todos los campos");
-            return;
-        }
-
-        if (!usuarioService.checkPassword(user.getId(), oldPass)) {
-            showError("La contraseña actual no es correcta");
-            return;
-        }
-
-        if (!newPass.equals(confirm)) {
-            showError("Las contraseñas no coinciden");
-            return;
-        }
-
-        if (newPass.length() < 6) {
-            showError("La nueva contraseña debe tener al menos 6 caracteres");
-            return;
-        }
-
-        usuarioService.updatePassword(user.getId(), newPass);
-
-        closeWindow();
+    if (oldPass.isEmpty() || newPass.isEmpty() || confirm.isEmpty()) {
+        showError("Rellena todos los campos");
+        return;
     }
+
+    // ✔️ Validación local sin llamar al backend
+    if (!user.getPassword().equals(oldPass)) {
+        showError("La contraseña actual no es correcta");
+        return;
+    }
+
+    if (!newPass.equals(confirm)) {
+        showError("Las contraseñas no coinciden");
+        return;
+    }
+
+    if (newPass.length() < 6) {
+        showError("La nueva contraseña debe tener al menos 6 caracteres");
+        return;
+    }
+
+    // ✔️ Llamada al backend para actualizar
+    usuarioService.updatePassword(user.getId(), newPass);
+
+    // ✔️ Actualizar la contraseña en sesión
+    user.setPassword(newPass);
+
+    closeWindow();
+}
+
 
     @FXML
     private void handleCancel() {
