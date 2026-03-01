@@ -1,13 +1,14 @@
 package com.tfg.nbabackend.service;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.tfg.nbabackend.model.Rol;
 import com.tfg.nbabackend.model.Usuario;
 import com.tfg.nbabackend.repository.UsuarioRepository;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UsuarioService {
@@ -26,6 +27,9 @@ public class UsuarioService {
         }
 
         usuario.setPuntos(1000);
+
+        usuario.setRol(Rol.USER);
+
         return usuarioRepository.save(usuario);
     }
 
@@ -51,7 +55,6 @@ public class UsuarioService {
         usuarioRepository.deleteById(id);
     }
 
-    // 🔥 NUEVO MÉTODO PARA CAMBIAR CONTRASEÑA
     public void cambiarPassword(Long id, String nuevaPassword) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));

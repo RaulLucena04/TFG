@@ -1,22 +1,18 @@
 package controller.auth.registro;
 
+import java.io.IOException;
+
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import javafx.event.ActionEvent;
-import javafx.scene.Node;
 
-import java.io.IOException;
-
-/**
- * Controlador encargado de gestionar el registro de nuevos usuarios.
- * Maneja la validación básica y la navegación entre vistas de autenticación.
- */
 public class RegisterController {
 
     @FXML
@@ -34,10 +30,14 @@ public class RegisterController {
     @FXML
     private Label lblError;
 
-    /**
-     * Gestiona el proceso de registro del usuario.
-     * En este método se integrará la lógica de validación y persistencia.
-     */
+    @FXML
+    public void initialize() {
+        txtUsername.setOnAction(this::handleRegister);
+        txtEmail.setOnAction(this::handleRegister);
+        txtPassword.setOnAction(this::handleRegister);
+        txtConfirmPassword.setOnAction(this::handleRegister);
+    }
+
     @FXML
     private void handleRegister(ActionEvent event) {
         String username = txtUsername.getText();
@@ -45,7 +45,6 @@ public class RegisterController {
         String password = txtPassword.getText();
         String confirmPassword = txtConfirmPassword.getText();
 
-        // Validaciones básicas
         if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
             lblError.setText("Todos los campos son obligatorios");
             lblError.setVisible(true);
@@ -61,19 +60,16 @@ public class RegisterController {
         }
 
         try {
-            // Crear JSON
             String json = String.format(
                     "{\"username\":\"%s\", \"email\":\"%s\", \"password\":\"%s\"}",
                     username, email, password);
 
-            // Enviar POST al backend
             java.net.URL url = new java.net.URL("http://localhost:8080/usuarios/register");
             java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setDoOutput(true);
 
-            // Enviar JSON
             try (java.io.OutputStream os = conn.getOutputStream()) {
                 byte[] input = json.getBytes("utf-8");
                 os.write(input, 0, input.length);
@@ -82,9 +78,6 @@ public class RegisterController {
             int responseCode = conn.getResponseCode();
 
             if (responseCode == 200 || responseCode == 201) {
-                System.out.println("Usuario registrado correctamente");
-
-                // Redirigir a login
                 handleLogin(event);
             } else {
                 lblError.setText("Error al registrar usuario");
@@ -100,17 +93,10 @@ public class RegisterController {
         }
     }
 
-    /**
-     * Redirige al usuario a la pantalla de inicio de sesión.
-     */
     @FXML
     private void handleLogin(ActionEvent event) {
         try {
-            // Prueba varias rutas posibles
             java.net.URL fxmlUrl = getClass().getResource("/ui/auth/login/LoginView.fxml");
-            if (fxmlUrl == null) {
-                fxmlUrl = getClass().getResource("/main/resources/ui/auth/login/LoginView.fxml");
-            }
             if (fxmlUrl == null) {
                 fxmlUrl = getClass().getClassLoader().getResource("ui/auth/login/LoginView.fxml");
             }
@@ -121,19 +107,11 @@ public class RegisterController {
             FXMLLoader loader = new FXMLLoader(fxmlUrl);
             Parent root = loader.load();
 
-            Stage stage = (Stage) ((Node) event.getSource())
-                    .getScene().getWindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
             Scene scene = new Scene(root, 400, 500);
 
-            // Carga el CSS con múltiples rutas posibles
-            java.net.URL cssUrl = getClass().getResource("styles/main.css");
-            if (cssUrl == null) {
-                cssUrl = getClass().getResource("/styles/main.css");
-            }
-            if (cssUrl == null) {
-                cssUrl = getClass().getClassLoader().getResource("/styles/main.css");
-            }
+            java.net.URL cssUrl = getClass().getResource("/styles/main.css");
             if (cssUrl != null) {
                 scene.getStylesheets().add(cssUrl.toExternalForm());
             }

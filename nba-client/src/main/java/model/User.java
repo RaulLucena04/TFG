@@ -13,9 +13,9 @@ public class User {
     @JsonProperty("puntos")
     private int points;
 
-    private boolean admin;
+    private String rol; // 👈 NUEVO CAMPO
 
-    private String email; // ← Añadido
+    private String email;
 
     public User() {}
 
@@ -51,12 +51,12 @@ public class User {
         this.points = points;
     }
 
-    public boolean isAdmin() {
-        return admin;
+    public String getRol() {
+        return rol;
     }
 
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
+    public void setRol(String rol) {
+        this.rol = rol;
     }
 
     public String getEmail() {
@@ -65,5 +65,10 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    // 👇 Método útil para luego
+    public boolean isAdmin() {
+        return "ADMIN".equalsIgnoreCase(rol);
     }
 }

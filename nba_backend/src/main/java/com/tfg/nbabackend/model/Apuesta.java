@@ -1,6 +1,16 @@
 package com.tfg.nbabackend.model;
 
-import jakarta.persistence.*;
+import com.tfg.nbabackend.enums.ResultadoApuesta;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Apuesta {
@@ -13,7 +23,9 @@ public class Apuesta {
 
     private String prediccion;
 
-    private Boolean acertada;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ResultadoApuesta resultado;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
@@ -45,12 +57,12 @@ public class Apuesta {
         this.prediccion = prediccion;
     }
 
-    public Boolean getAcertada() {
-        return acertada;
+    public ResultadoApuesta getResultado() {
+        return resultado;
     }
 
-    public void setAcertada(Boolean acertada) {
-        this.acertada = acertada;
+    public void setResultado(ResultadoApuesta resultado) {
+        this.resultado = resultado;
     }
 
     public Usuario getUsuario() {

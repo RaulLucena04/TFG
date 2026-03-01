@@ -4,8 +4,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.stage.Stage;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 public class StatisticsController {
 
@@ -14,6 +14,8 @@ public class StatisticsController {
 
     @FXML
     private TextField txtSearchPlayer;
+
+    private static final String CSS_PATH = "/styles/main.css";
 
     @FXML
     private void handleSearchTeam() {
@@ -26,7 +28,9 @@ public class StatisticsController {
             controller.searchTeam(txtSearchTeam.getText());
 
             Stage stage = (Stage) txtSearchTeam.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource(CSS_PATH).toExternalForm());
+            stage.setScene(scene);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -41,7 +45,9 @@ public class StatisticsController {
             Parent root = loader.load();
 
             Stage stage = (Stage) txtSearchTeam.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource(CSS_PATH).toExternalForm());
+            stage.setScene(scene);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -56,7 +62,9 @@ public class StatisticsController {
             Parent root = loader.load();
 
             Stage stage = (Stage) txtSearchTeam.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource(CSS_PATH).toExternalForm());
+            stage.setScene(scene);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -74,7 +82,9 @@ public class StatisticsController {
             controller.searchPlayer(txtSearchPlayer.getText());
 
             Stage stage = (Stage) txtSearchPlayer.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource(CSS_PATH).toExternalForm());
+            stage.setScene(scene);
 
         } catch (Exception e) {
             e.printStackTrace();

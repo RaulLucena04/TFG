@@ -26,6 +26,12 @@ public class LoginController {
     private Label lblError;
 
     @FXML
+    public void initialize() {
+        txtUsername.setOnAction(this::handleLogin);
+        txtPassword.setOnAction(this::handleLogin);
+    }
+
+    @FXML
     private void handleLogin(ActionEvent event) {
 
         String username = txtUsername.getText();
@@ -46,7 +52,6 @@ public class LoginController {
             return;
         }
 
-        // 🔥 Guardar usuario en sesión
         Session.setCurrentUser(usuario);
 
         try {
@@ -59,24 +64,22 @@ public class LoginController {
             FXMLLoader loader = new FXMLLoader(fxmlUrl);
             Parent root = loader.load();
 
-            // Obtener el controlador para pasarle el usuario
             controller.layout.MainLayoutController controller = loader.getController();
             controller.setUser(usuario);
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-// Crear la escena SIN tamaños fijos
             Scene scene = new Scene(root);
 
-// CSS
             java.net.URL cssUrl = getClass().getResource("/styles/main.css");
             if (cssUrl != null) {
                 scene.getStylesheets().add(cssUrl.toExternalForm());
             }
+
             stage.setScene(scene);
-            stage.sizeToScene();   // Ajusta al contenido
-            stage.setWidth(1400);  // 🔥 Tamaño inicial más pequeño
-            stage.setHeight(850);  // 🔥 Ajuste vertical
+            stage.sizeToScene();
+            stage.setWidth(1400);
+            stage.setHeight(850);
             stage.centerOnScreen();
             stage.setTitle("NBA Predictor - Principal");
             stage.show();

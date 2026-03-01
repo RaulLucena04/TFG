@@ -1,22 +1,23 @@
 package controller.estadisticas;
 
+import java.util.List;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 import model.Jugador;
 import service.EquipoApiService;
 
-import java.util.List;
-
 public class PlayersStatsController {
+
+    private static final String CSS_PATH = "/styles/main.css";
 
     @FXML
     private TableView<Jugador> tablePlayers;
@@ -30,7 +31,6 @@ public class PlayersStatsController {
     @FXML
     public void initialize() {
 
-        // IMPORTANTE → usar "nombre" porque viene del backend
         colName.setCellValueFactory(new PropertyValueFactory<>("nombre"));
 
         cargarJugadores();
@@ -69,7 +69,14 @@ public class PlayersStatsController {
             Parent root = loader.load();
 
             Stage stage = (Stage) tablePlayers.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+
+            // AÑADIR CSS
+            scene.getStylesheets().add(
+                    getClass().getResource(CSS_PATH).toExternalForm()
+            );
+
+            stage.setScene(scene);
 
         } catch (Exception e) {
             e.printStackTrace();

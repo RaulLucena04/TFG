@@ -1,21 +1,23 @@
 package controller.estadisticas;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
-import javafx.stage.Stage;
+import java.util.List;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 import model.Equipo;
 import model.Jugador;
 import model.Partido;
 import service.EquipoApiService;
 
-import java.util.List;
-
 public class TeamDetailController {
+
+    private static final String CSS_PATH = "/styles/main.css";
 
     @FXML
     private ImageView imgTeamLogo;
@@ -45,7 +47,6 @@ public class TeamDetailController {
     public void setEquipo(Equipo equipo) {
         this.equipoActual = equipo;
 
-        // Llenar info del equipo
         lblTeamName.setText(equipo.getNombre());
         lblConference.setText(equipo.getConferencia());
         lblDivision.setText(equipo.getDivision());
@@ -54,7 +55,6 @@ public class TeamDetailController {
         lblRPG.setText(String.valueOf(equipo.getRpg()));
         lblAPG.setText(String.valueOf(equipo.getApg()));
 
-        // Llenar tabla de jugadores
         try {
             List<Jugador> jugadores = apiService.obtenerJugadoresEquipo(equipo.getId());
             ObservableList<Jugador> obsJugadores = FXCollections.observableArrayList(jugadores);
@@ -77,11 +77,9 @@ public class TeamDetailController {
             e.printStackTrace();
         }
 
-        // Llenar tabla de partidos recientes (filtrando los PROGRAMADO)
         try {
             List<Partido> partidos = apiService.obtenerPartidosEquipo(equipo.getId());
 
-            // Filtrar solo los que no estén programados
             List<Partido> partidosJugados = partidos.stream()
                     .filter(p -> p.getEstado() != null && !"PROGRAMADO".equalsIgnoreCase(p.getEstado()))
                     .toList();
@@ -109,11 +107,12 @@ public class TeamDetailController {
             javafx.scene.Parent root = loader.load();
 
             Stage stage = (Stage) lblTeamName.getScene().getWindow();
-            stage.setScene(new javafx.scene.Scene(root));
+            javafx.scene.Scene scene = new javafx.scene.Scene(root);
+            scene.getStylesheets().add(getClass().getResource(CSS_PATH).toExternalForm());
+            stage.setScene(scene);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 }
