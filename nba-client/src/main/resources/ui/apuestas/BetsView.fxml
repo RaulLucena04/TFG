@@ -7,16 +7,17 @@
 <?import java.lang.String?>
 
 <VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="controller.apuestas.BetsController"
-      spacing="20"
-      styleClass="bets-container">
+    xmlns:fx="http://javafx.com/fxml" fx:controller="controller.apuestas.BetsController" spacing="20" styleClass="bets-container">
 
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
 
     <Label text="💰 Apuestas" styleClass="page-title"/>
+
+    <HBox alignment="CENTER_RIGHT">
+        <Button text="➕ Crear Apuesta" onAction="#handleCreateBet" styleClass="primary-button"/>
+    </HBox>
 
     <!-- Pestañas para diferentes tipos de apuestas -->
     <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE">

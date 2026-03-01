@@ -6,7 +6,7 @@
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="controller.partidos.detalle_partidos.MatchDetailController"
+      fx:controller="controller.partidos.MatchDetailController"
       spacing="20"
       styleClass="match-detail-container">
 

@@ -56,27 +56,54 @@ public class UsuarioService {
     }
 
     public boolean updatePassword(Long id, String newPassword) {
-    String url = BASE_URL + "/" + id + "/password";
+        String url = BASE_URL + "/" + id + "/password";
 
-    try {
-        String json = "{ \"password\": \"" + newPassword + "\" }";
+        try {
+            String json = "{ \"password\": \"" + newPassword + "\" }";
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .PUT(HttpRequest.BodyPublishers.ofString(json))
-                .header("Content-Type", "application/json")
-                .build();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .PUT(HttpRequest.BodyPublishers.ofString(json))
+                    .header("Content-Type", "application/json")
+                    .build();
 
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-        return response.statusCode() == 200;
+            return response.statusCode() == 200;
 
-    } catch (Exception e) {
-        e.printStackTrace();
-        return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
-}
+
+    public java.util.List<User> listarUsuarios() {
+
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL))
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+
+                ObjectMapper mapper = new ObjectMapper();
+                User[] usuarios = mapper.readValue(response.body(), User[].class);
+
+                return java.util.Arrays.stream(usuarios)
+                        .sorted(java.util.Comparator
+                                .comparingInt(User::getPoints)
+                                .reversed())
+                        .toList();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return java.util.List.of();
+    }
 
 }
-
-

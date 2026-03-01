@@ -48,14 +48,27 @@ public class MainLayoutController {
         loadView("/ui/dashboard/DashboardView.fxml");
     }
 
-    @FXML
-    private void loadMatches() {
-        loadView("/ui/partidos/MatchesView.fxml");
+    public void loadMatches() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/ui/partidos/MatchesView.fxml"));
+            Parent view = loader.load();
+
+            contentPane.getChildren().setAll(view); // donde contentPane es tu contenedor central
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    @FXML
     public void loadStatistics() {
-        loadView("/ui/estadisticas/StatisticsView.fxml");
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/ui/estadisticas/StatisticsView.fxml"));
+            Parent view = loader.load();
+            contentPane.getChildren().setAll(view);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -79,32 +92,32 @@ public class MainLayoutController {
     }
 
     private void loadView(String fxml) {
-    try {
-        java.net.URL fxmlUrl = getClass().getResource(fxml);
-        if (fxmlUrl == null) {
-            fxmlUrl = getClass().getClassLoader().getResource(fxml.substring(1));
+        try {
+            java.net.URL fxmlUrl = getClass().getResource(fxml);
+            if (fxmlUrl == null) {
+                fxmlUrl = getClass().getClassLoader().getResource(fxml.substring(1));
+            }
+            if (fxmlUrl == null) {
+                System.err.println("No se encontró el archivo FXML: " + fxml);
+                return;
+            }
+
+            FXMLLoader loader = new FXMLLoader(fxmlUrl);
+            Parent view = loader.load();
+
+            view.setOpacity(0);
+            contentPane.getChildren().setAll(view);
+
+            javafx.animation.FadeTransition fade = new javafx.animation.FadeTransition(javafx.util.Duration.millis(200),
+                    view);
+            fade.setToValue(1);
+            fade.play();
+
+        } catch (IOException e) {
+            System.err.println("Error cargando vista: " + fxml);
+            e.printStackTrace();
         }
-        if (fxmlUrl == null) {
-            System.err.println("No se encontró el archivo FXML: " + fxml);
-            return;
-        }
-
-        FXMLLoader loader = new FXMLLoader(fxmlUrl);
-        Parent view = loader.load();
-
-        view.setOpacity(0);
-        contentPane.getChildren().setAll(view);
-
-        javafx.animation.FadeTransition fade = 
-            new javafx.animation.FadeTransition(javafx.util.Duration.millis(200), view);
-        fade.setToValue(1);
-        fade.play();
-
-    } catch (IOException e) {
-        System.err.println("Error cargando vista: " + fxml);
-        e.printStackTrace();
     }
-}
 
     @FXML
     private void handleLogout() {
@@ -137,4 +150,5 @@ public class MainLayoutController {
             e.printStackTrace();
         }
     }
+
 }

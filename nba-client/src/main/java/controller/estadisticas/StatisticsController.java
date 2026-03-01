@@ -79,7 +79,7 @@ public class StatisticsController {
             Parent root = loader.load();
 
             PlayersStatsController controller = loader.getController();
-            controller.searchPlayer(txtSearchPlayer.getText());
+            controller.handleSearch(); // ← corregido
 
             Stage stage = (Stage) txtSearchPlayer.getScene().getWindow();
             Scene scene = new Scene(root);
@@ -90,4 +90,5 @@ public class StatisticsController {
             e.printStackTrace();
         }
     }
+
 }

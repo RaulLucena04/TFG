@@ -25,8 +25,7 @@ public class ApuestaService {
                     .GET()
                     .build();
 
-            HttpResponse<String> response =
-                    httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200) {
 
@@ -43,5 +42,30 @@ public class ApuestaService {
         }
 
         return List.of();
+    }
+
+    public void crearApuesta(Apuesta apuesta) {
+
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JavaTimeModule());
+
+            String json = mapper.writeValueAsString(apuesta);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() != 200 && response.statusCode() != 201) {
+                throw new RuntimeException("Error al crear apuesta: " + response.body());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
