@@ -89,11 +89,21 @@ public class DashboardController {
         colFecha.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getFecha().toString()));
 
         TableColumn<Partido, String> colLocal = new TableColumn<>("Equipo Local");
-        colLocal.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getEquipoLocal().getNombre()));
+        colLocal.setCellValueFactory(data -> {
+            if (data.getValue().getEquipoLocal() != null && data.getValue().getEquipoLocal().getNombre() != null) {
+                return new SimpleStringProperty(data.getValue().getEquipoLocal().getNombre());
+            }
+            return new SimpleStringProperty("Equipo Local");
+        });
 
         TableColumn<Partido, String> colVisitante = new TableColumn<>("Equipo Visitante");
         colVisitante.setCellValueFactory(
-                data -> new SimpleStringProperty(data.getValue().getEquipoVisitante().getNombre()));
+                data -> {
+                    if (data.getValue().getEquipoVisitante() != null && data.getValue().getEquipoVisitante().getNombre() != null) {
+                        return new SimpleStringProperty(data.getValue().getEquipoVisitante().getNombre());
+                    }
+                    return new SimpleStringProperty("Equipo Visitante");
+                });
 
         tableUpcomingMatches.getColumns().setAll(colFecha, colLocal, colVisitante);
         tableUpcomingMatches.setItems(FXCollections.observableArrayList(partidos));

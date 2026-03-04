@@ -62,10 +62,18 @@ public class BetsController {
 
                 // ===== TABLA ACTIVAS =====
                 TableColumn<Apuesta, String> colMatchActive = new TableColumn<>("Partido");
-                colMatchActive.setCellValueFactory(data -> new SimpleStringProperty(
-                                data.getValue().getPartido().getEquipoLocal().getNombre()
-                                                + " vs "
-                                                + data.getValue().getPartido().getEquipoVisitante().getNombre()));
+                colMatchActive.setCellValueFactory(data -> {
+                    Apuesta apuesta = data.getValue();
+                    if (apuesta.getPartido() != null && 
+                        apuesta.getPartido().getEquipoLocal() != null && 
+                        apuesta.getPartido().getEquipoVisitante() != null) {
+                        return new SimpleStringProperty(
+                                apuesta.getPartido().getEquipoLocal().getNombre()
+                                + " vs "
+                                + apuesta.getPartido().getEquipoVisitante().getNombre());
+                    }
+                    return new SimpleStringProperty("Partido no disponible");
+                });
 
                 TableColumn<Apuesta, String> colPredictionActive = new TableColumn<>("Predicción");
                 colPredictionActive
@@ -75,17 +83,44 @@ public class BetsController {
                 colPointsActive.setCellValueFactory(
                                 data -> new SimpleStringProperty(String.valueOf(data.getValue().getPuntosApostados())));
 
+                TableColumn<Apuesta, String> colCuotaActive = new TableColumn<>("Cuota");
+                colCuotaActive.setCellValueFactory(data -> {
+                    Double cuota = data.getValue().getCuota();
+                    return new SimpleStringProperty(cuota != null ? String.format("%.2f", cuota) : "-");
+                });
+
+                TableColumn<Apuesta, String> colGananciaActive = new TableColumn<>("Ganancia Potencial");
+                colGananciaActive.setCellValueFactory(data -> {
+                    Apuesta apuesta = data.getValue();
+                    Double cuota = apuesta.getCuota();
+                    if (cuota != null && cuota > 0) {
+                        double ganancia = apuesta.getPuntosApostados() * cuota;
+                        return new SimpleStringProperty(String.format("%.0f", ganancia));
+                    }
+                    return new SimpleStringProperty("-");
+                });
+
                 tableActiveBets.getColumns().setAll(
                                 colMatchActive,
                                 colPredictionActive,
-                                colPointsActive);
+                                colPointsActive,
+                                colCuotaActive,
+                                colGananciaActive);
 
                 // ===== TABLA HISTORIAL =====
                 TableColumn<Apuesta, String> colMatchHistory = new TableColumn<>("Partido");
-                colMatchHistory.setCellValueFactory(data -> new SimpleStringProperty(
-                                data.getValue().getPartido().getEquipoLocal().getNombre()
-                                                + " vs "
-                                                + data.getValue().getPartido().getEquipoVisitante().getNombre()));
+                colMatchHistory.setCellValueFactory(data -> {
+                    Apuesta apuesta = data.getValue();
+                    if (apuesta.getPartido() != null && 
+                        apuesta.getPartido().getEquipoLocal() != null && 
+                        apuesta.getPartido().getEquipoVisitante() != null) {
+                        return new SimpleStringProperty(
+                                apuesta.getPartido().getEquipoLocal().getNombre()
+                                + " vs "
+                                + apuesta.getPartido().getEquipoVisitante().getNombre());
+                    }
+                    return new SimpleStringProperty("Partido no disponible");
+                });
 
                 TableColumn<Apuesta, String> colPredictionHistory = new TableColumn<>("Predicción");
                 colPredictionHistory
@@ -95,14 +130,38 @@ public class BetsController {
                 colPointsHistory.setCellValueFactory(
                                 data -> new SimpleStringProperty(String.valueOf(data.getValue().getPuntosApostados())));
 
+                TableColumn<Apuesta, String> colCuotaHistory = new TableColumn<>("Cuota");
+                colCuotaHistory.setCellValueFactory(data -> {
+                    Double cuota = data.getValue().getCuota();
+                    return new SimpleStringProperty(cuota != null ? String.format("%.2f", cuota) : "-");
+                });
+
                 TableColumn<Apuesta, String> colResultHistory = new TableColumn<>("Resultado");
                 colResultHistory.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getResultado()));
+
+                TableColumn<Apuesta, String> colGananciaHistory = new TableColumn<>("Ganancia/Pérdida");
+                colGananciaHistory.setCellValueFactory(data -> {
+                    Apuesta apuesta = data.getValue();
+                    if (apuesta.isGanada()) {
+                        Double cuota = apuesta.getCuota();
+                        if (cuota != null && cuota > 0) {
+                            double ganancia = apuesta.getPuntosApostados() * cuota;
+                            return new SimpleStringProperty("+" + String.format("%.0f", ganancia));
+                        }
+                        return new SimpleStringProperty("+" + (apuesta.getPuntosApostados() * 2));
+                    } else if (apuesta.isPerdida()) {
+                        return new SimpleStringProperty("-" + apuesta.getPuntosApostados());
+                    }
+                    return new SimpleStringProperty("-");
+                });
 
                 tableBetHistory.getColumns().setAll(
                                 colMatchHistory,
                                 colPredictionHistory,
                                 colPointsHistory,
-                                colResultHistory);
+                                colCuotaHistory,
+                                colResultHistory,
+                                colGananciaHistory);
         }
 
         // ===============================

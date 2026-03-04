@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/partidos")
+@CrossOrigin(origins = "*")
 public class PartidoController {
 
     private final PartidoService partidoService;
@@ -36,7 +37,6 @@ public class PartidoController {
     }
 
     @GetMapping("/equipo/{equipoId}")
-    @CrossOrigin(origins = "*")
     public List<Partido> obtenerPartidosPorEquipo(@PathVariable Long equipoId) {
         // Filtramos los partidos donde el equipo es local o visitante
         return partidoService.listarPartidos().stream()

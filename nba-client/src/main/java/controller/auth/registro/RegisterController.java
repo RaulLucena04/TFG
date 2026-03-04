@@ -52,6 +52,14 @@ public class RegisterController {
             return;
         }
 
+        // Validar longitud mínima de contraseña (6 caracteres)
+        if (password.length() < 6) {
+            lblError.setText("La contraseña debe tener al menos 6 caracteres");
+            lblError.setVisible(true);
+            lblError.setManaged(true);
+            return;
+        }
+
         if (!password.equals(confirmPassword)) {
             lblError.setText("Las contraseñas no coinciden");
             lblError.setVisible(true);
@@ -80,7 +88,22 @@ public class RegisterController {
             if (responseCode == 200 || responseCode == 201) {
                 handleLogin(event);
             } else {
-                lblError.setText("Error al registrar usuario");
+                // Leer el mensaje de error del servidor
+                String errorMessage = "Error al registrar usuario";
+                try (java.io.BufferedReader br = new java.io.BufferedReader(
+                        new java.io.InputStreamReader(conn.getErrorStream(), "utf-8"))) {
+                    StringBuilder response = new StringBuilder();
+                    String responseLine;
+                    while ((responseLine = br.readLine()) != null) {
+                        response.append(responseLine.trim());
+                    }
+                    if (response.length() > 0) {
+                        errorMessage = response.toString();
+                    }
+                } catch (Exception e) {
+                    // Usar mensaje por defecto si no se puede leer el error
+                }
+                lblError.setText(errorMessage);
                 lblError.setVisible(true);
                 lblError.setManaged(true);
             }

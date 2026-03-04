@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">NBA Predictor</string>
+    
+    <!-- Auth -->
+    <string name="login">Iniciar Sesión</string>
+    <string name="register">Registrarse</string>
+    <string name="username">Nombre de usuario</string>
+    <string name="email">Correo electrónico</string>
+    <string name="password">Contraseña</string>
+    <string name="confirm_password">Confirmar contraseña</string>
+    <string name="password_min_length">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="passwords_not_match">Las contraseñas no coinciden</string>
+    <string name="login_error">Error al iniciar sesión</string>
+    <string name="register_error">Error al registrar usuario</string>
+    <string name="all_fields_required">Todos los campos son obligatorios</string>
+    
+    <!-- Navigation -->
+    <string name="dashboard">Inicio</string>
+    <string name="matches">Partidos</string>
+    <string name="bets">Apuestas</string>
+    <string name="rankings">Rankings</string>
+    <string name="profile">Perfil</string>
+    <string name="admin">Administración</string>
+    <string name="logout">Cerrar Sesión</string>
+    
+    <!-- Dashboard -->
+    <string name="total_points">Puntos Totales</string>
+    <string name="active_bets">Apuestas Activas</string>
+    <string name="win_rate">Tasa de Aciertos</string>
+    <string name="ranking">Ranking</string>
+    <string name="upcoming_matches">Próximos Partidos</string>
+    
+    <!-- Bets -->
+    <string name="create_bet">Crear Apuesta</string>
+    <string name="active_bets_title">Apuestas Activas</string>
+    <string name="bet_history">Historial de Apuestas</string>
+    <string name="select_match">Seleccionar Partido</string>
+    <string name="select_prediction">Seleccionar Predicción</string>
+    <string name="points_to_bet">Puntos a Apostar</string>
+    <string name="available_points">Puntos Disponibles: %1$d</string>
+    <string name="odds">Cuota: %1$.2f</string>
+    <string name="potential_winnings">Ganancia Potencial: %1$.0f</string>
+    <string name="local">Local</string>
+    <string name="visitor">Visitante</string>
+    <string name="pending">Pendiente</string>
+    <string name="won">Ganada</string>
+    <string name="lost">Perdida</string>
+    
+    <!-- Profile -->
+    <string name="edit_profile">Editar Perfil</string>
+    <string name="change_password">Cambiar Contraseña</string>
+    <string name="user_stats">Estadísticas</string>
+    <string name="recent_bets">Apuestas Recientes</string>
+    
+    <!-- Rankings -->
+    <string name="rankings_title">Rankings</string>
+    <string name="points_ranking">Por Puntos</string>
+    <string name="win_rate_ranking">Por Tasa de Aciertos</string>
+    <string name="winnings_ranking">Por Ganancias</string>
+    <string name="wins_ranking">Por Apuestas Ganadas</string>
+    
+    <!-- Admin -->
+    <string name="admin_dashboard">Panel de Administración</string>
+    <string name="user_management">Gestión de Usuarios</string>
+    <string name="match_management">Gestión de Partidos</string>
+    
+    <!-- Common -->
+    <string name="save">Guardar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="delete">Eliminar</string>
+    <string name="edit">Editar</string>
+    <string name="create">Crear</string>
+    <string name="search">Buscar</string>
+    <string name="loading">Cargando...</string>
+    <string name="error">Error</string>
+    <string name="success">Éxito</string>
+</resources>

@@ -79,9 +79,11 @@ public class MatchesController {
         card.getStyleClass().add("match-card");
 
         Label lblEquipos = new Label(
-                partido.getEquipoLocal().getNombre()
+                (partido.getEquipoLocal() != null && partido.getEquipoLocal().getNombre() != null 
+                    ? partido.getEquipoLocal().getNombre() : "Equipo Local")
                         + " vs "
-                        + partido.getEquipoVisitante().getNombre()
+                        + (partido.getEquipoVisitante() != null && partido.getEquipoVisitante().getNombre() != null
+                    ? partido.getEquipoVisitante().getNombre() : "Equipo Visitante")
         );
         lblEquipos.getStyleClass().add("match-title");
 

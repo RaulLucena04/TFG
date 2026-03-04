@@ -9,8 +9,10 @@ public class Apuesta {
     private int puntosApostados;
     private String prediccion;
     private String resultado;
+    private Double cuota; // Cuota de la apuesta
 
     private Partido partido; // equivalente a Partido
+    private User usuario; // Usuario que realiza la apuesta
 
     public Long getId() { return id; }
 
@@ -36,6 +38,28 @@ public class Apuesta {
 
     public void setPartido(Partido partido) {
         this.partido = partido;
+    }
+
+    public User getUsuario() { return usuario; }
+
+    public void setUsuario(User usuario) {
+        this.usuario = usuario;
+    }
+
+    public Double getCuota() {
+        return cuota;
+    }
+
+    public void setCuota(Double cuota) {
+        this.cuota = cuota;
+    }
+
+    // Método para calcular ganancia potencial
+    public double getGananciaPotencial() {
+        if (cuota != null && cuota > 0) {
+            return puntosApostados * cuota;
+        }
+        return 0;
     }
 
     // Métodos útiles

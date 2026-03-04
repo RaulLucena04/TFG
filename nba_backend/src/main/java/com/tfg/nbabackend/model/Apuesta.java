@@ -23,6 +23,9 @@ public class Apuesta {
 
     private String prediccion;
 
+    @Column(nullable = true)
+    private Double cuota; // Cuota de la apuesta (ej: 2.5 significa que si ganas, recibes 2.5x lo apostado)
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ResultadoApuesta resultado;
@@ -79,5 +82,13 @@ public class Apuesta {
 
     public void setPartido(Partido partido) {
         this.partido = partido;
+    }
+
+    public Double getCuota() {
+        return cuota;
+    }
+
+    public void setCuota(Double cuota) {
+        this.cuota = cuota;
     }
 }

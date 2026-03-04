@@ -15,6 +15,12 @@ public class PartidoService {
 
     private static final String BASE_URL = "http://localhost:8080/partidos";
     private final HttpClient httpClient = HttpClient.newHttpClient();
+    private final ObjectMapper mapper;
+
+    public PartidoService() {
+        this.mapper = new ObjectMapper();
+        this.mapper.registerModule(new JavaTimeModule());
+    }
 
     public List<Partido> listarPartidos() {
 
@@ -28,12 +34,7 @@ public class PartidoService {
                     httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200) {
-
-                ObjectMapper mapper = new ObjectMapper();
-                mapper.registerModule(new JavaTimeModule());
-
                 Partido[] partidos = mapper.readValue(response.body(), Partido[].class);
-
                 return Arrays.asList(partidos);
             }
 
@@ -42,5 +43,47 @@ public class PartidoService {
         }
 
         return List.of();
+    }
+
+    public Partido crearPartido(Partido partido) {
+        try {
+            String json = mapper.writeValueAsString(partido);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200 || response.statusCode() == 201) {
+                return mapper.readValue(response.body(), Partido.class);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public boolean finalizarPartido(Long id, Integer puntosLocal, Integer puntosVisitante) {
+        try {
+            String url = BASE_URL + "/" + id + "/finalizar?puntosLocal=" + puntosLocal + "&puntosVisitante=" + puntosVisitante;
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .PUT(HttpRequest.BodyPublishers.noBody())
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            return response.statusCode() == 200;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

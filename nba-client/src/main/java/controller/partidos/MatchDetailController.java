@@ -49,8 +49,17 @@ public class MatchDetailController {
         lblMatchDate.setText("📅 " + partido.getFecha());
         lblMatchStatus.setText("Estado: " + partido.getEstado());
 
-        lblHomeTeam.setText(partido.getEquipoLocal().getNombre());
-        lblAwayTeam.setText(partido.getEquipoVisitante().getNombre());
+        if (partido.getEquipoLocal() != null && partido.getEquipoLocal().getNombre() != null) {
+            lblHomeTeam.setText(partido.getEquipoLocal().getNombre());
+        } else {
+            lblHomeTeam.setText("Equipo Local");
+        }
+        
+        if (partido.getEquipoVisitante() != null && partido.getEquipoVisitante().getNombre() != null) {
+            lblAwayTeam.setText(partido.getEquipoVisitante().getNombre());
+        } else {
+            lblAwayTeam.setText("Equipo Visitante");
+        }
 
         lblHomeScore.setText(String.valueOf(partido.getPuntosLocal()));
         lblAwayScore.setText(String.valueOf(partido.getPuntosVisitante()));

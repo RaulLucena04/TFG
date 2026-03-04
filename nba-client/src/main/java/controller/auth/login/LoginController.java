@@ -49,6 +49,7 @@ public class LoginController {
         if (usuario == null) {
             lblError.setText("Usuario o contraseña incorrectos");
             lblError.setVisible(true);
+            System.out.println("El login devolvió null");
             return;
         }
 
@@ -64,6 +65,7 @@ public class LoginController {
             FXMLLoader loader = new FXMLLoader(fxmlUrl);
             Parent root = loader.load();
 
+            
             controller.layout.MainLayoutController controller = loader.getController();
             controller.setUser(usuario);
 

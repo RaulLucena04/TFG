@@ -1,0 +1,81 @@
+package com.tfg.nbapredictor.ui.dashboard
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.tfg.nbapredictor.R
+import com.tfg.nbapredictor.databinding.FragmentDashboardBinding
+import com.tfg.nbapredictor.model.Partido
+import com.tfg.nbapredictor.network.RetrofitClient
+import com.tfg.nbapredictor.util.Session
+import kotlinx.coroutines.launch
+
+class DashboardFragment : Fragment() {
+
+    private var _binding: FragmentDashboardBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        loadData()
+    }
+
+    private fun loadData() {
+        val user = Session.getCurrentUser() ?: return
+
+        binding.tvTotalPoints.text = user.points.toString()
+        
+        lifecycleScope.launch {
+            try {
+                // Cargar apuestas del usuario
+                val apuestasResponse = RetrofitClient.apiService.getApuestasByUsuario(user.id!!)
+                if (apuestasResponse.isSuccessful) {
+                    val apuestas = apuestasResponse.body() ?: emptyList()
+                    val activas = apuestas.count { it.isActiva() }
+                    val ganadas = apuestas.count { it.isGanada() }
+                    val total = apuestas.size
+                    
+                    binding.tvActiveBets.text = activas.toString()
+                    binding.tvWinRate.text = if (total > 0) {
+                        "${(ganadas * 100 / total)}%"
+                    } else {
+                        "0%"
+                    }
+                }
+
+                // Cargar partidos próximos
+                val partidosResponse = RetrofitClient.apiService.getPartidos()
+                if (partidosResponse.isSuccessful) {
+                    val partidos = partidosResponse.body()?.filter { it.isProgramado() }?.take(5) ?: emptyList()
+                    setupRecyclerView(partidos)
+                }
+            } catch (e: Exception) {
+                Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun setupRecyclerView(partidos: List<Partido>) {
+        binding.recyclerViewMatches.layoutManager = LinearLayoutManager(context)
+        binding.recyclerViewMatches.adapter = MatchesAdapter(partidos)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+}

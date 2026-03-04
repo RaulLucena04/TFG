@@ -71,9 +71,14 @@ public class ActiveBetsController {
             -fx-background-radius: 10;
         """);
 
-        String partidoTexto = bet.getPartido().getEquipoLocal()
-                + " vs "
-                + bet.getPartido().getEquipoVisitante();
+        String partidoTexto = "Partido no disponible";
+        if (bet.getPartido() != null && 
+            bet.getPartido().getEquipoLocal() != null && 
+            bet.getPartido().getEquipoVisitante() != null) {
+            partidoTexto = bet.getPartido().getEquipoLocal().getNombre()
+                    + " vs "
+                    + bet.getPartido().getEquipoVisitante().getNombre();
+        }
 
         Label lblPartido = new Label(partidoTexto);
         lblPartido.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");

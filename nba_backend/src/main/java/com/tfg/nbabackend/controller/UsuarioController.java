@@ -52,4 +52,32 @@ public class UsuarioController {
         return ResponseEntity.ok("Contraseña actualizada");
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<?> actualizarUsuario(
+            @PathVariable Long id,
+            @RequestBody Usuario usuario) {
+        try {
+            Usuario usuarioExistente = usuarioService.obtenerPorId(id)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            // Actualizar solo los campos permitidos (NO actualizar contraseña aquí)
+            // La contraseña solo se actualiza mediante el endpoint /{id}/password
+            if (usuario.getUsername() != null) {
+                usuarioExistente.setUsername(usuario.getUsername());
+            }
+            if (usuario.getEmail() != null) {
+                usuarioExistente.setEmail(usuario.getEmail());
+            }
+            if (usuario.getRol() != null) {
+                usuarioExistente.setRol(usuario.getRol());
+            }
+            // La contraseña se ignora intencionalmente - usar endpoint específico para cambiarla
+
+            Usuario actualizado = usuarioService.actualizarUsuario(usuarioExistente);
+            return ResponseEntity.ok(actualizado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }

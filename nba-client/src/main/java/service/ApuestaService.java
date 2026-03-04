@@ -44,7 +44,7 @@ public class ApuestaService {
         return List.of();
     }
 
-    public void crearApuesta(Apuesta apuesta) {
+    public void crearApuesta(Apuesta apuesta) throws RuntimeException {
 
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -61,11 +61,20 @@ public class ApuestaService {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() != 200 && response.statusCode() != 201) {
-                throw new RuntimeException("Error al crear apuesta: " + response.body());
+                String errorMessage = response.body();
+                if (errorMessage != null && !errorMessage.isEmpty()) {
+                    throw new RuntimeException(errorMessage);
+                } else {
+                    throw new RuntimeException("Error al crear apuesta. Código: " + response.statusCode());
+                }
             }
 
+        } catch (RuntimeException e) {
+            // Re-lanzar RuntimeException para que el controlador pueda manejarla
+            throw e;
         } catch (Exception e) {
             e.printStackTrace();
+            throw new RuntimeException("Error de conexión al crear apuesta: " + e.getMessage());
         }
     }
 }
