@@ -103,7 +103,7 @@
     <!-- Gráfica de rendimiento -->
     <VBox spacing="10">
         <Label styleClass="section-title" text="📈 Mi Rendimiento" />
-        <Pane fx:id="chartContainer" prefHeight="300" styleClass="chart-container" />
+        <Pane fx:id="chartContainer" prefHeight="127.0" prefWidth="794.0" styleClass="chart-container" />
     </VBox>
 
     <!-- Historial reciente -->

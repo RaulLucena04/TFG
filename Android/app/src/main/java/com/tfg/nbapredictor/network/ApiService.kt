@@ -1,8 +1,15 @@
 package com.tfg.nbapredictor.network
 
 import com.tfg.nbapredictor.model.*
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.*
+
+/** DTO para login: el backend solo requiere username y password */
+data class LoginRequest(val username: String, val password: String)
+
+/** Respuesta de error del backend: {"error": "mensaje"} */
+data class ApiError(val error: String?)
 
 interface ApiService {
     
@@ -11,7 +18,7 @@ interface ApiService {
     suspend fun register(@Body user: User): Response<User>
     
     @POST("usuarios/login")
-    suspend fun login(@Body user: User): Response<User>
+    suspend fun login(@Body request: LoginRequest): Response<User>
     
     @GET("usuarios")
     suspend fun getAllUsers(): Response<List<User>>
@@ -20,7 +27,7 @@ interface ApiService {
     suspend fun updateUser(@Path("id") id: Long, @Body user: User): Response<User>
     
     @PUT("usuarios/{id}/password")
-    suspend fun changePassword(@Path("id") id: Long, @Body request: PasswordRequest): Response<String>
+    suspend fun changePassword(@Path("id") id: Long, @Body request: PasswordRequest): Response<ResponseBody>
     
     // Partidos
     @GET("partidos")

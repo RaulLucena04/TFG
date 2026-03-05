@@ -1,9 +1,11 @@
 package com.tfg.nbabackend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.tfg.nbabackend.exception.ApiError;
 import com.tfg.nbabackend.model.Usuario;
 import com.tfg.nbabackend.service.UsuarioService;
 
@@ -23,7 +25,7 @@ public class UsuarioController {
             Usuario nuevo = usuarioService.guardarUsuario(usuario);
             return ResponseEntity.ok(nuevo);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(new ApiError(e.getMessage()));
         }
     }
 
@@ -32,7 +34,8 @@ public class UsuarioController {
         Usuario u = usuarioService.login(usuario.getUsername(), usuario.getPassword());
 
         if (u == null) {
-            return ResponseEntity.status(401).body("Credenciales incorrectas");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiError("Credenciales incorrectas"));
         }
 
         return ResponseEntity.ok(u);
@@ -49,7 +52,7 @@ public class UsuarioController {
             @RequestBody PasswordRequest request) {
 
         usuarioService.cambiarPassword(id, request.getPassword());
-        return ResponseEntity.ok("Contraseña actualizada");
+        return ResponseEntity.ok(new ApiError("Contraseña actualizada"));
     }
 
     @PutMapping("/{id}")
@@ -60,8 +63,6 @@ public class UsuarioController {
             Usuario usuarioExistente = usuarioService.obtenerPorId(id)
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-            // Actualizar solo los campos permitidos (NO actualizar contraseña aquí)
-            // La contraseña solo se actualiza mediante el endpoint /{id}/password
             if (usuario.getUsername() != null) {
                 usuarioExistente.setUsername(usuario.getUsername());
             }
@@ -71,12 +72,11 @@ public class UsuarioController {
             if (usuario.getRol() != null) {
                 usuarioExistente.setRol(usuario.getRol());
             }
-            // La contraseña se ignora intencionalmente - usar endpoint específico para cambiarla
 
             Usuario actualizado = usuarioService.actualizarUsuario(usuarioExistente);
             return ResponseEntity.ok(actualizado);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(new ApiError(e.getMessage()));
         }
     }
 

@@ -1,0 +1,66 @@
+[
+    {
+        "merged": "C:\\Users\\usuario\\.gradle\\daemon\\8.5\\com.tfg.nbapredictor.app-mergeDebugResources-51:\\layout\\fragment_bets.xml",
+        "source": "C:\\Users\\usuario\\.gradle\\daemon\\8.5\\com.tfg.nbapredictor.app-main-54:\\layout\\fragment_bets.xml"
+    },
+    {
+        "merged": "C:\\Users\\usuario\\.gradle\\daemon\\8.5\\com.tfg.nbapredictor.app-mergeDebugResources-51:\\layout\\item_admin_match.xml",
+        "source": "C:\\Users\\usuario\\.gradle\\daemon\\8.5\\com.tfg.nbapredictor.app-main-54:\\layout\\item_admin_match.xml"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-mergeDebugResources-51:/layout/dialog_finalize_match.xml",
+        "source": "com.tfg.nbapredictor.app-main-54:/layout/dialog_finalize_match.xml"
+    },
+    {
+        "merged": "C:\\Users\\usuario\\.gradle\\daemon\\8.5\\com.tfg.nbapredictor.app-mergeDebugResources-51:\\layout\\dialog_create_bet.xml",
+        "source": "C:\\Users\\usuario\\.gradle\\daemon\\8.5\\com.tfg.nbapredictor.app-main-54:\\layout\\dialog_create_bet.xml"
+    },
+    {
+        "merged": "C:\\Users\\usuario\\.gradle\\daemon\\8.5\\com.tfg.nbapredictor.app-mergeDebugResources-51:\\layout\\activity_admin.xml",
+        "source": "C:\\Users\\usuario\\.gradle\\daemon\\8.5\\com.tfg.nbapredictor.app-main-54:\\layout\\activity_admin.xml"
+    },
+    {
+        "merged": "C:\\Users\\usuario\\.gradle\\daemon\\8.5\\com.tfg.nbapredictor.app-mergeDebugResources-51:\\layout\\fragment_profile.xml",
+        "source": "C:\\Users\\usuario\\.gradle\\daemon\\8.5\\com.tfg.nbapredictor.app-main-54:\\layout\\fragment_profile.xml"
+    },
+    {
+        "merged": "C:\\Users\\usuario\\.gradle\\daemon\\8.5\\com.tfg.nbapredictor.app-mergeDebugResources-51:\\layout\\fragment_dashboard.xml",
+        "source": "C:\\Users\\usuario\\.gradle\\daemon\\8.5\\com.tfg.nbapredictor.app-main-54:\\layout\\fragment_dashboard.xml"
+    },
+    {
+        "merged": "C:\\Users\\usuario\\.gradle\\daemon\\8.5\\com.tfg.nbapredictor.app-mergeDebugResources-51:\\layout\\activity_register.xml",
+        "source": "C:\\Users\\usuario\\.gradle\\daemon\\8.5\\com.tfg.nbapredictor.app-main-54:\\layout\\activity_register.xml"
+    },
+    {
+        "merged": "C:\\Users\\usuario\\.gradle\\daemon\\8.5\\com.tfg.nbapredictor.app-mergeDebugResources-51:\\layout\\activity_main.xml",
+        "source": "C:\\Users\\usuario\\.gradle\\daemon\\8.5\\com.tfg.nbapredictor.app-main-54:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\usuario\\.gradle\\daemon\\8.5\\com.tfg.nbapredictor.app-mergeDebugResources-51:\\layout\\item_bet.xml",
+        "source": "C:\\Users\\usuario\\.gradle\\daemon\\8.5\\com.tfg.nbapredictor.app-main-54:\\layout\\item_bet.xml"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-mergeDebugResources-51:/layout/item_admin_match.xml",
+        "source": "com.tfg.nbapredictor.app-main-54:/layout/item_admin_match.xml"
+    },
+    {
+        "merged": "C:\\Users\\usuario\\.gradle\\daemon\\8.5\\com.tfg.nbapredictor.app-mergeDebugResources-51:\\layout\\item_ranking.xml",
+        "source": "C:\\Users\\usuario\\.gradle\\daemon\\8.5\\com.tfg.nbapredictor.app-main-54:\\layout\\item_ranking.xml"
+    },
+    {
+        "merged": "C:\\Users\\usuario\\.gradle\\daemon\\8.5\\com.tfg.nbapredictor.app-mergeDebugResources-51:\\layout\\fragment_matches.xml",
+        "source": "C:\\Users\\usuario\\.gradle\\daemon\\8.5\\com.tfg.nbapredictor.app-main-54:\\layout\\fragment_matches.xml"
+    },
+    {
+        "merged": "C:\\Users\\usuario\\.gradle\\daemon\\8.5\\com.tfg.nbapredictor.app-mergeDebugResources-51:\\layout\\activity_login.xml",
+        "source": "C:\\Users\\usuario\\.gradle\\daemon\\8.5\\com.tfg.nbapredictor.app-main-54:\\layout\\activity_login.xml"
+    },
+    {
+        "merged": "C:\\Users\\usuario\\.gradle\\daemon\\8.5\\com.tfg.nbapredictor.app-mergeDebugResources-51:\\layout\\item_match.xml",
+        "source": "C:\\Users\\usuario\\.gradle\\daemon\\8.5\\com.tfg.nbapredictor.app-main-54:\\layout\\item_match.xml"
+    },
+    {
+        "merged": "C:\\Users\\usuario\\.gradle\\daemon\\8.5\\com.tfg.nbapredictor.app-mergeDebugResources-51:\\layout\\fragment_rankings.xml",
+        "source": "C:\\Users\\usuario\\.gradle\\daemon\\8.5\\com.tfg.nbapredictor.app-main-54:\\layout\\fragment_rankings.xml"
+    }
+]

@@ -8,6 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tfg.nbapredictor.R
 import com.tfg.nbapredictor.databinding.ActivityLoginBinding
 import com.tfg.nbapredictor.model.User
+import com.tfg.nbapredictor.network.LoginRequest
 import com.tfg.nbapredictor.network.RetrofitClient
 import com.tfg.nbapredictor.ui.main.MainActivity
 import com.tfg.nbapredictor.util.Session
@@ -49,13 +50,11 @@ class LoginActivity : AppCompatActivity() {
         
         lifecycleScope.launch {
             try {
-                val user = User(username = username, password = password)
-                val response = RetrofitClient.apiService.login(user)
+                val request = LoginRequest(username = username, password = password)
+                val response = RetrofitClient.apiService.login(request)
                 
                 if (response.isSuccessful && response.body() != null) {
-                    val loggedUser = response.body()!!
-                    Session.setCurrentUser(loggedUser)
-                    
+                    Session.setCurrentUser(response.body()!!)
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
@@ -63,7 +62,7 @@ class LoginActivity : AppCompatActivity() {
                 } else {
                     Toast.makeText(
                         this@LoginActivity,
-                        response.message() ?: getString(R.string.login_error),
+                        getString(R.string.login_error),
                         Toast.LENGTH_SHORT
                     ).show()
                 }

@@ -9,7 +9,7 @@ data class User(
     @SerializedName("puntos")
     val points: Int = 1000,
     val rol: String? = "USER",
-    val email: String
+    val email: String? = null  // Opcional: el login solo envía username/password; la respuesta incluye email
 ) {
     fun isAdmin(): Boolean = "ADMIN".equals(rol, ignoreCase = true)
 }

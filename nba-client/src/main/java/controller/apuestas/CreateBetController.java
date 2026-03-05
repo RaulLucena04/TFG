@@ -37,7 +37,7 @@ public class CreateBetController {
     @FXML
     private void initialize() {
         comboPrediccion.getItems().addAll("LOCAL", "VISITANTE");
-        
+
         // Configurar cell factory para mostrar partidos
         comboPartido.setCellFactory(param -> new javafx.scene.control.ListCell<Partido>() {
             @Override
@@ -146,42 +146,52 @@ public class CreateBetController {
         double variacion = 0.0;
         String nombreLocal = partido.getEquipoLocal().getNombre();
         String nombreVisitante = partido.getEquipoVisitante().getNombre();
-        
+
         // Validar que los nombres no sean null
-        if (nombreLocal == null) nombreLocal = "EquipoLocal";
-        if (nombreVisitante == null) nombreVisitante = "EquipoVisitante";
-        
+        if (nombreLocal == null)
+            nombreLocal = "EquipoLocal";
+        if (nombreVisitante == null)
+            nombreVisitante = "EquipoVisitante";
+
         int hashLocal = nombreLocal.hashCode();
         int hashVisitante = nombreVisitante.hashCode();
-        
+
         double factorLocal = (hashLocal % 60 - 30) / 100.0;
         double factorVisitante = (hashVisitante % 60 - 30) / 100.0;
-        
+
         if ("LOCAL".equalsIgnoreCase(prediccion)) {
             variacion = -factorLocal;
         } else {
             variacion = -factorVisitante;
         }
-        
+
         double cuotaBase = 1.9;
         double cuota = cuotaBase + variacion;
         cuota = Math.max(1.5, Math.min(5.0, cuota));
-        
+
         return Math.round(cuota * 100.0) / 100.0;
     }
 
     private void cargarPartidos() {
         try {
             List<Partido> todosLosPartidos = partidoService.listarPartidos();
-            
+
             // Filtrar solo partidos programados o en curso (no finalizados)
             List<Partido> partidosDisponibles = todosLosPartidos.stream()
                     .filter(p -> {
                         String estado = p.getEstado();
-                        return estado == null || 
-                               "Programado".equals(estado) || 
-                               "En curso".equals(estado);
+                        if (estado == null)
+                            return true;
+
+                        estado = estado.trim().toLowerCase();
+
+                        return estado.equals("programado") ||
+                                estado.equals("en curso") ||
+                                estado.equals("encurso") ||
+                                estado.equals("scheduled") ||
+                                estado.equals("pendiente");
                     })
+
                     .collect(Collectors.toList());
 
             comboPartido.setItems(FXCollections.observableArrayList(partidosDisponibles));
@@ -198,6 +208,7 @@ public class CreateBetController {
 
     @FXML
     private void handleSave() {
+
         // Limpiar error previo
         ocultarError();
 
@@ -252,11 +263,20 @@ public class CreateBetController {
             double cuota = calcularCuota(partido, prediccion);
 
             Apuesta apuesta = new Apuesta();
-            apuesta.setPartido(partido);
+            Partido p = new Partido();
+            p.setId(partido.getId());
+            apuesta.setPartido(p);
             apuesta.setPrediccion(prediccion);
             apuesta.setPuntosApostados(puntos);
             apuesta.setCuota(cuota); // Asignar cuota calculada
             apuesta.setUsuario(usuario); // Asignar usuario
+
+            System.out.println("Enviando apuesta:");
+            System.out.println("Partido: " + partido.getId());
+            System.out.println("Predicción: " + prediccion);
+            System.out.println("Puntos: " + puntos);
+            System.out.println("Cuota: " + cuota);
+            System.out.println("Usuario: " + usuario.getId());
 
             apuestaService.crearApuesta(apuesta);
 

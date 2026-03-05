@@ -4,6 +4,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.*?>
 <?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+
 
 
 
@@ -32,8 +34,10 @@
                     <String fx:value="VISITANTE"/>
                 </FXCollections>
             </items>
+
         </ComboBox>
     </VBox>
+
 
     <VBox spacing="5">
         <Label text="Puntos a apostar:"/>
@@ -41,15 +45,11 @@
     </VBox>
 
     <VBox spacing="5" alignment="CENTER_LEFT">
-        <Label fx:id="lblCuota" text="" visible="false" 
-               style="-fx-font-size:14px; -fx-font-weight:bold; -fx-text-fill: #2c3e50;"/>
-        <Label fx:id="lblGananciaPotencial" text="" visible="false" 
-               style="-fx-font-size:13px; -fx-text-fill: #27ae60;"/>
+        <Label fx:id="lblCuota" text="" visible="false" style="-fx-font-size:14px; -fx-font-weight:bold; -fx-text-fill: #2c3e50;"/>
+        <Label fx:id="lblGananciaPotencial" text="" visible="false" style="-fx-font-size:13px; -fx-text-fill: #27ae60;"/>
     </VBox>
 
-    <Label fx:id="lblError" text="" visible="false" managed="false" 
-           style="-fx-text-fill: red; -fx-wrap-text: true;" 
-           prefWidth="400" maxWidth="400"/>
+    <Label fx:id="lblError" text="" visible="false" managed="false" style="-fx-text-fill: red; -fx-wrap-text: true;" prefWidth="400" maxWidth="400"/>
 
     <HBox spacing="15" alignment="CENTER">
         <Button text="Cancelar" onAction="#handleCancel" prefWidth="120"/>
