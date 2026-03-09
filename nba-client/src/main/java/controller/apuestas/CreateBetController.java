@@ -5,9 +5,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import model.Apuesta;
+import model.EquipoEstadisticas;
 import model.Partido;
 import model.User;
 import service.ApuestaService;
+import service.EquipoApiService;
 import service.PartidoService;
 import session.Session;
 
@@ -33,10 +35,11 @@ public class CreateBetController {
 
     private final PartidoService partidoService = new PartidoService();
     private final ApuestaService apuestaService = new ApuestaService();
+    private final EquipoApiService equipoApiService = new EquipoApiService();
 
     @FXML
     private void initialize() {
-        comboPrediccion.getItems().addAll("LOCAL", "VISITANTE");
+        // comboPrediccion ya tiene items en el FXML (LOCAL, VISITANTE) - no duplicar
 
         // Configurar cell factory para mostrar partidos
         comboPartido.setCellFactory(param -> new javafx.scene.control.ListCell<Partido>() {
@@ -138,38 +141,37 @@ public class CreateBetController {
     }
 
     private double calcularCuota(Partido partido, String prediccion) {
-        // Misma lógica que el backend para mantener consistencia
         if (partido == null || partido.getEquipoLocal() == null || partido.getEquipoVisitante() == null) {
             return 2.0;
         }
 
-        double variacion = 0.0;
-        String nombreLocal = partido.getEquipoLocal().getNombre();
-        String nombreVisitante = partido.getEquipoVisitante().getNombre();
+        try {
+            EquipoEstadisticas statsLocal = equipoApiService.obtenerEstadisticasEquipo(partido.getEquipoLocal().getId());
+            EquipoEstadisticas statsVisitante = equipoApiService.obtenerEstadisticasEquipo(partido.getEquipoVisitante().getId());
 
-        // Validar que los nombres no sean null
-        if (nombreLocal == null)
-            nombreLocal = "EquipoLocal";
-        if (nombreVisitante == null)
-            nombreVisitante = "EquipoVisitante";
+            int totalLocal = statsLocal.getVictorias() + statsLocal.getDerrotas();
+            int totalVisitante = statsVisitante.getVictorias() + statsVisitante.getDerrotas();
+            double winRateLocal = totalLocal > 0 ? (double) statsLocal.getVictorias() / totalLocal : 0.5;
+            double winRateVisitante = totalVisitante > 0 ? (double) statsVisitante.getVictorias() / totalVisitante : 0.5;
 
-        int hashLocal = nombreLocal.hashCode();
-        int hashVisitante = nombreVisitante.hashCode();
+            double diferenciaRecord = winRateLocal - winRateVisitante;
+            final double VENTAJA_LOCAL = 0.05;
+            double cuotaBase = 2.0;
 
-        double factorLocal = (hashLocal % 60 - 30) / 100.0;
-        double factorVisitante = (hashVisitante % 60 - 30) / 100.0;
+            if ("LOCAL".equalsIgnoreCase(prediccion)) {
+                double factor = -diferenciaRecord * 0.6 - VENTAJA_LOCAL;
+                cuotaBase = 2.0 + factor;
+            } else {
+                double factor = diferenciaRecord * 0.6 + VENTAJA_LOCAL;
+                cuotaBase = 2.0 + factor;
+            }
 
-        if ("LOCAL".equalsIgnoreCase(prediccion)) {
-            variacion = -factorLocal;
-        } else {
-            variacion = -factorVisitante;
+            double cuota = cuotaBase;
+            cuota = Math.max(1.5, Math.min(5.0, cuota));
+            return Math.round(cuota * 100.0) / 100.0;
+        } catch (Exception e) {
+            return 2.0;
         }
-
-        double cuotaBase = 1.9;
-        double cuota = cuotaBase + variacion;
-        cuota = Math.max(1.5, Math.min(5.0, cuota));
-
-        return Math.round(cuota * 100.0) / 100.0;
     }
 
     private void cargarPartidos() {

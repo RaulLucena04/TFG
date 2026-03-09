@@ -9,6 +9,7 @@ import com.tfg.nbabackend.model.Apuesta;
 import com.tfg.nbabackend.model.Partido;
 import com.tfg.nbabackend.model.Usuario;
 import com.tfg.nbabackend.repository.ApuestaRepository;
+import com.tfg.nbabackend.repository.PartidoRepository;
 import com.tfg.nbabackend.repository.UsuarioRepository;
 
 @Service
@@ -16,11 +17,17 @@ public class ApuestaService {
 
     private final ApuestaRepository apuestaRepository;
     private final UsuarioRepository usuarioRepository;
+    private final PartidoRepository partidoRepository;
+    private final EquipoEstadisticasService equipoEstadisticasService;
 
     public ApuestaService(ApuestaRepository apuestaRepository,
-            UsuarioRepository usuarioRepository) {
+            UsuarioRepository usuarioRepository,
+            PartidoRepository partidoRepository,
+            EquipoEstadisticasService equipoEstadisticasService) {
         this.apuestaRepository = apuestaRepository;
         this.usuarioRepository = usuarioRepository;
+        this.partidoRepository = partidoRepository;
+        this.equipoEstadisticasService = equipoEstadisticasService;
     }
 
     public Apuesta crearApuesta(Apuesta apuesta) {
@@ -35,7 +42,10 @@ public class ApuestaService {
 
         // Calcular cuota si no viene en la apuesta
         if (apuesta.getCuota() == null || apuesta.getCuota() <= 0) {
-            double cuota = calcularCuota(apuesta.getPartido(), apuesta.getPrediccion());
+            Partido partidoCompleto = apuesta.getPartido() != null && apuesta.getPartido().getId() != null
+                    ? partidoRepository.findById(apuesta.getPartido().getId()).orElse(null)
+                    : null;
+            double cuota = calcularCuota(partidoCompleto, apuesta.getPrediccion());
             apuesta.setCuota(cuota);
         }
 
@@ -50,57 +60,52 @@ public class ApuestaService {
     }
 
     /**
-     * Calcula la cuota para una apuesta basándose en una lógica simple
-     * Por defecto, las cuotas son equilibradas con un margen para la casa
-     * @param partido El partido sobre el que se apuesta
-     * @param prediccion "LOCAL" o "VISITANTE"
-     * @return La cuota calculada (mínimo 1.5, máximo 5.0)
+     * Calcula la cuota según record (victorias/derrotas), ventaja local y predicción.
+     * - Más victorias = favorito = cuota más baja al apostar por él
+     * - Local tiene ventaja inherente (cuota algo más baja)
+     * - Cuota base 2.0, rango 1.5 - 5.0
      */
     private double calcularCuota(Partido partido, String prediccion) {
         if (partido == null || partido.getEquipoLocal() == null || partido.getEquipoVisitante() == null) {
-            // Cuota por defecto si no hay información
             return 2.0;
         }
 
-        // Lógica simple: cuotas base equilibradas
-        // En un partido equilibrado, cada equipo tiene ~50% de probabilidad
-        // Cuota base = 1 / 0.5 = 2.0, con margen de casa = 2.0 * 0.95 = 1.9
-        
-        // Variación basada en el nombre del equipo (para dar algo de variabilidad)
-        // En producción, esto se calcularía con estadísticas reales
-        double variacion = 0.0;
-        
-        // Pequeña variación aleatoria basada en hash del nombre
-        String nombreLocal = partido.getEquipoLocal().getNombre();
-        String nombreVisitante = partido.getEquipoVisitante().getNombre();
-        
-        // Validar que los nombres no sean null
-        if (nombreLocal == null) nombreLocal = "EquipoLocal";
-        if (nombreVisitante == null) nombreVisitante = "EquipoVisitante";
-        
-        int hashLocal = nombreLocal.hashCode();
-        int hashVisitante = nombreVisitante.hashCode();
-        
-        // Normalizar a rango -0.3 a +0.3
-        double factorLocal = (hashLocal % 60 - 30) / 100.0;
-        double factorVisitante = (hashVisitante % 60 - 30) / 100.0;
-        
+        Long idLocal = partido.getEquipoLocal().getId();
+        Long idVisitante = partido.getEquipoVisitante().getId();
+
+        var statsLocal = equipoEstadisticasService.calcularEstadisticas(idLocal);
+        var statsVisitante = equipoEstadisticasService.calcularEstadisticas(idVisitante);
+
+        int vLocal = statsLocal.getVictorias();
+        int dLocal = statsLocal.getDerrotas();
+        int vVisitante = statsVisitante.getVictorias();
+        int dVisitante = statsVisitante.getDerrotas();
+
+        int totalLocal = vLocal + dLocal;
+        int totalVisitante = vVisitante + dVisitante;
+        double winRateLocal = totalLocal > 0 ? (double) vLocal / totalLocal : 0.5;
+        double winRateVisitante = totalVisitante > 0 ? (double) vVisitante / totalVisitante : 0.5;
+
+        // Diferencia de record: positivo si local es mejor
+        double diferenciaRecord = winRateLocal - winRateVisitante;
+
+        // Ventaja de jugar en casa (aprox. +5% probabilidad)
+        final double VENTAJA_LOCAL = 0.05;
+
+        double cuotaBase = 2.0;
+
         if ("LOCAL".equalsIgnoreCase(prediccion)) {
-            // Si apostamos por local, menor factor = mayor cuota (menos probable)
-            variacion = -factorLocal;
+            // Apostar por local: si local es favorito, cuota baja; si visitante es mejor, cuota alta
+            // diferenciaRecord > 0 → local mejor → cuota más baja
+            double factor = -diferenciaRecord * 0.6 - VENTAJA_LOCAL;
+            cuotaBase = 2.0 + factor;
         } else {
-            // Si apostamos por visitante, menor factor = mayor cuota
-            variacion = -factorVisitante;
+            // Apostar por visitante: si visitante es favorito, cuota baja
+            double factor = diferenciaRecord * 0.6 + VENTAJA_LOCAL;
+            cuotaBase = 2.0 + factor;
         }
-        
-        // Cuota base con margen de casa (5%)
-        double cuotaBase = 1.9;
-        double cuota = cuotaBase + variacion;
-        
-        // Limitar cuota entre 1.5 y 5.0
-        cuota = Math.max(1.5, Math.min(5.0, cuota));
-        
-        // Redondear a 2 decimales
+
+        double cuota = Math.max(1.5, Math.min(5.0, cuotaBase));
         return Math.round(cuota * 100.0) / 100.0;
     }
 

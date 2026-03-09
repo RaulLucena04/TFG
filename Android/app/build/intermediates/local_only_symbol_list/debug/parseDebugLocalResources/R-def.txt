@@ -24,8 +24,10 @@ color white
 drawable ic_launcher_background
 drawable ic_launcher_foreground
 id bottom_navigation
+id btnBack
 id btnCancel
 id btnCreate
+id btnCreateBet
 id btnFinalizar
 id btnLogin
 id btnLogout
@@ -80,6 +82,8 @@ id tvFirstPoints
 id tvGananciaPotencial
 id tvLogin
 id tvMarcador
+id tvMatchDate
+id tvMatchEstado
 id tvMatchInfo
 id tvMatchTitle
 id tvPartido
@@ -116,6 +120,7 @@ layout dialog_create_bet
 layout dialog_finalize_match
 layout fragment_bets
 layout fragment_dashboard
+layout fragment_match_detail
 layout fragment_matches
 layout fragment_profile
 layout fragment_rankings

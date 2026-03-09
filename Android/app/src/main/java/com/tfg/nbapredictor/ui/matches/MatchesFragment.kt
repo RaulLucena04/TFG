@@ -84,7 +84,9 @@ class MatchesFragment : Fragment() {
 
     private fun setupRecyclerView(partidos: List<Partido>) {
         binding.recyclerViewMatches.layoutManager = LinearLayoutManager(context)
-        binding.recyclerViewMatches.adapter = MatchesAdapter(partidos)
+        binding.recyclerViewMatches.adapter = MatchesAdapter(partidos) { partido ->
+            (activity as? com.tfg.nbapredictor.ui.main.MainActivity)?.loadMatchDetail(partido)
+        }
     }
 
     override fun onDestroyView() {

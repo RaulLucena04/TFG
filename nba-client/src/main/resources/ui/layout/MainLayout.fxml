@@ -43,6 +43,7 @@
             <Button maxWidth="Infinity" onAction="#loadBets" text="💰 Apuestas" />
             <Button maxWidth="Infinity" onAction="#loadRankings" text="🏆 Rankings" />
             <Button maxWidth="Infinity" onAction="#loadProfile" text="👤 Mi Perfil" />
+            <Button maxWidth="Infinity" onAction="#loadTienda" text="🛒 Tienda" />
 
             <Separator />
 

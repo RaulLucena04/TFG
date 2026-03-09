@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.tienda.TiendaController"
+      spacing="20"
+      styleClass="tienda-container"
+      alignment="TOP_CENTER">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="🛒 Tienda - Canjear puntos por dinero" styleClass="page-title"/>
+    <Label text="Conectado con PayPal (simulación)" styleClass="info-label"/>
+
+    <Separator/>
+
+    <Label fx:id="lblPuntosDisponibles" text="Puntos disponibles: 0" style="-fx-font-size:14px; -fx-font-weight:bold;"/>
+
+    <VBox spacing="8">
+        <Label text="Tasa: 1000 puntos = 1€"/>
+        <Label text="Mínimo para canjear: 1000 puntos"/>
+    </VBox>
+
+    <VBox spacing="10">
+        <Label text="Puntos a canjear:"/>
+        <TextField fx:id="txtPuntos" promptText="Ej: 5000" prefWidth="200"/>
+    </VBox>
+
+    <VBox spacing="10">
+        <Label text="Email de PayPal:"/>
+        <TextField fx:id="txtEmailPayPal" promptText="tu@email.com" prefWidth="300"/>
+    </VBox>
+
+    <Label fx:id="lblResultado" text="" wrapText="true" visible="false" managed="false"
+           style="-fx-font-size:13px; -fx-max-width: 400;" VBox.vgrow="NEVER"/>
+
+    <HBox spacing="15">
+        <Button text="Canjear" onAction="#handleCanjear" styleClass="primary-button"/>
+        <Button text="Actualizar puntos" onAction="#handleActualizar"/>
+    </HBox>
+
+</VBox>

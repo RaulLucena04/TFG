@@ -87,6 +87,11 @@ public class MainLayoutController {
     }
 
     @FXML
+    private void loadTienda() {
+        loadView("/ui/tienda/TiendaView.fxml");
+    }
+
+    @FXML
     private void loadAdmin() {
         loadView("/ui/admin/AdminDashboardView.fxml");
     }

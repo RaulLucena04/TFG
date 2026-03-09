@@ -46,6 +46,13 @@ public class UsuarioController {
         return usuarioService.obtenerTodos();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> obtenerUsuario(@PathVariable Long id) {
+        return usuarioService.obtenerPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @PutMapping("/{id}/password")
     public ResponseEntity<?> cambiarPassword(
             @PathVariable Long id,

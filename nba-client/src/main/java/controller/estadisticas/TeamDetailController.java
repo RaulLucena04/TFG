@@ -48,12 +48,8 @@ public class TeamDetailController {
         this.equipoActual = equipo;
 
         lblTeamName.setText(equipo.getNombre());
-        lblConference.setText(equipo.getConferencia());
-        lblDivision.setText(equipo.getDivision());
-        lblRecord.setText("Record: " + equipo.getVictorias() + "-" + equipo.getDerrotas());
-        lblPPG.setText(String.valueOf(equipo.getPpg()));
-        lblRPG.setText(String.valueOf(equipo.getRpg()));
-        lblAPG.setText(String.valueOf(equipo.getApg()));
+        lblConference.setText(equipo.getConferencia() != null ? equipo.getConferencia() : "-");
+        lblDivision.setText(equipo.getDivision() != null ? equipo.getDivision() : "-");
 
         try {
             List<Jugador> jugadores = apiService.obtenerJugadoresEquipo(equipo.getId());
@@ -73,8 +69,22 @@ public class TeamDetailController {
             colPlayerAPG.setCellValueFactory(
                     data -> new javafx.beans.property.SimpleDoubleProperty(data.getValue().getApg()).asObject());
 
+            // Calcular PPG, RPG, APG desde jugadores (suma del equipo)
+            double ppg = 0, rpg = 0, apg = 0;
+            for (Jugador j : jugadores) {
+                ppg += j.getPpg();
+                rpg += j.getRpg();
+                apg += j.getApg();
+            }
+            lblPPG.setText(String.format("%.1f", ppg));
+            lblRPG.setText(String.format("%.1f", rpg));
+            lblAPG.setText(String.format("%.1f", apg));
+
         } catch (Exception e) {
             e.printStackTrace();
+            lblPPG.setText("0.0");
+            lblRPG.setText("0.0");
+            lblAPG.setText("0.0");
         }
 
         try {
@@ -83,6 +93,17 @@ public class TeamDetailController {
             List<Partido> partidosJugados = partidos.stream()
                     .filter(p -> p.getEstado() != null && !"PROGRAMADO".equalsIgnoreCase(p.getEstado()))
                     .toList();
+
+            // Calcular record (victorias-derrotas) desde historial de partidos
+            int victorias = 0, derrotas = 0;
+            for (Partido p : partidosJugados) {
+                boolean esLocal = p.getEquipoLocal() != null && equipo.getId().equals(p.getEquipoLocal().getId());
+                int puntosEquipo = esLocal ? p.getPuntosLocal() : p.getPuntosVisitante();
+                int puntosRival = esLocal ? p.getPuntosVisitante() : p.getPuntosLocal();
+                if (puntosEquipo > puntosRival) victorias++;
+                else derrotas++;
+            }
+            lblRecord.setText("Record: " + victorias + "-" + derrotas);
 
             ObservableList<Partido> obsPartidos = FXCollections.observableArrayList(partidosJugados);
             tableRecentMatches.setItems(obsPartidos);
@@ -96,6 +117,7 @@ public class TeamDetailController {
 
         } catch (Exception e) {
             e.printStackTrace();
+            lblRecord.setText("Record: 0-0");
         }
     }
 

@@ -35,6 +35,10 @@
             android:exported="false" />
         
         <activity
+            android:name=".ui.compose.ComposeMainActivity"
+            android:exported="false" />
+        
+        <activity
             android:name=".ui.admin.AdminActivity"
             android:exported="false" />
         

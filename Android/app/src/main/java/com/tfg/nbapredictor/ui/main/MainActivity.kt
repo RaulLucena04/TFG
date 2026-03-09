@@ -16,6 +16,7 @@ import com.tfg.nbapredictor.ui.bets.BetsFragment
 import com.tfg.nbapredictor.ui.dashboard.DashboardFragment
 import com.tfg.nbapredictor.ui.matches.MatchesFragment
 import com.tfg.nbapredictor.ui.profile.ProfileFragment
+import com.tfg.nbapredictor.ui.matches.MatchDetailFragment
 import com.tfg.nbapredictor.ui.rankings.RankingsFragment
 import com.tfg.nbapredictor.util.Session
 
@@ -70,6 +71,20 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
             .commit()
+    }
+
+    fun loadMatchDetail(partido: com.tfg.nbapredictor.model.Partido) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, MatchDetailFragment.newInstance(partido))
+            .addToBackStack(null)
+            .commit()
+    }
+
+    fun refreshBetsIfNeeded() {
+        val current = supportFragmentManager.findFragmentById(R.id.fragment_container)
+        if (current is BetsFragment) {
+            loadFragment(BetsFragment())
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

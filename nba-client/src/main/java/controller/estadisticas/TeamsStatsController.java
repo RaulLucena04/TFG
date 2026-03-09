@@ -67,7 +67,7 @@ public class TeamsStatsController implements Initializable {
     private void cargarEquipos() {
         try {
             EquipoApiService api = new EquipoApiService();
-            List<Equipo> lista = api.obtenerEquipos();
+            List<Equipo> lista = api.obtenerEquiposConEstadisticas();
             tableTeams.getItems().setAll(lista);
         } catch (Exception e) {
             e.printStackTrace();

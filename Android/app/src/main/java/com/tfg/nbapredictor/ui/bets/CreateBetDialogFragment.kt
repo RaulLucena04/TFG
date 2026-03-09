@@ -21,7 +21,8 @@ import com.tfg.nbapredictor.util.Session
 import kotlinx.coroutines.launch
 
 class CreateBetDialogFragment(
-    private val onBetCreated: () -> Unit
+    private val onBetCreated: () -> Unit,
+    private val preselectedPartido: Partido? = null
 ) : DialogFragment() {
 
     private var _binding: DialogCreateBetBinding? = null
@@ -64,6 +65,17 @@ class CreateBetDialogFragment(
     }
 
     private fun loadPartidos(@Suppress("UNUSED_PARAMETER") user: User) {
+        if (preselectedPartido != null) {
+            partidosDisponibles = listOf(preselectedPartido)
+            selectedPartido = preselectedPartido
+            val label = "${preselectedPartido.equipoLocal?.nombre ?: "Local"} vs ${preselectedPartido.equipoVisitante?.nombre ?: "Visitante"}"
+            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, listOf(label))
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.spinnerPartido.adapter = adapter
+            binding.spinnerPartido.isEnabled = false
+            updateCuotaAndGanancia()
+            return
+        }
         lifecycleScope.launch {
             try {
                 val response = RetrofitClient.apiService.getPartidos()
@@ -122,9 +134,21 @@ class CreateBetDialogFragment(
             binding.tvGananciaPotencial.visibility = View.GONE
             return
         }
-        val cuota = calcularCuota(partido, prediccion)
-        binding.tvCuota.text = "Cuota: %.2f".format(cuota)
-        binding.tvCuota.visibility = View.VISIBLE
+        lifecycleScope.launch {
+            try {
+                val cuota = calcularCuota(partido, prediccion)
+                binding.tvCuota.text = "Cuota: %.2f".format(cuota)
+                binding.tvCuota.visibility = View.VISIBLE
+            } catch (e: Exception) {
+                binding.tvCuota.visibility = View.GONE
+            }
+            updateGananciaPotencial()
+        }
+    }
+
+    private fun updateGananciaPotencial() {
+        val cuotaStr = binding.tvCuota.text?.toString()?.replace("Cuota: ", "") ?: return
+        val cuota = cuotaStr.toDoubleOrNull() ?: return
         val puntosStr = binding.etPuntos.text?.toString()?.trim()
         if (!puntosStr.isNullOrEmpty()) {
             val puntos = puntosStr.toIntOrNull() ?: 0
@@ -139,15 +163,29 @@ class CreateBetDialogFragment(
         }
     }
 
-    private fun calcularCuota(partido: Partido, prediccion: String): Double {
-        val local = partido.equipoLocal?.nombre ?: "EquipoLocal"
-        val visitante = partido.equipoVisitante?.nombre ?: "EquipoVisitante"
-        val factorLocal = (local.hashCode() % 60 - 30) / 100.0
-        val factorVisitante = (visitante.hashCode() % 60 - 30) / 100.0
-        val variacion = if (prediccion.equals("LOCAL", ignoreCase = true)) -factorLocal else -factorVisitante
-        var cuota = 1.9 + variacion
-        cuota = maxOf(1.5, minOf(5.0, cuota))
-        return (cuota * 100).toInt() / 100.0
+    private suspend fun calcularCuota(partido: Partido, prediccion: String): Double {
+        val idLocal = partido.equipoLocal?.id ?: return 2.0
+        val idVisitante = partido.equipoVisitante?.id ?: return 2.0
+        return try {
+            val statsLocal = RetrofitClient.apiService.getEquipoEstadisticas(idLocal).body()
+            val statsVisitante = RetrofitClient.apiService.getEquipoEstadisticas(idVisitante).body()
+            if (statsLocal == null || statsVisitante == null) return 2.0
+            val totalLocal = statsLocal.victorias + statsLocal.derrotas
+            val totalVisitante = statsVisitante.victorias + statsVisitante.derrotas
+            val winRateLocal = if (totalLocal > 0) statsLocal.victorias.toDouble() / totalLocal else 0.5
+            val winRateVisitante = if (totalVisitante > 0) statsVisitante.victorias.toDouble() / totalVisitante else 0.5
+            val diferenciaRecord = winRateLocal - winRateVisitante
+            val ventajaLocal = 0.05
+            val cuotaBase = if (prediccion.equals("LOCAL", ignoreCase = true)) {
+                2.0 + (-diferenciaRecord * 0.6 - ventajaLocal)
+            } else {
+                2.0 + (diferenciaRecord * 0.6 + ventajaLocal)
+            }
+            val cuota = cuotaBase.coerceIn(1.5, 5.0)
+            (cuota * 100).toInt() / 100.0
+        } catch (e: Exception) {
+            2.0
+        }
     }
 
     private fun createBet() {
@@ -181,18 +219,24 @@ class CreateBetDialogFragment(
             showError("No tienes suficientes puntos. Disponibles: ${user.points}")
             return
         }
-        val cuota = calcularCuota(partido, prediccion)
-        val apuesta = Apuesta(
-            puntosApostados = puntos,
-            prediccion = prediccion,
-            cuota = cuota,
-            partido = Partido(id = partido.id),
-            usuario = user
-        )
         lifecycleScope.launch {
+            val cuota = calcularCuota(partido, prediccion)
+            val apuesta = Apuesta(
+                puntosApostados = puntos,
+                prediccion = prediccion,
+                cuota = cuota,
+                partido = Partido(id = partido.id),
+                usuario = user
+            )
             try {
                 val response = RetrofitClient.apiService.createApuesta(apuesta)
                 if (response.isSuccessful) {
+                    user.id?.let { id ->
+                        RetrofitClient.apiService.getUserById(id).body()?.let { updated ->
+                            Session.setCurrentUser(updated)
+                            Session.notifyUserUpdated()
+                        }
+                    }
                     Toast.makeText(requireContext(), "Apuesta creada correctamente", Toast.LENGTH_SHORT).show()
                     onBetCreated()
                     dismiss()

@@ -36,6 +36,16 @@ public class EquipoApiService {
         return Arrays.asList(equipos);
     }
 
+    public List<Equipo> obtenerEquiposConEstadisticas() throws Exception {
+        URL url = new URL("http://localhost:8080/equipos-con-estadisticas");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+
+        InputStream input = connection.getInputStream();
+        Equipo[] equipos = mapper.readValue(input, Equipo[].class);
+        return Arrays.asList(equipos);
+    }
+
     public List<Jugador> obtenerJugadoresEquipo(Long equipoId) throws Exception {
         URL url = new URL(URL_API_JUGADORES + equipoId);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -57,12 +67,19 @@ public class EquipoApiService {
     }
 
     public List<Jugador> obtenerTodosJugadores() throws Exception {
-    URL url = new URL("http://localhost:8080/jugadores");
-    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-    connection.setRequestMethod("GET");
+        URL url = new URL("http://localhost:8080/jugadores");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        InputStream input = connection.getInputStream();
+        Jugador[] jugadores = mapper.readValue(input, Jugador[].class);
+        return Arrays.asList(jugadores);
+    }
 
-    InputStream input = connection.getInputStream();
-    Jugador[] jugadores = mapper.readValue(input, Jugador[].class);
-    return Arrays.asList(jugadores);
-}
+    public model.EquipoEstadisticas obtenerEstadisticasEquipo(Long equipoId) throws Exception {
+        URL url = new URL(URL_API_EQUIPOS + "/" + equipoId + "/estadisticas");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        InputStream input = connection.getInputStream();
+        return mapper.readValue(input, model.EquipoEstadisticas.class);
+    }
 }

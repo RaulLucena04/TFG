@@ -11,8 +11,10 @@ import com.tfg.nbapredictor.R
 import com.tfg.nbapredictor.model.Partido
 import java.time.format.DateTimeFormatter
 
-class MatchesAdapter(private val partidos: List<Partido>) :
-    RecyclerView.Adapter<MatchesAdapter.MatchViewHolder>() {
+class MatchesAdapter(
+    private val partidos: List<Partido>,
+    private val onItemClick: ((Partido) -> Unit)? = null
+) : RecyclerView.Adapter<MatchesAdapter.MatchViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MatchViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -22,7 +24,7 @@ class MatchesAdapter(private val partidos: List<Partido>) :
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: MatchViewHolder, position: Int) {
-        holder.bind(partidos[position])
+        holder.bind(partidos[position], onItemClick)
     }
 
     override fun getItemCount() = partidos.size
@@ -34,7 +36,7 @@ class MatchesAdapter(private val partidos: List<Partido>) :
         private val tvMarcador: TextView = itemView.findViewById(R.id.tvMarcador)
 
         @RequiresApi(Build.VERSION_CODES.O)
-        fun bind(partido: Partido) {
+        fun bind(partido: Partido, onItemClick: ((Partido) -> Unit)? = null) {
             val local = partido.equipoLocal?.nombre ?: "Equipo Local"
             val visitante = partido.equipoVisitante?.nombre ?: "Equipo Visitante"
             tvTeams.text = "$local vs $visitante"
@@ -55,6 +57,7 @@ class MatchesAdapter(private val partidos: List<Partido>) :
             } else {
                 tvMarcador.visibility = View.GONE
             }
+            itemView.setOnClickListener { onItemClick?.invoke(partido) }
         }
     }
 }

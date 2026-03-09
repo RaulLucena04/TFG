@@ -14,6 +14,7 @@ import com.tfg.nbapredictor.network.RetrofitClient
 import com.tfg.nbapredictor.ui.bets.BetsAdapter
 import com.tfg.nbapredictor.ui.auth.LoginActivity
 import com.tfg.nbapredictor.util.Session
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment() {
@@ -34,6 +35,11 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         loadUserData()
         loadStatsAndRecentBets()
+        lifecycleScope.launch {
+            Session.userUpdated.collectLatest {
+                refreshUserFromApi()
+            }
+        }
         binding.btnLogout.setOnClickListener {
             Session.clearSession()
             startActivity(Intent(requireContext(), LoginActivity::class.java).apply {
@@ -45,6 +51,7 @@ class ProfileFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        refreshUserFromApi()
         loadUserData()
         loadStatsAndRecentBets()
     }
@@ -62,8 +69,26 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    private fun refreshUserFromApi() {
+        val user = Session.getCurrentUser() ?: return
+        val userId = user.id ?: return
+        lifecycleScope.launch {
+            try {
+                val response = RetrofitClient.apiService.getUserById(userId)
+                if (response.isSuccessful) {
+                    response.body()?.let { updated ->
+                        Session.setCurrentUser(updated)
+                        loadUserData()
+                        loadStatsAndRecentBets()
+                    }
+                }
+            } catch (_: Exception) { }
+        }
+    }
+
     private fun loadStatsAndRecentBets() {
         val user = Session.getCurrentUser() ?: return
+        binding.tvPoints.text = user.points.toString()
         val userId = user.id ?: return
 
         lifecycleScope.launch {
@@ -72,7 +97,7 @@ class ProfileFragment : Fragment() {
                 if (!apuestasResponse.isSuccessful) return@launch
                 val apuestas = apuestasResponse.body() ?: emptyList()
 
-                binding.tvPoints.text = user.points.toString()
+                binding.tvPoints.text = Session.getCurrentUser()?.points?.toString() ?: user.points.toString()
                 binding.tvTotalBets.text = apuestas.size.toString()
                 val finalizadas = apuestas.count { it.isGanada() || it.isPerdida() }
                 val ganadas = apuestas.count { it.isGanada() }

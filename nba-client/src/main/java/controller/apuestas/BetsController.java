@@ -168,13 +168,9 @@ public class BetsController {
         // CONFIGURACIÓN DE FILTROS
         // ===============================
         private void configurarFiltros() {
-
-                comboFilterActive.getItems().addAll("Todas", "Pendientes");
+                // Los items ya vienen del FXML - solo configurar valor y listener
                 comboFilterActive.setValue("Todas");
-
-                comboFilterHistory.getItems().addAll("Todas", "Ganadas", "Perdidas");
                 comboFilterHistory.setValue("Todas");
-
                 comboFilterActive.setOnAction(e -> aplicarFiltros());
                 comboFilterHistory.setOnAction(e -> aplicarFiltros());
         }

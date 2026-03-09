@@ -30,17 +30,34 @@ class BetsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loadBets()
+        updatePointsDisplay()
+        refreshUserAndLoadBets()
         binding.fabCreateBet.setOnClickListener {
-            CreateBetDialogFragment {
-                loadBets()
-            }.show(parentFragmentManager, "CreateBet")
+            CreateBetDialogFragment(onBetCreated = { refreshUserAndLoadBets() }).show(parentFragmentManager, "CreateBet")
         }
     }
 
     override fun onResume() {
         super.onResume()
-        loadBets()
+        refreshUserAndLoadBets()
+    }
+
+    private fun refreshUserAndLoadBets() {
+        val user = Session.getCurrentUser() ?: return
+        val userId = user.id ?: return
+        lifecycleScope.launch {
+            try {
+                RetrofitClient.apiService.getUserById(userId).body()?.let {
+                    Session.setCurrentUser(it)
+                }
+            } catch (_: Exception) { }
+            updatePointsDisplay()
+            loadBets()
+        }
+    }
+
+    private fun updatePointsDisplay() {
+        binding.tvPoints.text = Session.getCurrentUser()?.points?.toString() ?: "0"
     }
 
     private fun loadBets() {
@@ -69,6 +86,7 @@ class BetsFragment : Fragment() {
         val activas = apuestas.filter { it.isActiva() }
         val historial = apuestas.filter { it.isGanada() || it.isPerdida() }
 
+        binding.tvPoints.text = Session.getCurrentUser()?.points?.toString() ?: "0"
         binding.tvTotalBets.text = apuestas.size.toString()
         val ganadas = apuestas.count { it.isGanada() }
         binding.tvTotalWins.text = ganadas.toString()

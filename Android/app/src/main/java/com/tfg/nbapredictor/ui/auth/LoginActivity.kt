@@ -10,7 +10,7 @@ import com.tfg.nbapredictor.databinding.ActivityLoginBinding
 import com.tfg.nbapredictor.model.User
 import com.tfg.nbapredictor.network.LoginRequest
 import com.tfg.nbapredictor.network.RetrofitClient
-import com.tfg.nbapredictor.ui.main.MainActivity
+import com.tfg.nbapredictor.ui.compose.ComposeMainActivity
 import com.tfg.nbapredictor.util.Session
 import kotlinx.coroutines.launch
 
@@ -55,7 +55,7 @@ class LoginActivity : AppCompatActivity() {
                 
                 if (response.isSuccessful && response.body() != null) {
                     Session.setCurrentUser(response.body()!!)
-                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                    val intent = Intent(this@LoginActivity, ComposeMainActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
                     finish()

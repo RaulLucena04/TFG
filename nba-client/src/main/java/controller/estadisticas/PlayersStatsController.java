@@ -88,6 +88,15 @@ public class PlayersStatsController {
         comboTeam.getItems().addAll(equipos);
         comboTeam.getSelectionModel().selectFirst();
 
+        // Cargar posiciones desde los datos (español: Base, Escolta, Alero, etc.)
+        List<String> posiciones = masterList.stream()
+                .map(Jugador::getPosicion)
+                .filter(p -> p != null && !p.isBlank())
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+        comboPosition.getItems().setAll("Todas");
+        comboPosition.getItems().addAll(posiciones);
         comboPosition.getSelectionModel().selectFirst();
     }
 

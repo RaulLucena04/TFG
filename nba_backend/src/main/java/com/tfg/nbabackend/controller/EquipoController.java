@@ -1,8 +1,10 @@
 package com.tfg.nbabackend.controller;
 
+import com.tfg.nbabackend.dto.EquipoEstadisticasDTO;
 import com.tfg.nbabackend.model.Equipo;
 import com.tfg.nbabackend.model.Jugador;
 import com.tfg.nbabackend.model.Partido;
+import com.tfg.nbabackend.service.EquipoEstadisticasService;
 import com.tfg.nbabackend.service.EquipoService;
 import com.tfg.nbabackend.service.JugadorService;
 import com.tfg.nbabackend.service.PartidoService;
@@ -18,13 +20,21 @@ public class EquipoController {
     private final EquipoService equipoService;
     private final JugadorService jugadorService;
     private final PartidoService partidoService;
+    private final EquipoEstadisticasService equipoEstadisticasService;
 
     public EquipoController(EquipoService equipoService,
                             JugadorService jugadorService,
-                            PartidoService partidoService) {
+                            PartidoService partidoService,
+                            EquipoEstadisticasService equipoEstadisticasService) {
         this.equipoService = equipoService;
         this.jugadorService = jugadorService;
         this.partidoService = partidoService;
+        this.equipoEstadisticasService = equipoEstadisticasService;
+    }
+
+    @GetMapping("/{id}/estadisticas")
+    public EquipoEstadisticasDTO obtenerEstadisticas(@PathVariable Long id) {
+        return equipoEstadisticasService.calcularEstadisticas(id);
     }
 
     // GET todos los equipos

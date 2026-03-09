@@ -23,6 +23,9 @@ interface ApiService {
     @GET("usuarios")
     suspend fun getAllUsers(): Response<List<User>>
     
+    @GET("usuarios/{id}")
+    suspend fun getUserById(@Path("id") id: Long): Response<User>
+    
     @PUT("usuarios/{id}")
     suspend fun updateUser(@Path("id") id: Long, @Body user: User): Response<User>
     
@@ -57,8 +60,14 @@ interface ApiService {
     @GET("equipos")
     suspend fun getEquipos(): Response<List<Equipo>>
     
+    @GET("equipos-con-estadisticas")
+    suspend fun getEquiposConEstadisticas(): Response<List<Equipo>>
+    
     @GET("equipos/{id}")
     suspend fun getEquipoById(@Path("id") id: Long): Response<Equipo>
+    
+    @GET("equipos/{id}/estadisticas")
+    suspend fun getEquipoEstadisticas(@Path("id") id: Long): Response<EquipoEstadisticas>
     
     // Jugadores
     @GET("jugadores")
@@ -66,6 +75,23 @@ interface ApiService {
     
     @GET("jugadores/equipo/{equipoId}")
     suspend fun getJugadoresByEquipo(@Path("equipoId") equipoId: Long): Response<List<Jugador>>
+    
+    // Tienda - Canjear puntos por dinero (PayPal simulado)
+    @POST("tienda/canjear")
+    suspend fun canjearPuntos(@Body request: CanjearPuntosRequest): Response<CanjearPuntosResponse>
 }
 
 data class PasswordRequest(val password: String)
+
+data class CanjearPuntosRequest(
+    val usuarioId: Long,
+    val puntos: Int,
+    val emailPayPal: String
+)
+
+data class CanjearPuntosResponse(
+    val exito: Boolean,
+    val mensaje: String,
+    val eurosTransferidos: Double,
+    val puntosCanjeados: Int
+)
