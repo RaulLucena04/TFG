@@ -4,7 +4,7 @@
             "outputFile": "com.tfg.nbapredictor.app-mergeDebugResources-50:/values-pt-rBR/values-pt-rBR.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\usuario\\.gradle\\caches\\transforms-3\\df0cd03a14f2fe9204e11ea3400d1502\\transformed\\appcompat-1.6.1\\res\\values-pt-rBR\\values-pt-rBR.xml",
+                    "source": "C:\\Users\\RaulL\\.gradle\\caches\\transforms-3\\df0cd03a14f2fe9204e11ea3400d1502\\transformed\\appcompat-1.6.1\\res\\values-pt-rBR\\values-pt-rBR.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
@@ -21,24 +21,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\usuario\\.gradle\\caches\\transforms-3\\17491d0a47d0cb19e6a2e8d091900d00\\transformed\\navigation-ui-2.7.5\\res\\values-pt-rBR\\values-pt-rBR.xml",
-                    "from": {
-                        "startLines": "2,3",
-                        "startColumns": "4,4",
-                        "startOffsets": "55,167",
-                        "endColumns": "111,119",
-                        "endOffsets": "162,282"
-                    },
-                    "to": {
-                        "startLines": "109,110",
-                        "startColumns": "4,4",
-                        "startOffsets": "9446,9558",
-                        "endColumns": "111,119",
-                        "endOffsets": "9553,9673"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\usuario\\.gradle\\caches\\transforms-3\\920a9f7f99f4bdb5a13c0157ade101c8\\transformed\\material-1.10.0\\res\\values-pt-rBR\\values-pt-rBR.xml",
+                    "source": "C:\\Users\\RaulL\\.gradle\\caches\\transforms-3\\920a9f7f99f4bdb5a13c0157ade101c8\\transformed\\material-1.10.0\\res\\values-pt-rBR\\values-pt-rBR.xml",
                     "from": {
                         "startLines": "2,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
@@ -57,7 +40,24 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\usuario\\.gradle\\caches\\transforms-3\\31d979b205dee59d21a56dcfb14c6291\\transformed\\core-1.12.0\\res\\values-pt-rBR\\values-pt-rBR.xml",
+                    "source": "C:\\Users\\RaulL\\.gradle\\caches\\transforms-3\\17491d0a47d0cb19e6a2e8d091900d00\\transformed\\navigation-ui-2.7.5\\res\\values-pt-rBR\\values-pt-rBR.xml",
+                    "from": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,167",
+                        "endColumns": "111,119",
+                        "endOffsets": "162,282"
+                    },
+                    "to": {
+                        "startLines": "109,110",
+                        "startColumns": "4,4",
+                        "startOffsets": "9446,9558",
+                        "endColumns": "111,119",
+                        "endOffsets": "9553,9673"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\RaulL\\.gradle\\caches\\transforms-3\\31d979b205dee59d21a56dcfb14c6291\\transformed\\core-1.12.0\\res\\values-pt-rBR\\values-pt-rBR.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",
@@ -74,7 +74,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\usuario\\.gradle\\caches\\transforms-3\\3f540c1a22f8299f161bbc4ac4168d5c\\transformed\\preference-1.2.1\\res\\values-pt-rBR\\values-pt-rBR.xml",
+                    "source": "C:\\Users\\RaulL\\.gradle\\caches\\transforms-3\\3f540c1a22f8299f161bbc4ac4168d5c\\transformed\\preference-1.2.1\\res\\values-pt-rBR\\values-pt-rBR.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8",
                         "startColumns": "4,4,4,4,4,4,4",

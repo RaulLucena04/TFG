@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     static {
-        // Fuerza el escalado a 1.0 para que no se vea gigante en portátiles
+        // Fuerza el escalado a 1.0 
         System.setProperty("glass.win.uiScale", "1.0");;
     }
 

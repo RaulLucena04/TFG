@@ -1,0 +1,126 @@
+[
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/layout_dialog_finalize_match.xml.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/layout/dialog_finalize_match.xml"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/mipmap-xhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/layout_fragment_matches.xml.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/layout/fragment_matches.xml"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/layout_item_match.xml.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/layout/item_match.xml"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/mipmap-mdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/menu_bottom_navigation.xml.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/menu/bottom_navigation.xml"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/layout_fragment_rankings.xml.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/layout/fragment_rankings.xml"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/layout_item_bet.xml.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/layout/item_bet.xml"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/layout_activity_admin.xml.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/layout/activity_admin.xml"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/layout_dialog_create_bet.xml.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/layout/dialog_create_bet.xml"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/layout_fragment_dashboard.xml.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/layout/fragment_dashboard.xml"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/layout_activity_login.xml.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/layout/activity_login.xml"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/layout_activity_register.xml.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/layout/activity_register.xml"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/layout_fragment_profile.xml.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/layout/fragment_profile.xml"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/layout_activity_main.xml.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/mipmap-hdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/mipmap-mdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/layout_item_ranking.xml.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/layout/item_ranking.xml"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/layout_item_admin_match.xml.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/layout/item_admin_match.xml"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/mipmap-hdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/layout_fragment_bets.xml.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/layout/fragment_bets.xml"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/menu_admin_menu.xml.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/menu/admin_menu.xml"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/mipmap-xxxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/mipmap-xxxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/mipmap-xhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/mipmap-xxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.tfg.nbapredictor.app-debug-52:/mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "com.tfg.nbapredictor.app-main-54:/mipmap-xxhdpi/ic_launcher.webp"
+    }
+]

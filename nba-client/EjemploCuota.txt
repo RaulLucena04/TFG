@@ -1,0 +1,17 @@
+Ejemplo completo
+
+Equipo local: “Real Madrid”
+
+Equipo visitante: “Barcelona”
+
+Predicción: LOCAL
+
+hashLocal % 60 → digamos que da 20
+
+factorLocal = (20 - 30) / 100 = -0.10
+
+variacion = -(-0.10) = +0.10
+
+cuota = 1.9 + 0.10 = 2.00
+
+Cuota final: 2.00

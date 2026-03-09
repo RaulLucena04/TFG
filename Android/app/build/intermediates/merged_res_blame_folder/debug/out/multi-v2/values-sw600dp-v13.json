@@ -4,7 +4,7 @@
             "outputFile": "com.tfg.nbapredictor.app-mergeDebugResources-50:/values-sw600dp-v13/values-sw600dp-v13.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\usuario\\.gradle\\caches\\transforms-3\\920a9f7f99f4bdb5a13c0157ade101c8\\transformed\\material-1.10.0\\res\\values-sw600dp-v13\\values-sw600dp-v13.xml",
+                    "source": "C:\\Users\\RaulL\\.gradle\\caches\\transforms-3\\920a9f7f99f4bdb5a13c0157ade101c8\\transformed\\material-1.10.0\\res\\values-sw600dp-v13\\values-sw600dp-v13.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,10,11,12,13,14",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4",
@@ -23,7 +23,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\usuario\\.gradle\\caches\\transforms-3\\df0cd03a14f2fe9204e11ea3400d1502\\transformed\\appcompat-1.6.1\\res\\values-sw600dp-v13\\values-sw600dp-v13.xml",
+                    "source": "C:\\Users\\RaulL\\.gradle\\caches\\transforms-3\\df0cd03a14f2fe9204e11ea3400d1502\\transformed\\appcompat-1.6.1\\res\\values-sw600dp-v13\\values-sw600dp-v13.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",
