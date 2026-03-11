@@ -7,6 +7,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.icons.Icons
+import androidx.compose.material3.icons.filled.Add
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
@@ -22,6 +26,7 @@ import kotlinx.coroutines.flow.collectLatest
 fun BetsScreen() {
     var apuestas by remember { mutableStateOf<List<Apuesta>>(emptyList()) }
     var points by remember { mutableStateOf(Session.getCurrentUser()?.points ?: 0) }
+    var showCreateDialog by remember { mutableStateOf(false) }
 
     suspend fun loadBets() {
         val user = Session.getCurrentUser() ?: return
@@ -50,29 +55,49 @@ fun BetsScreen() {
         "${(ganadas * 100 / fin)}%"
     } else "0%"
 
-    LazyColumn(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        item {
-            Text("Apuestas", style = MaterialTheme.typography.headlineMedium)
-            Spacer(Modifier.height(16.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                Text("Puntos: $points")
-                Text("Total: ${apuestas.size}")
-                Text("Ganadas: $ganadas")
-                Text("Tasa: $winRate")
+    androidx.compose.material3.Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(onClick = { showCreateDialog = true }) {
+                Icon(Icons.Default.Add, contentDescription = "Crear apuesta")
             }
-            Spacer(Modifier.height(16.dp))
         }
-        item { Text("Activas", style = MaterialTheme.typography.titleMedium) }
-        items(activas) { a ->
-            BetCard(a, showResultado = false)
+    ) { paddingValues ->
+        LazyColumn(
+            Modifier.padding(paddingValues).padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            item {
+                Text("Apuestas", style = MaterialTheme.typography.headlineMedium)
+                Spacer(Modifier.height(16.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    Text("Puntos: $points")
+                    Text("Total: ${apuestas.size}")
+                    Text("Ganadas: $ganadas")
+                    Text("Tasa: $winRate")
+                }
+                Spacer(Modifier.height(16.dp))
+            }
+            item { Text("Activas", style = MaterialTheme.typography.titleMedium) }
+            items(activas) { a ->
+                BetCard(a, showResultado = false)
+            }
+            item {
+                Spacer(Modifier.height(16.dp))
+                Text("Historial", style = MaterialTheme.typography.titleMedium)
+            }
+            items(historial) { apuesta ->
+                BetCard(apuesta, showResultado = true)
+            }
         }
-        item {
-            Spacer(Modifier.height(16.dp))
-            Text("Historial", style = MaterialTheme.typography.titleMedium)
-        }
-        items(historial) { apuesta ->
-            BetCard(apuesta, showResultado = true)
-        }
+    }
+
+    if (showCreateDialog) {
+        CreateBetDialog(
+            open = true,
+            preselectedPartido = null,
+            onDismiss = { showCreateDialog = false },
+            onBetCreated = { showCreateDialog = false }
+        )
     }
 }
 

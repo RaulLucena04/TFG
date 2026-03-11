@@ -31,6 +31,7 @@
     <string msgid="8875138169939072951" name="abc_shareactionprovider_share_with">"यसमार्फत सेयर गर्नुहोस्"</string>
     <string msgid="9055268688411532828" name="abc_shareactionprovider_share_with_application">"<ns1:g id="APPLICATION_NAME">%s</ns1:g> मार्फत सेयर गर्नुहोस्"</string>
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"संक्षिप्त गर्नुहोस्"</string>
+    <string msgid="389117264260014992" name="autofill">"अटोफिल"</string>
     <string msgid="6128938260108474660" name="bottom_sheet_collapse_description">"पुछारको पाना कोल्याप्स गर्नुहोस्"</string>
     <string msgid="1918297411568599192" name="bottom_sheet_dismiss_description">"पुछारको पाना हटाउनुहोस्"</string>
     <string msgid="7772321844937772780" name="bottom_sheet_drag_handle_description">"ड्र्याग ह्यान्डल"</string>
@@ -157,8 +158,6 @@
     <string msgid="542007171693138492" name="navigation_menu">"नेभिगेसन मेनु"</string>
     <string msgid="6610465462668679431" name="not_selected">"चयन गरिएको छैन"</string>
     <string msgid="6573031135582639649" name="not_set">"सेट गरिएको छैन"</string>
-    <string msgid="875452955155264703" name="off">"अफ छ"</string>
-    <string msgid="8655164131929253426" name="on">"अन छ"</string>
     <string name="password_toggle_content_description">पासवर्ड देखाउनुहोस्</string>
     <string msgid="6685851473431805375" name="preference_copied">"\"<ns1:g id="SUMMARY">%1$s</ns1:g>\" लाई क्लिपबोर्डमा प्रतिलिपि गरियो।"</string>
     <string msgid="5941395253238309765" name="range_end">"दायराको अन्तिम बिन्दु"</string>
@@ -167,6 +166,10 @@
     <string msgid="6264217191555673260" name="search_menu_title">"खोज"</string>
     <string msgid="6043586758067023" name="selected">"चयन गरिएको छ"</string>
     <string msgid="3962933905051144957" name="snackbar_dismiss">"हटाउनुहोस्"</string>
+    <string msgid="2792228137354697160" name="snackbar_pane_title">"अलर्ट"</string>
+    <string msgid="4139871816613051306" name="state_empty">"खाली"</string>
+    <string msgid="5834637030682409883" name="state_off">"अफ छ"</string>
+    <string msgid="1490883874751719580" name="state_on">"अन छ"</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"९९९+"</string>
     <string msgid="7189888345201419934" name="suggestions_available">"सुझावहरू तल दिइएका छन्"</string>
     <string msgid="9167775378838880170" name="summary_collapsed_preference_list">"<ns1:g id="CURRENT_ITEMS">%1$s</ns1:g>, <ns1:g id="ADDED_ITEMS">%2$s</ns1:g>"</string>
@@ -186,7 +189,7 @@
     <string msgid="7352665290700284516" name="time_picker_period_toggle_description">"पूर्वाह्न वा अपराह्न चयन गर्नुहोस्"</string>
     <string msgid="2232702812657998674" name="time_picker_pm">"PM"</string>
     <string msgid="3765533235322692011" name="tooltip_description">"टुलटिप"</string>
-    <string msgid="3124740595719787496" name="tooltip_label">"टुलटिप देखाइयोस्"</string>
+    <string msgid="3124740595719787496" name="tooltip_label">"टुलटिप देखाउनुहोस्"</string>
     <string msgid="2732804537909054941" name="tooltip_long_press_label">"टुलटिप देखाइयोस्"</string>
     <string msgid="8191239805703103845" name="tooltip_pane_description">"टुलटिप"</string>
     <string msgid="3140233346420563315" name="v7_preference_off">"निष्क्रिय पार्नुहोस्‌"</string>

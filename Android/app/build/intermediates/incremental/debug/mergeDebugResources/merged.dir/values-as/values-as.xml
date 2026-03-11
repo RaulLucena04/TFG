@@ -31,6 +31,7 @@
     <string msgid="8875138169939072951" name="abc_shareactionprovider_share_with">"ইয়াৰ জৰিয়তে শ্বেয়াৰ কৰক"</string>
     <string msgid="9055268688411532828" name="abc_shareactionprovider_share_with_application">"<ns1:g id="APPLICATION_NAME">%s</ns1:g>ৰ জৰিয়তে শ্বেয়াৰ কৰক"</string>
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"সংকোচন কৰক"</string>
+    <string msgid="389117264260014992" name="autofill">"স্বয়ংক্রিয়ভাৱে পূৰ হোৱাৰ সুবিধা"</string>
     <string msgid="6128938260108474660" name="bottom_sheet_collapse_description">"তলৰ শ্বীটখন সংকোচন কৰক"</string>
     <string msgid="1918297411568599192" name="bottom_sheet_dismiss_description">"তলৰ শ্বীটখন অগ্ৰাহ্য কৰক"</string>
     <string msgid="7772321844937772780" name="bottom_sheet_drag_handle_description">"ড্ৰেগ হেণ্ডেল"</string>
@@ -157,8 +158,6 @@
     <string msgid="542007171693138492" name="navigation_menu">"নেভিগেশ্বন মেনু"</string>
     <string msgid="6610465462668679431" name="not_selected">"বাছনি কৰা হোৱা নাই"</string>
     <string msgid="6573031135582639649" name="not_set">"ছেট কৰা হোৱা নাই"</string>
-    <string msgid="875452955155264703" name="off">"অফ আছে"</string>
-    <string msgid="8655164131929253426" name="on">"অন কৰা আছে"</string>
     <string name="password_toggle_content_description">পাছৱৰ্ড দেখুৱাওক</string>
     <string msgid="6685851473431805375" name="preference_copied">"\"<ns1:g id="SUMMARY">%1$s</ns1:g>\" ক্লিপব’ৰ্ডত প্ৰতিলিপি কৰা হ’ল"</string>
     <string msgid="5941395253238309765" name="range_end">"পৰিসৰৰ সমাপ্তি"</string>
@@ -167,6 +166,10 @@
     <string msgid="6264217191555673260" name="search_menu_title">"সন্ধান"</string>
     <string msgid="6043586758067023" name="selected">"বাছনি কৰা হৈছে"</string>
     <string msgid="3962933905051144957" name="snackbar_dismiss">"অগ্ৰাহ্য কৰক"</string>
+    <string msgid="2792228137354697160" name="snackbar_pane_title">"সতৰ্কবাৰ্তা"</string>
+    <string msgid="4139871816613051306" name="state_empty">"খালী"</string>
+    <string msgid="5834637030682409883" name="state_off">"অফ আছে"</string>
+    <string msgid="1490883874751719580" name="state_on">"অন আছে"</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"৯৯৯+"</string>
     <string msgid="7189888345201419934" name="suggestions_available">"তলত পৰামৰ্শ দেখুওৱা হৈছে"</string>
     <string msgid="9167775378838880170" name="summary_collapsed_preference_list">"<ns1:g id="CURRENT_ITEMS">%1$s</ns1:g>, <ns1:g id="ADDED_ITEMS">%2$s</ns1:g>"</string>

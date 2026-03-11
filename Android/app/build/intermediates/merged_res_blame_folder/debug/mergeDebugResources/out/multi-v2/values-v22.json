@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.tfg.nbapredictor.app-mergeDebugResources-74:/values-v22/values-v22.xml",
+            "outputFile": "com.tfg.nbapredictor.app-mergeDebugResources-65:/values-v22/values-v22.xml",
             "map": [
                 {
                     "source": "C:\\Users\\usuario\\.gradle\\caches\\transforms-3\\ec5621c246d34e90b4800280c4ceea5f\\transformed\\appcompat-1.6.1\\res\\values-v22\\values-v22.xml",

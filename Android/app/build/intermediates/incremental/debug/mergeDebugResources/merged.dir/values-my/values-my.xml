@@ -31,6 +31,7 @@
     <string msgid="8875138169939072951" name="abc_shareactionprovider_share_with">"နှင့် မျှဝေရန်"</string>
     <string msgid="9055268688411532828" name="abc_shareactionprovider_share_with_application">"<ns1:g id="APPLICATION_NAME">%s</ns1:g> ဖြင့် မျှဝေရန်"</string>
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"လျှော့ပြရန်"</string>
+    <string msgid="389117264260014992" name="autofill">"အော်တိုဖြည့်"</string>
     <string msgid="6128938260108474660" name="bottom_sheet_collapse_description">"အောက်ခြေအပိုဆောင်း စာမျက်နှာကို ချုံ့သည်"</string>
     <string msgid="1918297411568599192" name="bottom_sheet_dismiss_description">"အောက်ခြေအပိုဆောင်း စာမျက်နှာကို ပယ်သည်"</string>
     <string msgid="7772321844937772780" name="bottom_sheet_drag_handle_description">"ဖိဆွဲအထိန်း"</string>
@@ -157,8 +158,6 @@
     <string msgid="542007171693138492" name="navigation_menu">"လမ်းညွှန် မီနူး"</string>
     <string msgid="6610465462668679431" name="not_selected">"ရွေးမထားပါ"</string>
     <string msgid="6573031135582639649" name="not_set">"သတ်မှတ်မထားပါ"</string>
-    <string msgid="875452955155264703" name="off">"ပိတ်"</string>
-    <string msgid="8655164131929253426" name="on">"ဖွင့်"</string>
     <string name="password_toggle_content_description">စကားဝှက်ကို ပြရန်</string>
     <string msgid="6685851473431805375" name="preference_copied">"\"<ns1:g id="SUMMARY">%1$s</ns1:g>\" ကို ကလစ်ဘုတ်သို့ မိတ္တူကူးယူပြီးပါပြီ။"</string>
     <string msgid="5941395253238309765" name="range_end">"အပိုင်းအခြား အဆုံး"</string>
@@ -167,6 +166,10 @@
     <string msgid="6264217191555673260" name="search_menu_title">"ရှာဖွေမှု"</string>
     <string msgid="6043586758067023" name="selected">"ရွေးထားသည်"</string>
     <string msgid="3962933905051144957" name="snackbar_dismiss">"ပယ်ရန်"</string>
+    <string msgid="2792228137354697160" name="snackbar_pane_title">"သတိပေးချက်"</string>
+    <string msgid="4139871816613051306" name="state_empty">"မရှိပါ"</string>
+    <string msgid="5834637030682409883" name="state_off">"ပိတ်"</string>
+    <string msgid="1490883874751719580" name="state_on">"ဖွင့်"</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"၉၉၉+"</string>
     <string msgid="7189888345201419934" name="suggestions_available">"အကြံပြုချက်များ အောက်တွင်ရှိသည်"</string>
     <string msgid="9167775378838880170" name="summary_collapsed_preference_list">"<ns1:g id="CURRENT_ITEMS">%1$s</ns1:g>၊ <ns1:g id="ADDED_ITEMS">%2$s</ns1:g>"</string>

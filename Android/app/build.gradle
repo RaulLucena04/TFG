@@ -78,7 +78,9 @@ dependencies {
     
     // SharedPreferences
     implementation 'androidx.preference:preference-ktx:1.2.1'
-    
+    implementation 'androidx.compose.runtime:runtime-android:1.10.4'
+    implementation 'androidx.compose.foundation:foundation-android:1.6.0'
+
     // Jetpack Compose
     def composeBom = platform('androidx.compose:compose-bom:2024.01.00')
     implementation composeBom

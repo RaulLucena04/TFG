@@ -31,10 +31,6 @@
             android:parentActivityName=".ui.auth.LoginActivity" />
         
         <activity
-            android:name=".ui.main.MainActivity"
-            android:exported="false" />
-        
-        <activity
             android:name=".ui.compose.ComposeMainActivity"
             android:exported="false" />
         
