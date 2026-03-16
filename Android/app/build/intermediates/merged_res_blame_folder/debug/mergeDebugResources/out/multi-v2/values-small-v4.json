@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.tfg.nbapredictor.app-mergeDebugResources-65:/values-small-v4/values-small-v4.xml",
+            "outputFile": "com.tfg.nbapredictor.app-mergeDebugResources-76:/values-small-v4/values-small-v4.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\usuario\\.gradle\\caches\\transforms-3\\a845ed9290d9dcccdadece6a20764f70\\transformed\\material-1.10.0\\res\\values-small-v4\\values-small-v4.xml",
+                    "source": "C:\\Users\\RaulL\\.gradle\\caches\\transforms-4\\f7a95ac27a5885b6fc22faea2ea3b132\\transformed\\material-1.12.0\\res\\values-small-v4\\values-small-v4.xml",
                     "from": {
                         "startLines": "2,3,4,5",
                         "startColumns": "4,4,4,4",

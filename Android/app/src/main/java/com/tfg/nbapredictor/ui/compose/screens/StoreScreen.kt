@@ -46,7 +46,7 @@ fun StoreScreen() {
             .verticalScroll(rememberScrollState())
     ) {
         Text("Tienda - Canjear puntos", style = MaterialTheme.typography.headlineMedium)
-        Text("Conectado con PayPal (simulación)", style = MaterialTheme.typography.bodyMedium)
+        Text("Conectado con PayPal API", style = MaterialTheme.typography.bodyMedium)
         Spacer(Modifier.height(16.dp))
 
         Card(Modifier.fillMaxWidth()) {

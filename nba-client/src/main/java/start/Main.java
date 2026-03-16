@@ -6,13 +6,27 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ * Clase principal de la aplicación de escritorio NBA Predictor.
+ * 
+ * <p>Esta aplicación JavaFX proporciona una interfaz gráfica para el sistema
+ * de predicciones de partidos de la NBA. Inicia con la pantalla de login.
+ * 
+ * @author TFG
+ * @version 1.0
+ */
 public class Main extends Application {
 
     static {
-        // Fuerza el escalado a 1.0 
-        System.setProperty("glass.win.uiScale", "1.0");;
+        System.setProperty("glass.win.uiScale", "1.0");
     }
 
+    /**
+     * Inicia la aplicación JavaFX cargando la pantalla de login.
+     * 
+     * @param stage el escenario principal de la aplicación
+     * @throws Exception si hay un error al cargar la interfaz
+     */
     @Override
     public void start(Stage stage) throws Exception {
 
@@ -30,6 +44,11 @@ public class Main extends Application {
         stage.show();
     }
 
+    /**
+     * Método principal que inicia la aplicación JavaFX.
+     * 
+     * @param args argumentos de la línea de comandos
+     */
     public static void main(String[] args) {
         launch(args);
     }

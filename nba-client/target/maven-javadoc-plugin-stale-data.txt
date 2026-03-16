@@ -1,0 +1,76 @@
+-J-Duser.language=
+-J-Duser.country=
+@options
+@packages
+-classpath
+'C:/Users/RaulL/.m2/repository/org/openjfx/javafx-base/17.0.10/javafx-base-17.0.10-win.jar;C:/Users/RaulL/.m2/repository/org/openjfx/javafx-graphics/17.0.10/javafx-graphics-17.0.10-win.jar;C:/Users/RaulL/.m2/repository/org/openjfx/javafx-base/17.0.10/javafx-base-17.0.10.jar;C:/Users/RaulL/.m2/repository/org/openjfx/javafx-controls/17.0.10/javafx-controls-17.0.10-win.jar;C:/Users/RaulL/.m2/repository/org/openjfx/javafx-graphics/17.0.10/javafx-graphics-17.0.10.jar;C:/Users/RaulL/.m2/repository/org/openjfx/javafx-fxml/17.0.10/javafx-fxml-17.0.10-win.jar;C:/Users/RaulL/.m2/repository/org/openjfx/javafx-controls/17.0.10/javafx-controls-17.0.10.jar;C:/Users/RaulL/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.17.1/jackson-databind-2.17.1.jar;C:/Users/RaulL/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.17.1/jackson-annotations-2.17.1.jar;C:/Users/RaulL/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.17.1/jackson-core-2.17.1.jar;C:/Users/RaulL/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.17.1/jackson-datatype-jsr310-2.17.1.jar'
+-encoding
+'UTF-8'
+-protected
+-source
+'17'
+-sourcepath
+'C:/Users/RaulL/Documents/GitHub/TFG/nba-client/src/main/java'
+-author
+-bottom
+'Copyright &#169; 2026. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'C:/Users/RaulL/Documents/GitHub/TFG/nba-client/target/reports/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'NBA Predictor 1.0.0 API'
+-use
+-version
+-windowtitle
+'NBA Predictor 1.0.0 API'
+controller.admin
+controller.apuestas
+controller.auth.login
+controller.auth.password
+controller.auth.registro
+controller.dashboard
+controller.estadisticas
+controller.layout
+controller.partidos
+controller.perfil
+controller.rankings
+controller.tienda
+model
+service
+session
+start
+C:\Users\RaulL\.m2\repository\org\openjfx\javafx-base\17.0.10\javafx-base-17.0.10-win.jar = 1770568933093
+C:\Users\RaulL\.m2\repository\org\openjfx\javafx-graphics\17.0.10\javafx-graphics-17.0.10-win.jar = 1770568934387
+C:\Users\RaulL\.m2\repository\org\openjfx\javafx-base\17.0.10\javafx-base-17.0.10.jar = 1770568933211
+C:\Users\RaulL\.m2\repository\org\openjfx\javafx-controls\17.0.10\javafx-controls-17.0.10-win.jar = 1770568933820
+C:\Users\RaulL\.m2\repository\org\openjfx\javafx-graphics\17.0.10\javafx-graphics-17.0.10.jar = 1770568933196
+C:\Users\RaulL\.m2\repository\org\openjfx\javafx-fxml\17.0.10\javafx-fxml-17.0.10-win.jar = 1770568933318
+C:\Users\RaulL\.m2\repository\org\openjfx\javafx-controls\17.0.10\javafx-controls-17.0.10.jar = 1770568933306
+C:\Users\RaulL\.m2\repository\com\fasterxml\jackson\core\jackson-databind\2.17.1\jackson-databind-2.17.1.jar = 1771830808300
+C:\Users\RaulL\.m2\repository\com\fasterxml\jackson\core\jackson-annotations\2.17.1\jackson-annotations-2.17.1.jar = 1771830808537
+C:\Users\RaulL\.m2\repository\com\fasterxml\jackson\core\jackson-core\2.17.1\jackson-core-2.17.1.jar = 1771830809048
+C:\Users\RaulL\.m2\repository\com\fasterxml\jackson\datatype\jackson-datatype-jsr310\2.17.1\jackson-datatype-jsr310-2.17.1.jar = 1772185909841
+C:\Users\RaulL\Documents\GitHub\TFG\nba-client\src\main\java = 1773255854000
+C:\Users\RaulL\Documents\GitHub\TFG\nba-client\target\reports\apidocs\allclasses-index.html = 1773604173184
+C:\Users\RaulL\Documents\GitHub\TFG\nba-client\target\reports\apidocs\allpackages-index.html = 1773604173188
+C:\Users\RaulL\Documents\GitHub\TFG\nba-client\target\reports\apidocs\copy.svg = 1773604173327
+C:\Users\RaulL\Documents\GitHub\TFG\nba-client\target\reports\apidocs\element-list = 1773604172655
+C:\Users\RaulL\Documents\GitHub\TFG\nba-client\target\reports\apidocs\help-doc.html = 1773604173317
+C:\Users\RaulL\Documents\GitHub\TFG\nba-client\target\reports\apidocs\index-all.html = 1773604173284
+C:\Users\RaulL\Documents\GitHub\TFG\nba-client\target\reports\apidocs\index.html = 1773604173135
+C:\Users\RaulL\Documents\GitHub\TFG\nba-client\target\reports\apidocs\link.svg = 1773604173329
+C:\Users\RaulL\Documents\GitHub\TFG\nba-client\target\reports\apidocs\member-search-index.js = 1773604173200
+C:\Users\RaulL\Documents\GitHub\TFG\nba-client\target\reports\apidocs\module-search-index.js = 1773604173192
+C:\Users\RaulL\Documents\GitHub\TFG\nba-client\target\reports\apidocs\overview-summary.html = 1773604173311
+C:\Users\RaulL\Documents\GitHub\TFG\nba-client\target\reports\apidocs\overview-tree.html = 1773604173129
+C:\Users\RaulL\Documents\GitHub\TFG\nba-client\target\reports\apidocs\package-search-index.js = 1773604173194
+C:\Users\RaulL\Documents\GitHub\TFG\nba-client\target\reports\apidocs\script.js = 1773604173325
+C:\Users\RaulL\Documents\GitHub\TFG\nba-client\target\reports\apidocs\search-page.js = 1773604173342
+C:\Users\RaulL\Documents\GitHub\TFG\nba-client\target\reports\apidocs\search.html = 1773604173302
+C:\Users\RaulL\Documents\GitHub\TFG\nba-client\target\reports\apidocs\search.js = 1773604173339
+C:\Users\RaulL\Documents\GitHub\TFG\nba-client\target\reports\apidocs\stylesheet.css = 1773604173322
+C:\Users\RaulL\Documents\GitHub\TFG\nba-client\target\reports\apidocs\tag-search-index.js = 1773604173201
+C:\Users\RaulL\Documents\GitHub\TFG\nba-client\target\reports\apidocs\type-search-index.js = 1773604173197

@@ -12,6 +12,16 @@ import com.tfg.nbabackend.repository.ApuestaRepository;
 import com.tfg.nbabackend.repository.PartidoRepository;
 import com.tfg.nbabackend.repository.UsuarioRepository;
 
+/**
+ * Servicio que gestiona las operaciones relacionadas con apuestas.
+ * 
+ * <p>Este servicio se encarga de crear apuestas, calcular cuotas, validar
+ * que los usuarios tengan suficientes puntos y resolver apuestas cuando
+ * se finalizan los partidos.
+ * 
+ * @author TFG
+ * @version 1.0
+ */
 @Service
 public class ApuestaService {
 
@@ -20,6 +30,14 @@ public class ApuestaService {
     private final PartidoRepository partidoRepository;
     private final EquipoEstadisticasService equipoEstadisticasService;
 
+    /**
+     * Constructor del servicio de apuestas.
+     * 
+     * @param apuestaRepository repositorio de apuestas
+     * @param usuarioRepository repositorio de usuarios
+     * @param partidoRepository repositorio de partidos
+     * @param equipoEstadisticasService servicio de estadísticas de equipos
+     */
     public ApuestaService(ApuestaRepository apuestaRepository,
             UsuarioRepository usuarioRepository,
             PartidoRepository partidoRepository,
@@ -30,6 +48,16 @@ public class ApuestaService {
         this.equipoEstadisticasService = equipoEstadisticasService;
     }
 
+    /**
+     * Crea una nueva apuesta en el sistema.
+     * 
+     * <p>Valida que el usuario tenga suficientes puntos, calcula la cuota si no está
+     * especificada, descuenta los puntos del usuario y guarda la apuesta con estado PENDIENTE.
+     * 
+     * @param apuesta la apuesta a crear
+     * @return la apuesta creada y guardada
+     * @throws RuntimeException si el usuario no existe, no tiene suficientes puntos o el partido no existe
+     */
     public Apuesta crearApuesta(Apuesta apuesta) {
 
         Usuario usuario = usuarioRepository.findById(
@@ -40,7 +68,6 @@ public class ApuestaService {
             throw new RuntimeException("No tienes suficientes puntos");
         }
 
-        // Calcular cuota si no viene en la apuesta
         if (apuesta.getCuota() == null || apuesta.getCuota() <= 0) {
             Partido partidoCompleto = apuesta.getPartido() != null && apuesta.getPartido().getId() != null
                     ? partidoRepository.findById(apuesta.getPartido().getId()).orElse(null)
@@ -49,21 +76,30 @@ public class ApuestaService {
             apuesta.setCuota(cuota);
         }
 
-        // Restar puntos
         usuario.setPuntos(usuario.getPuntos() - apuesta.getPuntosApostados());
         usuarioRepository.save(usuario);
 
-        // Estado inicial
         apuesta.setResultado(ResultadoApuesta.PENDIENTE);
 
         return apuestaRepository.save(apuesta);
     }
 
     /**
-     * Calcula la cuota según record (victorias/derrotas), ventaja local y predicción.
-     * - Más victorias = favorito = cuota más baja al apostar por él
-     * - Local tiene ventaja inherente (cuota algo más baja)
-     * - Cuota base 2.0, rango 1.5 - 5.0
+     * Calcula la cuota de una apuesta basándose en el historial de los equipos.
+     * 
+     * <p>La cuota se calcula considerando:
+     * <ul>
+     *   <li>El record de victorias/derrotas de cada equipo</li>
+     *   <li>La ventaja de jugar en casa (aproximadamente +5% de probabilidad)</li>
+     *   <li>La predicción del usuario (LOCAL o VISITANTE)</li>
+     * </ul>
+     * 
+     * <p>Si un equipo tiene mejor record, la cuota será más baja al apostar por él.
+     * La cuota base es 2.0 y se ajusta en un rango de 1.5 a 5.0.
+     * 
+     * @param partido el partido sobre el que se calcula la cuota
+     * @param prediccion la predicción del usuario ("LOCAL" o "VISITANTE")
+     * @return la cuota calculada (entre 1.5 y 5.0)
      */
     private double calcularCuota(Partido partido, String prediccion) {
         if (partido == null || partido.getEquipoLocal() == null || partido.getEquipoVisitante() == null) {
@@ -109,17 +145,37 @@ public class ApuestaService {
         return Math.round(cuota * 100.0) / 100.0;
     }
 
+    /**
+     * Obtiene todas las apuestas realizadas por un usuario.
+     * 
+     * @param usuario el usuario del que se quieren obtener las apuestas
+     * @return lista de apuestas del usuario
+     */
     public List<Apuesta> obtenerPorUsuario(Usuario usuario) {
         return apuestaRepository.findByUsuario(usuario);
     }
 
+    /**
+     * Resuelve todas las apuestas relacionadas con un partido finalizado.
+     * 
+     * <p>Para cada apuesta pendiente del partido:
+     * <ul>
+     *   <li>Compara la predicción con el resultado real</li>
+     *   <li>Si la apuesta es acertada, calcula las ganancias según la cuota y actualiza los puntos del usuario</li>
+     *   <li>Si la apuesta es incorrecta, marca la apuesta como PERDIDA</li>
+     *   <li>Actualiza el estado de la apuesta (GANADA o PERDIDA)</li>
+     * </ul>
+     * 
+     * <p>Las apuestas ya resueltas se ignoran para evitar procesarlas dos veces.
+     * 
+     * @param partido el partido finalizado cuyas apuestas se deben resolver
+     */
     public void resolverApuestas(Partido partido) {
 
         List<Apuesta> apuestas = apuestaRepository.findByPartido(partido);
 
         for (Apuesta apuesta : apuestas) {
 
-            // ⚠️ Evitar resolver dos veces
             if (apuesta.getResultado() != ResultadoApuesta.PENDIENTE) {
                 continue;
             }
@@ -142,7 +198,6 @@ public class ApuestaService {
 
                 Usuario usuario = apuesta.getUsuario();
 
-                // Calcular ganancia basada en la cuota
                 double cuota = apuesta.getCuota() != null ? apuesta.getCuota() : 2.0;
                 int ganancia = (int) Math.round(apuesta.getPuntosApostados() * cuota);
 

@@ -1,5 +1,7 @@
 package com.tfg.nbapredictor.ui.compose.screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,10 +11,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.icons.Icons
-import androidx.compose.material3.icons.filled.Add
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -22,12 +24,14 @@ import com.tfg.nbapredictor.network.RetrofitClient
 import com.tfg.nbapredictor.util.Session
 import kotlinx.coroutines.flow.collectLatest
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun BetsScreen() {
     var apuestas by remember { mutableStateOf<List<Apuesta>>(emptyList()) }
     var points by remember { mutableStateOf(Session.getCurrentUser()?.points ?: 0) }
     var showCreateDialog by remember { mutableStateOf(false) }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun loadBets() {
         val user = Session.getCurrentUser() ?: return
         user.id ?: return

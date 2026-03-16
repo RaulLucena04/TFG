@@ -70,9 +70,15 @@ public class TiendaController {
         try {
             CanjearPuntosResponse resp = tiendaService.canjearPuntos(user.getId(), puntos, emailPayPal);
             if (resp.exito) {
-                user.setPoints(user.getPoints() - puntos);
                 mostrarResultado("¡Canje exitoso! Se han transferido " +
                         String.format("%.2f", resp.eurosTransferidos) + "€ a tu PayPal. " + resp.mensaje, true);
+                
+                // Actualizar puntos en el layout
+                controller.layout.MainLayoutController mainController = controller.layout.MainLayoutController.getInstance();
+                if (mainController != null) {
+                    mainController.actualizarPuntos();
+                }
+                
                 actualizarPuntos();
                 txtPuntos.clear();
             } else {

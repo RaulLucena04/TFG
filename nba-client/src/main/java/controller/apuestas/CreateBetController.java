@@ -282,6 +282,12 @@ public class CreateBetController {
 
             apuestaService.crearApuesta(apuesta);
 
+            // Actualizar puntos en el layout
+            controller.layout.MainLayoutController mainController = controller.layout.MainLayoutController.getInstance();
+            if (mainController != null) {
+                mainController.actualizarPuntos();
+            }
+
             // Mostrar mensaje de éxito
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Apuesta Creada");

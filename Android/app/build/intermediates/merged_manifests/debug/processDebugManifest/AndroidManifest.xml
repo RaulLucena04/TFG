@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="24"
-        android:targetSdkVersion="34" />
+        android:targetSdkVersion="35" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -44,17 +44,11 @@
             android:exported="false"
             android:parentActivityName="com.tfg.nbapredictor.ui.auth.LoginActivity" />
         <activity
-            android:name="com.tfg.nbapredictor.ui.main.MainActivity"
-            android:exported="false" />
-        <activity
             android:name="com.tfg.nbapredictor.ui.compose.ComposeMainActivity"
             android:exported="false" />
         <activity
             android:name="com.tfg.nbapredictor.ui.admin.AdminActivity"
             android:exported="false" />
-        <activity
-            android:name="androidx.compose.ui.tooling.PreviewActivity"
-            android:exported="true" />
 
         <provider
             android:name="androidx.startup.InitializationProvider"
@@ -77,6 +71,10 @@
         <uses-library
             android:name="androidx.window.sidecar"
             android:required="false" />
+
+        <activity
+            android:name="androidx.compose.ui.tooling.PreviewActivity"
+            android:exported="true" />
 
         <receiver
             android:name="androidx.profileinstaller.ProfileInstallReceiver"

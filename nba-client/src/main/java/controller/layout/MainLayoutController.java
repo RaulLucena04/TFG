@@ -11,9 +11,12 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import model.User;
+import service.UsuarioService;
 import session.Session;
 
 public class MainLayoutController {
+
+    private static MainLayoutController instance;
 
     @FXML
     private StackPane contentPane;
@@ -24,6 +27,16 @@ public class MainLayoutController {
     @FXML
     private Label lblUser, lblPoints;
 
+    private final UsuarioService usuarioService = new UsuarioService();
+
+    public MainLayoutController() {
+        instance = this;
+    }
+
+    public static MainLayoutController getInstance() {
+        return instance;
+    }
+
     public void initialize() {
         // Cargar dashboard
         loadDashboard();
@@ -31,6 +44,34 @@ public class MainLayoutController {
         // Cargar usuario desde sesión
         User user = Session.getCurrentUser();
         setUser(user);
+    }
+
+    /**
+     * Actualiza los puntos del usuario obteniéndolos desde el servidor
+     * y actualiza la UI del layout. Este método debe llamarse cada vez
+     * que se hace un cambio en los puntos (apuesta, canje, etc.)
+     */
+    public void actualizarPuntos() {
+        User currentUser = Session.getCurrentUser();
+        if (currentUser == null || currentUser.getId() == null) {
+            return;
+        }
+
+        try {
+            // Obtener usuario actualizado desde el servidor
+            User updatedUser = usuarioService.obtenerUsuarioPorId(currentUser.getId());
+            
+            if (updatedUser != null) {
+                // Actualizar sesión
+                Session.setCurrentUser(updatedUser);
+                
+                // Actualizar UI
+                setUser(updatedUser);
+            }
+        } catch (Exception e) {
+            System.err.println("Error al actualizar puntos: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public void setUser(User user) {
