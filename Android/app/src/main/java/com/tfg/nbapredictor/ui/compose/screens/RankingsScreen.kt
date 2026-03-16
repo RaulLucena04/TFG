@@ -1,5 +1,7 @@
 package com.tfg.nbapredictor.ui.compose.screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.tfg.nbapredictor.model.User
 import com.tfg.nbapredictor.network.RetrofitClient
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RankingsScreen() {
     var users by remember { mutableStateOf<List<User>>(emptyList()) }

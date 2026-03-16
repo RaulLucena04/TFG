@@ -1,5 +1,7 @@
 package com.tfg.nbapredictor.ui.compose.screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,6 +20,7 @@ import com.tfg.nbapredictor.network.RetrofitClient
 import com.tfg.nbapredictor.util.Session
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun StoreScreen() {
     var user by remember { mutableStateOf(Session.getCurrentUser()) }

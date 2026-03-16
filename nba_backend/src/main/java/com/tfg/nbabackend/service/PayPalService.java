@@ -69,14 +69,15 @@ public class PayPalService {
 
     /**
      * Crea un pago Payout (transferencia) a través de PayPal
+     * 
      * @param emailPayPal Email del destinatario
-     * @param amount Cantidad en euros
+     * @param amount      Cantidad en euros
      * @return true si el pago fue exitoso
      */
     public boolean realizarPayout(String emailPayPal, double amount) {
         try {
             String accessToken = obtenerAccessToken();
-            
+
             // Si no hay token (modo simulación), retornar true
             if (accessToken == null) {
                 return true; // Modo simulación
@@ -87,27 +88,29 @@ public class PayPalService {
 
             // Crear el JSON para el payout
             String payoutJson = String.format(
-                "{\n" +
-                "  \"sender_batch_header\": {\n" +
-                "    \"sender_batch_id\": \"batch_%d\",\n" +
-                "    \"email_subject\": \"Canje de puntos NBA Predictor\"\n" +
-                "  },\n" +
-                "  \"items\": [\n" +
-                "    {\n" +
-                "      \"recipient_type\": \"EMAIL\",\n" +
-                "      \"amount\": {\n" +
-                "        \"value\": \"%.2f\",\n" +
-                "        \"currency\": \"EUR\"\n" +
-                "      },\n" +
-                "      \"receiver\": \"%s\",\n" +
-                "      \"note\": \"Canje de puntos por dinero\"\n" +
-                "    }\n" +
-                "  ]\n" +
-                "}",
-                System.currentTimeMillis(),
-                amount,
-                emailPayPal
-            );
+                    java.util.Locale.US,
+                    "{\n" +
+                            "  \"sender_batch_header\": {\n" +
+                            "    \"sender_batch_id\": \"batch_%d\",\n" +
+                            "    \"email_subject\": \"Canje de puntos NBA Predictor\"\n" +
+                            "  },\n" +
+                            "  \"items\": [\n" +
+                            "    {\n" +
+                            "      \"recipient_type\": \"EMAIL\",\n" +
+                            "      \"amount\": {\n" +
+                            "        \"value\": \"%.2f\",\n" +
+                            "        \"currency\": \"EUR\"\n" +
+                            "      },\n" +
+                            "      \"receiver\": \"%s\",\n" +
+                            "      \"note\": \"Canje de puntos por dinero\",\n" +
+                            "      \"sender_item_id\": \"item_%d\"\n" +
+                            "    }\n" +
+                            "  ]\n" +
+                            "}",
+                    System.currentTimeMillis(),
+                    amount,
+                    emailPayPal,
+                    System.currentTimeMillis());
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
@@ -118,7 +121,13 @@ public class PayPalService {
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-            return response.statusCode() == 201; // 201 Created para payouts
+            // 🔍 DEBUG: imprimir respuesta completa de PayPal
+            System.out.println("PayPal response code: " + response.statusCode());
+            System.out.println("PayPal response body: " + response.body());
+
+            return response.statusCode() == 201 || response.statusCode() == 202;
+
+            // 201 Created para payouts
 
         } catch (Exception e) {
             // En caso de error, registrar y retornar false
