@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.tfg.nbapredictor.app-mergeReleaseResources-73:/values-v30/values-v30.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\usuario\\.gradle\\caches\\transforms-4\\292ffcf1cf3828732162fc4acb292c06\\transformed\\jetified-material3-release\\res\\values-v30\\values-v30.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "72",
+                        "endOffsets": "123"
+                    }
+                }
+            ]
+        }
+    ]
+}
