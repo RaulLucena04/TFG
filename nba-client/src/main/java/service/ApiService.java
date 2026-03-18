@@ -3,6 +3,7 @@ package service;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import util.Config;
 
 /**
  * Servicio que proporciona métodos para comunicarse con la API REST del backend.
@@ -16,9 +17,11 @@ import java.net.URL;
 public class ApiService {
 
     /**
-     * URL base del servidor backend para operaciones de usuarios.
+     * Obtiene la URL base del servidor backend para operaciones de usuarios.
      */
-    private static final String BASE_URL = "http://localhost:8080/usuarios";
+    private static String getBaseUrl() {
+        return Config.getServerUrl() + "/usuarios";
+    }
 
     /**
      * Autentica un usuario en el sistema enviando credenciales al servidor.
@@ -33,7 +36,7 @@ public class ApiService {
      */
     public static String login(String username, String password) throws Exception {
 
-        URL url = new URL(BASE_URL + "/login");
+        URL url = new URL(getBaseUrl() + "/login");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
         conn.setRequestMethod("POST");

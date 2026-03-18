@@ -3,6 +3,7 @@ package service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import model.Jugador;
+import util.Config;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -12,7 +13,9 @@ import java.util.List;
 
 public class JugadorService {
 
-    private static final String URL = "http://localhost:8080/jugadores";
+    private static String getUrl() {
+        return Config.getServerUrl() + "/jugadores";
+    }
 
     private final HttpClient client = HttpClient.newHttpClient();
     private final ObjectMapper mapper = new ObjectMapper();
@@ -20,7 +23,7 @@ public class JugadorService {
     public List<Jugador> getAllPlayers() throws Exception {
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(URL))
+                .uri(URI.create(getUrl()))
                 .GET()
                 .build();
 

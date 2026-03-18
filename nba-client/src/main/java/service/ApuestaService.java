@@ -11,17 +11,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import model.Apuesta;
+import util.Config;
 
 public class ApuestaService {
 
-    private static final String BASE_URL = "http://localhost:8080/apuestas";
+    private static String getBaseUrl() {
+        return Config.getServerUrl() + "/apuestas";
+    }
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
     public List<Apuesta> obtenerApuestasUsuario(Long userId) {
 
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + "/usuario/" + userId))
+                    .uri(URI.create(getBaseUrl() + "/usuario/" + userId))
                     .GET()
                     .build();
 
@@ -53,7 +56,7 @@ public class ApuestaService {
             String json = mapper.writeValueAsString(apuesta);
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL))
+                    .uri(URI.create(getBaseUrl()))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();

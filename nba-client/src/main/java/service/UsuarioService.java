@@ -2,6 +2,7 @@ package service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import model.User;
+import util.Config;
 
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -14,13 +15,17 @@ import java.util.Scanner;
 
 public class UsuarioService {
 
-    private static final String BASE_URL = "http://localhost:8080/usuarios";
+    private static String getBaseUrl() {
+        return Config.getServerUrl() + "/usuarios";
+    }
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
     public User login(String username, String password) {
         try {
-            URL url = new URL(BASE_URL + "/login");
+            URL url = new URL(getBaseUrl() + "/login");
+            String finalUrl = getBaseUrl() + "/login";
+               System.out.println("URL FINAL = " + finalUrl);  // <-- AQUI
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             conn.setRequestMethod("POST");
@@ -56,7 +61,7 @@ public class UsuarioService {
     }
 
     public boolean updatePassword(Long id, String newPassword) {
-        String url = BASE_URL + "/" + id + "/password";
+        String url = getBaseUrl() + "/" + id + "/password";
 
         try {
             String json = "{ \"password\": \"" + newPassword + "\" }";
@@ -81,7 +86,7 @@ public class UsuarioService {
 
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL))
+                    .uri(URI.create(getBaseUrl()))
                     .GET()
                     .build();
 
@@ -112,7 +117,7 @@ public class UsuarioService {
             String json = mapper.writeValueAsString(usuario);
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + "/" + usuario.getId()))
+                    .uri(URI.create(getBaseUrl() + "/" + usuario.getId()))
                     .header("Content-Type", "application/json")
                     .PUT(HttpRequest.BodyPublishers.ofString(json))
                     .build();
@@ -130,7 +135,7 @@ public class UsuarioService {
     public User obtenerUsuarioPorId(Long id) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + "/" + id))
+                    .uri(URI.create(getBaseUrl() + "/" + id))
                     .GET()
                     .build();
 

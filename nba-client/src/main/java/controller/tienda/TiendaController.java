@@ -6,6 +6,7 @@ import javafx.scene.control.TextField;
 import service.TiendaService;
 import service.TiendaService.CanjearPuntosResponse;
 import session.Session;
+import java.util.Locale;
 
 public class TiendaController {
 
@@ -71,7 +72,7 @@ public class TiendaController {
             CanjearPuntosResponse resp = tiendaService.canjearPuntos(user.getId(), puntos, emailPayPal);
             if (resp.exito) {
                 mostrarResultado("¡Canje exitoso! Se han transferido " +
-                        String.format("%.2f", resp.eurosTransferidos) + "€ a tu PayPal. " + resp.mensaje, true);
+                        String.format(Locale.US, "%.2f", resp.eurosTransferidos) + "€ a tu PayPal. " + resp.mensaje, true);
                 
                 // Actualizar puntos en el layout
                 controller.layout.MainLayoutController mainController = controller.layout.MainLayoutController.getInstance();

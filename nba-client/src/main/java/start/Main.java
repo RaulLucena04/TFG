@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import util.Config;
 
 /**
  * Clase principal de la aplicación de escritorio NBA Predictor.
@@ -29,7 +30,6 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage stage) throws Exception {
-
         Parent root = FXMLLoader.load(
                 getClass().getResource("/ui/auth/login/LoginView.fxml")
         );
@@ -42,6 +42,9 @@ public class Main extends Application {
         stage.setTitle("NBA Predictor");
         stage.setScene(scene);
         stage.show();
+        
+        // Mostrar diálogo de configuración de servidor después de que la ventana esté visible
+        Config.promptServerUrl();
     }
 
     /**

@@ -12,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import util.Config;
 
 public class RegisterController {
 
@@ -72,7 +73,7 @@ public class RegisterController {
                     "{\"username\":\"%s\", \"email\":\"%s\", \"password\":\"%s\"}",
                     username, email, password);
 
-            java.net.URL url = new java.net.URL("http://localhost:8080/usuarios/register");
+            java.net.URL url = new java.net.URL(Config.getServerUrl() + "/usuarios/register");
             java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");

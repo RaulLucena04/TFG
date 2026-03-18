@@ -6,10 +6,13 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import util.Config;
 
 public class TiendaService {
 
-    private static final String BASE_URL = "http://localhost:8080/tienda";
+    private static String getBaseUrl() {
+        return Config.getServerUrl() + "/tienda";
+    }
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -18,7 +21,7 @@ public class TiendaService {
         String json = mapper.writeValueAsString(request);
 
         HttpRequest httpRequest = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/canjear"))
+                .uri(URI.create(getBaseUrl() + "/canjear"))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();

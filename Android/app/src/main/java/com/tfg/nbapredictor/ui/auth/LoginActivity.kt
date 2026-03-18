@@ -1,80 +1,49 @@
 package com.tfg.nbapredictor.ui.auth
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
-import android.widget.Toast
+import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
-import com.tfg.nbapredictor.R
-import com.tfg.nbapredictor.databinding.ActivityLoginBinding
-import com.tfg.nbapredictor.model.User
-import com.tfg.nbapredictor.network.LoginRequest
-import com.tfg.nbapredictor.network.RetrofitClient
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.tfg.nbapredictor.ui.compose.ComposeMainActivity
-import com.tfg.nbapredictor.util.Session
-import kotlinx.coroutines.launch
+import com.tfg.nbapredictor.ui.compose.screens.LoginScreen
+import com.tfg.nbapredictor.ui.compose.screens.RegisterScreen
 
 class LoginActivity : AppCompatActivity() {
     
-    private lateinit var binding: ActivityLoginBinding
-    
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(binding.root)
         
-        setupListeners()
-    }
-    
-    private fun setupListeners() {
-        binding.btnLogin.setOnClickListener {
-            performLogin()
-        }
-        
-        binding.tvRegister.setOnClickListener {
-            startActivity(Intent(this, RegisterActivity::class.java))
-        }
-    }
-    
-    private fun performLogin() {
-        val username = binding.etUsername.text.toString().trim()
-        val password = binding.etPassword.text.toString().trim()
-        
-        if (username.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, R.string.all_fields_required, Toast.LENGTH_SHORT).show()
-            return
-        }
-        
-        binding.progressBar.visibility = android.view.View.VISIBLE
-        binding.btnLogin.isEnabled = false
-        
-        lifecycleScope.launch {
-            try {
-                val request = LoginRequest(username = username, password = password)
-                val response = RetrofitClient.apiService.login(request)
-                
-                if (response.isSuccessful && response.body() != null) {
-                    Session.setCurrentUser(response.body()!!)
-                    val intent = Intent(this@LoginActivity, ComposeMainActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
-                    finish()
-                } else {
-                    Toast.makeText(
-                        this@LoginActivity,
-                        getString(R.string.login_error),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            } catch (e: Exception) {
-                Toast.makeText(
-                    this@LoginActivity,
-                    getString(R.string.login_error) + ": ${e.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } finally {
-                binding.progressBar.visibility = android.view.View.GONE
-                binding.btnLogin.isEnabled = true
+        setContent {
+            var showRegister by remember { mutableStateOf(false) }
+            
+            if (showRegister) {
+                RegisterScreen(
+                    onRegisterSuccess = {
+                        finish()
+                    },
+                    onLoginClick = {
+                        showRegister = false
+                    }
+                )
+            } else {
+                LoginScreen(
+                    onLoginSuccess = {
+                        val intent = Intent(this@LoginActivity, ComposeMainActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                        finish()
+                    },
+                    onRegisterClick = {
+                        showRegister = true
+                    }
+                )
             }
         }
     }

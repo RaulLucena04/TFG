@@ -3,6 +3,7 @@ package service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import model.Partido;
+import util.Config;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -13,7 +14,9 @@ import java.util.List;
 
 public class PartidoService {
 
-    private static final String BASE_URL = "http://localhost:8080/partidos";
+    private static String getBaseUrl() {
+        return Config.getServerUrl() + "/partidos";
+    }
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final ObjectMapper mapper;
 
@@ -26,7 +29,7 @@ public class PartidoService {
 
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL))
+                    .uri(URI.create(getBaseUrl()))
                     .GET()
                     .build();
 
@@ -50,7 +53,7 @@ public class PartidoService {
             String json = mapper.writeValueAsString(partido);
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL))
+                    .uri(URI.create(getBaseUrl()))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();
@@ -70,7 +73,7 @@ public class PartidoService {
 
     public boolean finalizarPartido(Long id, Integer puntosLocal, Integer puntosVisitante) {
         try {
-            String url = BASE_URL + "/" + id + "/finalizar?puntosLocal=" + puntosLocal + "&puntosVisitante=" + puntosVisitante;
+            String url = getBaseUrl() + "/" + id + "/finalizar?puntosLocal=" + puntosLocal + "&puntosVisitante=" + puntosVisitante;
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))

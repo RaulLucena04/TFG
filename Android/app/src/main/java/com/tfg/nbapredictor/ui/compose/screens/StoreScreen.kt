@@ -137,7 +137,7 @@ fun StoreScreen() {
                                 CanjearPuntosRequest(u.id, puntos, emailPayPal.trim())
                             ).body()
                             if (resp != null && resp.exito) {
-                                mensaje = "¡Canje exitoso! ${String.format("%.2f", resp.eurosTransferidos)}€ transferidos a PayPal."
+                                mensaje = "¡Canje exitoso! ${String.format(java.util.Locale.US, "%.2f", resp.eurosTransferidos)}€ transferidos a PayPal."
                                 esExito = true
                                 puntosStr = ""
                                 RetrofitClient.apiService.getUserById(u.id).body()?.let {
