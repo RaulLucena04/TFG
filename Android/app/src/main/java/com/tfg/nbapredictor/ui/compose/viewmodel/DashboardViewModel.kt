@@ -27,6 +27,7 @@ class DashboardViewModel : ViewModel() {
             try {
                 RetrofitClient.apiService.getUserById(user.id!!).body()?.let {
                     Session.setCurrentUser(it)
+                    Session.notifyUserUpdated()
                 }
             } catch (_: Exception) { }
 

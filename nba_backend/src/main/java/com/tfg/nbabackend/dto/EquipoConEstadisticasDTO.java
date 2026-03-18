@@ -1,7 +1,15 @@
 package com.tfg.nbabackend.dto;
 
 /**
- * Equipo con estadísticas calculadas para la vista de equipos.
+ * DTO que representa un equipo con sus estadísticas calculadas.
+ * 
+ * <p>Incluye información básica del equipo (ID, nombre, conferencia, división)
+ * y estadísticas calculadas (record y promedios de jugadores).
+ * 
+ * <p>Utilizado principalmente para la vista de listado de equipos con estadísticas.
+ * 
+ * @author TFG
+ * @version 1.0
  */
 public class EquipoConEstadisticasDTO {
     private Long id;

@@ -30,6 +30,7 @@ fun ProfileScreen() {
         try {
             RetrofitClient.apiService.getUserById(u.id).body()?.let {
                 Session.setCurrentUser(it)
+                Session.notifyUserUpdated()
                 user = it
             }
             RetrofitClient.apiService.getApuestasByUsuario(u.id).body()?.let {

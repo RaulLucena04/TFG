@@ -20,11 +20,35 @@ public class TiendaService {
     private final UsuarioRepository usuarioRepository;
     private final PayPalService payPalService;
 
+    /**
+     * Constructor del servicio de tienda.
+     * 
+     * @param usuarioRepository repositorio de usuarios
+     * @param payPalService servicio de PayPal para procesar pagos
+     */
     public TiendaService(UsuarioRepository usuarioRepository, PayPalService payPalService) {
         this.usuarioRepository = usuarioRepository;
         this.payPalService = payPalService;
     }
 
+    /**
+     * Canjea puntos virtuales por dinero mediante transferencia PayPal.
+     * 
+     * <p>Valida que:
+     * <ul>
+     *   <li>El usuario exista y tenga suficientes puntos</li>
+     *   <li>Los puntos a canjear sean al menos el mínimo requerido (1000)</li>
+     *   <li>Se proporcione un email de PayPal válido</li>
+     * </ul>
+     * 
+     * <p>Calcula la cantidad en euros (1000 puntos = 1€) y realiza la transferencia
+     * a través de PayPal API. Si las credenciales de PayPal no están configuradas,
+     * funciona en modo simulación.
+     * 
+     * @param request solicitud con ID de usuario, puntos a canjear y email de PayPal
+     * @return respuesta con el resultado del canje (éxito/error, mensaje, euros transferidos, puntos canjeados)
+     * @throws Exception si hay un error al procesar el pago con PayPal
+     */
     public CanjearPuntosResponse canjearPuntos(CanjearPuntosRequest request) throws Exception {
         if (request.getUsuarioId() == null) {
             return new CanjearPuntosResponse(false, "Usuario no válido", 0, 0);

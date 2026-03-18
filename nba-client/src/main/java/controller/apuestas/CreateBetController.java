@@ -273,13 +273,6 @@ public class CreateBetController {
             apuesta.setCuota(cuota); // Asignar cuota calculada
             apuesta.setUsuario(usuario); // Asignar usuario
 
-            System.out.println("Enviando apuesta:");
-            System.out.println("Partido: " + partido.getId());
-            System.out.println("Predicción: " + prediccion);
-            System.out.println("Puntos: " + puntos);
-            System.out.println("Cuota: " + cuota);
-            System.out.println("Usuario: " + usuario.getId());
-
             apuestaService.crearApuesta(apuesta);
 
             // Actualizar puntos en el layout

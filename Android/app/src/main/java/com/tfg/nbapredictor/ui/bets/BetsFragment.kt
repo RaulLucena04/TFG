@@ -49,6 +49,7 @@ class BetsFragment : Fragment() {
             try {
                 RetrofitClient.apiService.getUserById(userId).body()?.let {
                     Session.setCurrentUser(it)
+                    Session.notifyUserUpdated()
                 }
             } catch (_: Exception) { }
             updatePointsDisplay()

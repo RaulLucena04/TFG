@@ -86,6 +86,9 @@ echo # paypal.mode=sandbox ^(o production para produccion^)
 echo paypal.client.id=AVkeujc-n43-Iv57R_jeYF10Tz6zDwYNWVpjtGAKCwjiSZj_QpMgDCdi1fymHElDo2P-WwhWPeyy4aZQ
 echo paypal.client.secret=EHJpUbA1v2a-pK6yQbSX1U88Li6plSH_EJWxzvi8tN6ZuN-XHiO-Pn3GVeWmJTy_mI-amAFlzSGX7eB_
 echo paypal.mode=sandbox
+echo.
+echo server.address=0.0.0.0
+echo server.port=8080
 ) > "src\main\resources\application.properties"
 
 echo application.properties configurado!

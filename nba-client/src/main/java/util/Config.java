@@ -8,7 +8,15 @@ import java.util.Properties;
 
 /**
  * Clase de configuración para gestionar la URL base del servidor.
- * Lee y guarda la configuración en un archivo config.properties.
+ * 
+ * <p>Lee y guarda la configuración en un archivo config.properties en el directorio
+ * de ejecución. Normaliza las URLs eliminando barras finales para mantener consistencia.
+ * 
+ * <p>Proporciona un diálogo JavaFX para configurar la IP del servidor al inicio
+ * de la aplicación, permitiendo conectar a servidores en diferentes máquinas.
+ * 
+ * @author TFG
+ * @version 1.0
  */
 public class Config {
     private static final String CONFIG_FILE = "config.properties";
@@ -21,7 +29,9 @@ public class Config {
     
     /**
      * Carga la configuración desde el archivo config.properties.
-     * Si el archivo no existe, crea uno con valores por defecto.
+     * 
+     * <p>Si el archivo no existe, crea uno con valores por defecto.
+     * Normaliza la URL eliminando cualquier barra final para mantener consistencia.
      */
     private static void loadConfig() {
         Properties props = new Properties();
@@ -67,7 +77,12 @@ public class Config {
     
     /**
      * Establece la URL base del servidor y guarda la configuración.
-     * @param url La nueva URL del servidor
+     * 
+     * <p>Normaliza la URL eliminando espacios en blanco y barras finales
+     * para mantener consistencia. La configuración se guarda automáticamente
+     * en el archivo config.properties.
+     * 
+     * @param url La nueva URL del servidor (se normaliza automáticamente)
      */
     public static void setServerUrl(String url) {
         if (url != null && !url.trim().isEmpty()) {
@@ -78,8 +93,13 @@ public class Config {
     }
     
     /**
-     * Muestra un diálogo para configurar la IP del servidor al inicio de la aplicación.
-     * Si el usuario cancela, usa la configuración por defecto.
+     * Muestra un diálogo JavaFX para configurar la IP del servidor al inicio de la aplicación.
+     * 
+     * <p>Permite al usuario introducir la URL del servidor (por ejemplo, http://192.168.1.100:8080)
+     * para conectar a un servidor en una máquina diferente. Si el usuario cancela,
+     * se mantiene la configuración actual o la URL por defecto.
+     * 
+     * <p>Debe llamarse desde el hilo de JavaFX (se ejecuta con Platform.runLater).
      */
     public static void promptServerUrl() {
         // Esperar a que JavaFX esté listo

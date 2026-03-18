@@ -1,7 +1,18 @@
 package com.tfg.nbabackend.dto;
 
 /**
- * DTO con estadísticas calculadas de un equipo: record y promedios.
+ * DTO con estadísticas calculadas de un equipo.
+ * 
+ * <p>Contiene:
+ * <ul>
+ *   <li>Record: victorias y derrotas basadas en partidos finalizados</li>
+ *   <li>PPG (Puntos Por Partido): suma de promedios de puntos de jugadores</li>
+ *   <li>RPG (Rebotes Por Partido): suma de promedios de rebotes de jugadores</li>
+ *   <li>APG (Asistencias Por Partido): suma de promedios de asistencias de jugadores</li>
+ * </ul>
+ * 
+ * @author TFG
+ * @version 1.0
  */
 public class EquipoEstadisticasDTO {
     private int victorias;

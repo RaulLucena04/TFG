@@ -43,15 +43,15 @@ app/src/main/java/com/tfg/nbapredictor/
 
 ### 1. URL del Backend
 
-Edita el archivo `RetrofitClient.kt` y ajusta la URL base:
+La URL del servidor se configura desde la interfaz de usuario:
 
-```kotlin
-// Para emulador Android
-private const val BASE_URL = "http://10.0.2.2:8080/"
+1. **Primera vez**: Al abrir la aplicación por primera vez, aparecerá un diálogo para configurar la URL del servidor
+2. **Cambiar configuración**: Desde la pantalla de login, toca el botón "Configurar Servidor"
+3. **URLs recomendadas**:
+   - **Emulador Android**: `http://10.0.2.2:8080` (para servidor en tu ordenador)
+   - **Dispositivo físico**: `http://IP_DEL_SERVIDOR:8080` (IP real del servidor en la red)
 
-// Para dispositivo físico, usa la IP de tu máquina
-// private const val BASE_URL = "http://192.168.1.X:8080/"
-```
+La configuración se guarda automáticamente en las preferencias de la aplicación.
 
 ### 2. Permisos
 
@@ -81,8 +81,10 @@ Las dependencias están configuradas en `app/build.gradle`. Ejecuta:
 
 ## Notas
 
-- La aplicación usa `10.0.2.2` para acceder a `localhost` desde el emulador
-- Para dispositivos físicos, necesitarás usar la IP de tu máquina
+- La aplicación permite configurar la URL del servidor desde la interfaz de usuario
+- La URL por defecto es `http://10.0.2.2:8080` (para emulador)
+- Para dispositivos físicos, usa la IP real del servidor en la red local
+- El cliente Retrofit se actualiza automáticamente cuando cambias la configuración del servidor
 - Asegúrate de que el backend tenga CORS configurado para permitir peticiones desde la app
 
 ## Funcionalidades Implementadas

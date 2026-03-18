@@ -1,7 +1,14 @@
 package com.tfg.nbabackend.dto;
 
 /**
- * Respuesta del canje de puntos (simulación PayPal).
+ * DTO para respuesta de canje de puntos.
+ * 
+ * <p>Contiene el resultado del proceso de canje de puntos, incluyendo
+ * si fue exitoso, el mensaje descriptivo, la cantidad en euros transferida
+ * y la cantidad de puntos canjeados.
+ * 
+ * @author TFG
+ * @version 1.0
  */
 public class CanjearPuntosResponse {
     private boolean exito;

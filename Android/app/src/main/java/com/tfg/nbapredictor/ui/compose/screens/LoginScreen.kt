@@ -48,6 +48,8 @@ fun LoginScreen(
             onSave = { url ->
                 ServerConfig.setServerUrl(context, url)
                 serverUrl = url
+                // Forzar recreación del cliente Retrofit con la nueva URL
+                com.tfg.nbapredictor.network.RetrofitClient.reset()
                 val prefs = context.getSharedPreferences("app_prefs", android.content.Context.MODE_PRIVATE)
                 prefs.edit().putBoolean("server_configured", true).apply()
                 showServerConfig = false

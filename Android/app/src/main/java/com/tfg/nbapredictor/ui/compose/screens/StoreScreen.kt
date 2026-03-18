@@ -100,6 +100,7 @@ fun StoreScreen() {
                         try {
                             RetrofitClient.apiService.getUserById(u.id!!).body()?.let {
                                 Session.setCurrentUser(it)
+                                Session.notifyUserUpdated()
                                 user = it
                             }
                         } catch (_: Exception) { }
@@ -142,6 +143,7 @@ fun StoreScreen() {
                                 puntosStr = ""
                                 RetrofitClient.apiService.getUserById(u.id).body()?.let {
                                     Session.setCurrentUser(it)
+                                    Session.notifyUserUpdated()
                                     user = it
                                 }
                             } else {

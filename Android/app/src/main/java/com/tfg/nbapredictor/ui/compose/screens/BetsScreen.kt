@@ -38,6 +38,7 @@ fun BetsScreen() {
         try {
             RetrofitClient.apiService.getUserById(user.id).body()?.let {
                 Session.setCurrentUser(it)
+                Session.notifyUserUpdated()
                 points = it.points
             }
             RetrofitClient.apiService.getApuestasByUsuario(user.id).body()?.let {

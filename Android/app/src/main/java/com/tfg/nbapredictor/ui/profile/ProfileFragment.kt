@@ -78,6 +78,7 @@ class ProfileFragment : Fragment() {
                 if (response.isSuccessful) {
                     response.body()?.let { updated ->
                         Session.setCurrentUser(updated)
+                        Session.notifyUserUpdated()
                         loadUserData()
                         loadStatsAndRecentBets()
                     }

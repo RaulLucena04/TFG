@@ -13,19 +13,39 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Scanner;
 
+/**
+ * Servicio que gestiona las operaciones relacionadas con usuarios.
+ * 
+ * <p>Proporciona métodos para autenticación, actualización de contraseña,
+ * consulta de usuarios y actualización de datos de usuario mediante
+ * comunicación con la API REST del servidor.
+ * 
+ * @author TFG
+ * @version 1.0
+ */
 public class UsuarioService {
 
+    /**
+     * Obtiene la URL base para operaciones de usuarios.
+     * 
+     * @return la URL base del endpoint de usuarios
+     */
     private static String getBaseUrl() {
         return Config.getServerUrl() + "/usuarios";
     }
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
+    /**
+     * Autentica un usuario con username y contraseña.
+     * 
+     * @param username el nombre de usuario
+     * @param password la contraseña del usuario
+     * @return el usuario autenticado si las credenciales son correctas, null en caso contrario
+     */
     public User login(String username, String password) {
         try {
             URL url = new URL(getBaseUrl() + "/login");
-            String finalUrl = getBaseUrl() + "/login";
-               System.out.println("URL FINAL = " + finalUrl);  // <-- AQUI
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             conn.setRequestMethod("POST");
@@ -60,6 +80,13 @@ public class UsuarioService {
         return null;
     }
 
+    /**
+     * Actualiza la contraseña de un usuario.
+     * 
+     * @param id el ID del usuario
+     * @param newPassword la nueva contraseña
+     * @return true si la actualización fue exitosa, false en caso contrario
+     */
     public boolean updatePassword(Long id, String newPassword) {
         String url = getBaseUrl() + "/" + id + "/password";
 
@@ -82,6 +109,11 @@ public class UsuarioService {
         }
     }
 
+    /**
+     * Obtiene todos los usuarios del sistema ordenados por puntos descendente.
+     * 
+     * @return lista de usuarios ordenada por puntos (mayor a menor)
+     */
     public java.util.List<User> listarUsuarios() {
 
         try {
@@ -111,6 +143,12 @@ public class UsuarioService {
         return java.util.List.of();
     }
 
+    /**
+     * Actualiza los datos de un usuario existente.
+     * 
+     * @param usuario el usuario con los datos actualizados
+     * @return true si la actualización fue exitosa, false en caso contrario
+     */
     public boolean actualizarUsuario(User usuario) {
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -132,6 +170,12 @@ public class UsuarioService {
         }
     }
 
+    /**
+     * Obtiene un usuario por su identificador.
+     * 
+     * @param id el ID del usuario
+     * @return el usuario encontrado, o null si no existe o hay un error
+     */
     public User obtenerUsuarioPorId(Long id) {
         try {
             HttpRequest request = HttpRequest.newBuilder()

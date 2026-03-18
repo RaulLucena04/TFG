@@ -55,6 +55,7 @@ class DashboardFragment : Fragment() {
             try {
                 RetrofitClient.apiService.getUserById(user.id!!).body()?.let {
                     Session.setCurrentUser(it)
+                    Session.notifyUserUpdated()
                 }
             } catch (_: Exception) { }
             binding.tvTotalPoints.text = Session.getCurrentUser()?.points?.toString() ?: user.points.toString()

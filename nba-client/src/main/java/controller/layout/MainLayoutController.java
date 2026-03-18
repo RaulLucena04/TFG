@@ -14,6 +14,20 @@ import model.User;
 import service.UsuarioService;
 import session.Session;
 
+/**
+ * Controlador principal del layout de la aplicación.
+ * 
+ * <p>Gestiona la navegación entre diferentes vistas y mantiene la información
+ * del usuario en la barra superior (nombre de usuario y puntos). Proporciona
+ * métodos para actualizar los puntos del usuario cuando se realizan cambios
+ * (apuestas, canjes, etc.).
+ * 
+ * <p>Implementa el patrón Singleton para permitir acceso desde otros controladores
+ * y actualizar los puntos del layout cuando sea necesario.
+ * 
+ * @author TFG
+ * @version 1.0
+ */
 public class MainLayoutController {
 
     private static MainLayoutController instance;
@@ -29,14 +43,33 @@ public class MainLayoutController {
 
     private final UsuarioService usuarioService = new UsuarioService();
 
+    /**
+     * Constructor del controlador principal.
+     * 
+     * <p>Establece esta instancia como la instancia singleton del controlador.
+     */
     public MainLayoutController() {
         instance = this;
     }
 
+    /**
+     * Obtiene la instancia singleton del controlador principal.
+     * 
+     * <p>Permite a otros controladores acceder al MainLayoutController para
+     * actualizar los puntos del usuario en el layout.
+     * 
+     * @return la instancia del controlador principal, o null si no se ha inicializado
+     */
     public static MainLayoutController getInstance() {
         return instance;
     }
 
+    /**
+     * Inicializa el controlador después de cargar el FXML.
+     * 
+     * <p>Carga el dashboard por defecto y establece la información del usuario
+     * en la barra superior.
+     */
     public void initialize() {
         // Cargar dashboard
         loadDashboard();
@@ -48,8 +81,14 @@ public class MainLayoutController {
 
     /**
      * Actualiza los puntos del usuario obteniéndolos desde el servidor
-     * y actualiza la UI del layout. Este método debe llamarse cada vez
-     * que se hace un cambio en los puntos (apuesta, canje, etc.)
+     * y actualiza la UI del layout.
+     * 
+     * <p>Este método debe llamarse cada vez que se hace un cambio en los puntos
+     * (apuesta, canje, resolución de apuestas, etc.) para mantener la información
+     * sincronizada con el servidor y actualizar la interfaz de usuario.
+     * 
+     * <p>Obtiene el usuario actualizado desde el servidor, actualiza la sesión
+     * y refresca la información mostrada en la barra superior del layout.
      */
     public void actualizarPuntos() {
         User currentUser = Session.getCurrentUser();
@@ -74,6 +113,14 @@ public class MainLayoutController {
         }
     }
 
+    /**
+     * Establece la información del usuario en la interfaz.
+     * 
+     * <p>Actualiza el nombre de usuario y los puntos en la barra superior,
+     * y muestra/oculta el botón de administración según el rol del usuario.
+     * 
+     * @param user el usuario a mostrar en la interfaz
+     */
     public void setUser(User user) {
         if (user != null) {
             lblUser.setText(user.getUsername());

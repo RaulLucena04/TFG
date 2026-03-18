@@ -10,12 +10,30 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Servicio que calcula estadísticas de equipos.
+ * 
+ * <p>Este servicio calcula estadísticas basándose en:
+ * <ul>
+ *   <li>Record (victorias/derrotas) de partidos finalizados</li>
+ *   <li>Promedios de jugadores (PPG, RPG, APG) sumando los promedios de todos los jugadores del equipo</li>
+ * </ul>
+ * 
+ * @author TFG
+ * @version 1.0
+ */
 @Service
 public class EquipoEstadisticasService {
 
     private final PartidoRepository partidoRepository;
     private final JugadorService jugadorService;
 
+    /**
+     * Constructor del servicio de estadísticas de equipos.
+     * 
+     * @param partidoRepository repositorio de partidos
+     * @param jugadorService servicio de jugadores
+     */
     public EquipoEstadisticasService(PartidoRepository partidoRepository,
                                      JugadorService jugadorService) {
         this.partidoRepository = partidoRepository;
@@ -23,7 +41,18 @@ public class EquipoEstadisticasService {
     }
 
     /**
-     * Calcula estadísticas de un equipo: record (de partidos finalizados) y PPG/RPG/APG (suma de jugadores).
+     * Calcula estadísticas de un equipo.
+     * 
+     * <p>Calcula:
+     * <ul>
+     *   <li>Record: victorias y derrotas basadas en partidos finalizados donde participa el equipo</li>
+     *   <li>PPG (Puntos Por Partido): suma de promedios de puntos de todos los jugadores</li>
+     *   <li>RPG (Rebotes Por Partido): suma de promedios de rebotes de todos los jugadores</li>
+     *   <li>APG (Asistencias Por Partido): suma de promedios de asistencias de todos los jugadores</li>
+     * </ul>
+     * 
+     * @param equipoId el ID del equipo
+     * @return DTO con las estadísticas calculadas del equipo
      */
     public EquipoEstadisticasDTO calcularEstadisticas(Long equipoId) {
         List<Partido> todos = partidoRepository.findAll();

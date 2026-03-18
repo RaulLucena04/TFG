@@ -36,7 +36,13 @@ public class PayPalService {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
-     * Obtiene un token de acceso de PayPal usando OAuth2
+     * Obtiene un token de acceso de PayPal usando OAuth2.
+     * 
+     * <p>Si las credenciales de PayPal no están configuradas en application.properties,
+     * retorna null para indicar modo simulación.
+     * 
+     * @return token de acceso de PayPal, o null si no hay credenciales configuradas (modo simulación)
+     * @throws Exception si hay un error al obtener el token
      */
     public String obtenerAccessToken() throws Exception {
         String baseUrl = "sandbox".equals(paypalMode) ? PAYPAL_SANDBOX_BASE : PAYPAL_PRODUCTION_BASE;
@@ -68,11 +74,15 @@ public class PayPalService {
     }
 
     /**
-     * Crea un pago Payout (transferencia) a través de PayPal
+     * Crea un pago Payout (transferencia) a través de PayPal.
      * 
-     * @param emailPayPal Email del destinatario
-     * @param amount      Cantidad en euros
-     * @return true si el pago fue exitoso
+     * <p>Realiza una transferencia de dinero al email especificado. Si no hay credenciales
+     * de PayPal configuradas, funciona en modo simulación y retorna true sin realizar
+     * la transferencia real.
+     * 
+     * @param emailPayPal email del destinatario de la transferencia
+     * @param amount cantidad en euros a transferir
+     * @return true si el pago fue exitoso o si está en modo simulación, false en caso de error
      */
     public boolean realizarPayout(String emailPayPal, double amount) {
         try {
@@ -120,10 +130,6 @@ public class PayPalService {
                     .build();
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-            // 🔍 DEBUG: imprimir respuesta completa de PayPal
-            System.out.println("PayPal response code: " + response.statusCode());
-            System.out.println("PayPal response body: " + response.body());
 
             return response.statusCode() == 201 || response.statusCode() == 202;
 
