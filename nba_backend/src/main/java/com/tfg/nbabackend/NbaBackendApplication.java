@@ -12,7 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * <p>El servidor se ejecuta por defecto en el puerto 8080 y escucha en todas las
  * interfaces de red (0.0.0.0) para permitir conexiones desde diferentes máquinas.
  * Esto permite que tanto el cliente Java como la aplicación Android se conecten
- * al servidor desde la misma red local.
+ * al servidor desde lav misma red local.
  * 
  * <p>Configuración (en application.properties):
  * <ul>

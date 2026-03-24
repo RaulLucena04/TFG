@@ -52,19 +52,54 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 echo.
-echo [2/3] Creando instalador .exe con jpackage...
+echo [2/3] Creando paquete con jpackage (imagen de app + instalador .exe)...
 echo.
+
+set "JP_APP_NAME=NBA Predictor"
 
 REM Crear directorio de salida si no existe
 if not exist "dist" mkdir dist
 
-REM Crear el instalador con jpackage
+REM Paso A: imagen de aplicacion (permite parchear el .cfg antes del instalador)
 jpackage ^
-    --input target ^
-    --name "NBA Predictor" ^
+    --type app-image ^
+    --input target\jpackage-input ^
+    --name "%JP_APP_NAME%" ^
     --main-jar TFG-1.0.0.jar ^
     --main-class start.Main ^
+    --dest dist ^
+    --app-version 1.0.0 ^
+    --description "NBA Predictor - Sistema de Predicciones y Apuestas Virtuales" ^
+    --vendor "TFG" ^
+    --copyright "Copyright 2024" ^
+    --java-options --add-modules=javafx.controls,javafx.fxml
+
+if %ERRORLEVEL% NEQ 0 (
+    echo.
+    echo ERROR: jpackage no pudo generar la imagen de la aplicacion.
+    echo Requisitos: JDK 17+ con jpackage. Comprueba que target\jpackage-input contenga javafx\, libs\ y el JAR principal.
+    echo.
+    echo ALTERNATIVA: Usar Launch4j + Inno Setup (create_exe_launch4j.bat)
+    echo.
+    pause
+    exit /b 1
+)
+
+REM JavaFX debe estar en --module-path; jpackage solo pone los JAR en classpath. Parchear .cfg antes del .exe.
+set "JP_CFG=%~dp0dist\%JP_APP_NAME%\app\%JP_APP_NAME%.cfg"
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\fix-jpackage-javafx-cfg.ps1" -CfgPath "%JP_CFG%"
+if %ERRORLEVEL% NEQ 0 (
+    echo ERROR: No se pudo ajustar el .cfg para JavaFX: "%JP_CFG%"
+    echo.
+    pause
+    exit /b 1
+)
+
+REM Paso B: instalador .exe a partir de la imagen ya corregida
+jpackage ^
     --type exe ^
+    --name "%JP_APP_NAME%" ^
+    --app-image "%~dp0dist\%JP_APP_NAME%" ^
     --dest dist ^
     --app-version 1.0.0 ^
     --description "NBA Predictor - Sistema de Predicciones y Apuestas Virtuales" ^
@@ -76,12 +111,11 @@ jpackage ^
 
 if %ERRORLEVEL% NEQ 0 (
     echo.
-    echo ERROR: No se pudo crear el instalador con jpackage.
+    echo ERROR: No se pudo crear el instalador .exe (segundo paso de jpackage).
+    echo Suelen faltar las herramientas WiX en el PATH: https://wixtoolset.org/
+    echo La aplicacion ya esta en: dist\%JP_APP_NAME%\  ^(ejecuta el .exe de esa carpeta^)
     echo.
     echo ALTERNATIVA: Usar Launch4j + Inno Setup
-    echo 1. Descarga Launch4j: http://launch4j.sourceforge.net/
-    echo 2. Crea un wrapper .exe del JAR
-    echo 3. Usa Inno Setup para crear el instalador
     echo.
     pause
     exit /b 1

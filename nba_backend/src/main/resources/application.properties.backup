@@ -7,11 +7,11 @@ spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
 
-# Configuración de PayPal (obtener desde https://developer.paypal.com/dashboard/)
+# Configuracion de PayPal (obtener desde https://developer.paypal.com/dashboard/)
 # Para usar la API real, configura estas credenciales:
 # paypal.client.id=TU_CLIENT_ID
 # paypal.client.secret=TU_CLIENT_SECRET
-# paypal.mode=sandbox (o production para producción)
+# paypal.mode=sandbox (o production para produccion)
 paypal.client.id=AVkeujc-n43-Iv57R_jeYF10Tz6zDwYNWVpjtGAKCwjiSZj_QpMgDCdi1fymHElDo2P-WwhWPeyy4aZQ
 paypal.client.secret=EHJpUbA1v2a-pK6yQbSX1U88Li6plSH_EJWxzvi8tN6ZuN-XHiO-Pn3GVeWmJTy_mI-amAFlzSGX7eB_
 paypal.mode=sandbox

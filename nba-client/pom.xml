@@ -28,12 +28,18 @@
             <classifier>win</classifier>
         </dependency>
 
-        <!-- JavaFX Graphics -->
+        <!-- JavaFX Graphics (excluye el JAR sin clasificador que Maven añade transitivamente) -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-graphics</artifactId>
             <version>${javafx.version}</version>
             <classifier>win</classifier>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-base</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- JavaFX Controls -->
@@ -42,6 +48,12 @@
             <artifactId>javafx-controls</artifactId>
             <version>${javafx.version}</version>
             <classifier>win</classifier>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-graphics</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- JavaFX FXML -->
@@ -50,6 +62,12 @@
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx.version}</version>
             <classifier>win</classifier>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-controls</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- Jackson convertir objetos a JSON -->
@@ -88,6 +106,97 @@
                 <configuration>
                     <mainClass>start.Main</mainClass>
                 </configuration>
+            </plugin>
+
+            <!-- Dependencias en target/jpackage-input para jpackage / Launch4j -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.6.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-jpackage-javafx</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/jpackage-input/javafx</outputDirectory>
+                            <includeScope>runtime</includeScope>
+                            <includeGroupIds>org.openjfx</includeGroupIds>
+                            <overWriteReleases>false</overWriteReleases>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-jpackage-libs</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/jpackage-input/libs</outputDirectory>
+                            <includeScope>runtime</includeScope>
+                            <excludeGroupIds>org.openjfx</excludeGroupIds>
+                            <overWriteReleases>false</overWriteReleases>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-launch4j-lib</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.basedir}/dist/lib</outputDirectory>
+                            <includeScope>runtime</includeScope>
+                            <overWriteReleases>false</overWriteReleases>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-main-jar-jpackage</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/jpackage-input</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}</directory>
+                                    <includes>
+                                        <include>${project.build.finalName}.jar</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-main-jar-dist</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.basedir}/dist</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}</directory>
+                                    <includes>
+                                        <include>${project.build.finalName}.jar</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
         </plugins>

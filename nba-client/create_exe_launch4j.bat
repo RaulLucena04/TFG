@@ -37,18 +37,23 @@ echo [2/2] Creando .exe con Launch4j...
 echo.
 
 REM Crear archivo de configuración Launch4j
+REM El JAR principal y todas las dependencias estan en dist\ ^(Maven package^). JavaFX exige --module-path.
 (
 echo ^<?xml version="1.0" encoding="UTF-8"?^>
 echo ^<launch4jConfig^>
-echo   ^<dontWrapJar^>false^</dontWrapJar^>
+echo   ^<dontWrapJar^>true^</dontWrapJar^>
 echo   ^<headerType^>gui^</headerType^>
-echo   ^<jar^>target\TFG-1.0.0.jar^</jar^>
+echo   ^<jar^>TFG-1.0.0.jar^</jar^>
 echo   ^<outfile^>dist\NBA_Predictor.exe^</outfile^>
 echo   ^<errTitle^>NBA Predictor^</errTitle^>
+echo   ^<classPath^>
+echo     ^<mainClass^>start.Main^</mainClass^>
+echo     ^<cp^>TFG-1.0.0.jar^</cp^>
+echo   ^</classPath^>
 echo   ^<cmdLine^>^</cmdLine^>
 echo   ^<chdir^>.^</chdir^>
 echo   ^<priority^>normal^</priority^>
-echo   ^<downloadUrl^>http://java.com/download^</downloadUrl^>
+echo   ^<downloadUrl^>https://adoptium.net/^</downloadUrl^>
 echo   ^<supportUrl^>^</supportUrl^>
 echo   ^<stayAlive^>false^</stayAlive^>
 echo   ^<restartOnCrash^>false^</restartOnCrash^>
@@ -62,6 +67,12 @@ echo     ^<minVersion^>17^</minVersion^>
 echo     ^<maxVersion^>^</maxVersion^>
 echo     ^<jdkPreference^>preferJre^</jdkPreference^>
 echo     ^<runtimeBits^>64/32^</runtimeBits^>
+echo     ^<opts^>
+echo       ^<opt^>--module-path^</opt^>
+echo       ^<opt^>lib^</opt^>
+echo       ^<opt^>--add-modules^</opt^>
+echo       ^<opt^>javafx.controls,javafx.fxml^</opt^>
+echo     ^</opts^>
 echo   ^</jre^>
 echo   ^<versionInfo^>
 echo     ^<fileVersion^>1.0.0.0^</fileVersion^>
