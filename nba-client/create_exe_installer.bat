@@ -60,6 +60,16 @@ set "JP_APP_NAME=NBA Predictor"
 REM Crear directorio de salida si no existe
 if not exist "dist" mkdir dist
 
+REM jpackage no sobrescribe: eliminar imagen e instalador de ejecuciones anteriores
+if exist "%~dp0dist\%JP_APP_NAME%" (
+    echo Eliminando imagen anterior: dist\%JP_APP_NAME%
+    rd /s /q "%~dp0dist\%JP_APP_NAME%"
+)
+if exist "%~dp0dist\%JP_APP_NAME%-1.0.0.exe" (
+    echo Eliminando instalador anterior...
+    del /q "%~dp0dist\%JP_APP_NAME%-1.0.0.exe"
+)
+
 REM Paso A: imagen de aplicacion (permite parchear el .cfg antes del instalador)
 jpackage ^
     --type app-image ^
@@ -72,6 +82,7 @@ jpackage ^
     --description "NBA Predictor - Sistema de Predicciones y Apuestas Virtuales" ^
     --vendor "TFG" ^
     --copyright "Copyright 2024" ^
+    --java-options --module-path=$APPDIR\javafx ^
     --java-options --add-modules=javafx.controls,javafx.fxml
 
 if %ERRORLEVEL% NEQ 0 (
@@ -85,7 +96,7 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 
-REM JavaFX debe estar en --module-path; jpackage solo pone los JAR en classpath. Parchear .cfg antes del .exe.
+REM Quitar JavaFX del classpath (jpackage lo duplica en classpath y module-path; sin esto puede fallar en algunos JDK).
 set "JP_CFG=%~dp0dist\%JP_APP_NAME%\app\%JP_APP_NAME%.cfg"
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\fix-jpackage-javafx-cfg.ps1" -CfgPath "%JP_CFG%"
 if %ERRORLEVEL% NEQ 0 (
