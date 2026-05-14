@@ -60,11 +60,10 @@ public class MatchFormController {
 
         // Estados del partido
         comboStatus.getItems().addAll(
-            "Programado",
-            "En curso",
-            "Finalizado"
+            "PROGRAMADO",
+            "FINALIZADO"
         );
-        comboStatus.setValue("Programado");
+        comboStatus.setValue("PROGRAMADO");
 
         // Cargar equipos
         cargarEquipos();
@@ -149,7 +148,7 @@ public class MatchFormController {
             comboAwayTeam.setValue(partido.getEquipoVisitante());
         }
         if (partido.getFecha() != null) {
-            dateMatch.setValue(partido.getFecha());
+            dateMatch.setValue(partido.getFechaSoloDia());
         }
         if (partido.getEstado() != null) {
             comboStatus.setValue(partido.getEstado());
@@ -238,7 +237,8 @@ public class MatchFormController {
 
         partido.setEquipoLocal(comboHomeTeam.getValue());
         partido.setEquipoVisitante(comboAwayTeam.getValue());
-        partido.setFecha(dateMatch.getValue());
+        // Backend usa LocalDateTime; el formulario solo pide fecha (sin hora)
+        partido.setFecha(dateMatch.getValue().atTime(12, 0));
         partido.setEstado(comboStatus.getValue());
 
         // Puntos (solo si están ingresados)

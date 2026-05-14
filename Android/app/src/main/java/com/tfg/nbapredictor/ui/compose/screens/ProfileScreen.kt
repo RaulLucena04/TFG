@@ -14,7 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.tfg.nbapredictor.model.Apuesta
-import com.tfg.nbapredictor.network.RetrofitClient
+import com.tfg.nbapredictor.network.SocketApi
 import com.tfg.nbapredictor.util.Session
 import kotlinx.coroutines.flow.collectLatest
 
@@ -28,18 +28,16 @@ fun ProfileScreen() {
         val u = Session.getCurrentUser() ?: return
         u.id ?: return
         try {
-            RetrofitClient.apiService.getUserById(u.id).body()?.let {
-                Session.setCurrentUser(it)
-                Session.notifyUserUpdated()
-                user = it
-            }
-            RetrofitClient.apiService.getApuestasByUsuario(u.id).body()?.let {
-                apuestas = it
-            }
-            RetrofitClient.apiService.getAllUsers().body()?.let { users ->
-                val pos = users.sortedByDescending { it.points }.indexOfFirst { it.id == user?.id }
-                ranking = if (pos >= 0) pos + 1 else -1
-            }
+            val updated = SocketApi.getUserById(u.id)
+            Session.setCurrentUser(updated)
+            Session.notifyUserUpdated()
+            user = updated
+
+            apuestas = SocketApi.getApuestasByUsuario(u.id).toList()
+
+            val users = SocketApi.getAllUsers().toList()
+            val pos = users.sortedByDescending { it.points }.indexOfFirst { it.id == user?.id }
+            ranking = if (pos >= 0) pos + 1 else -1
         } catch (_: Exception) { }
     }
 

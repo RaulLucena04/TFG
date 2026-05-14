@@ -6,6 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
+/**
+ * Repositorio JPA para la entidad {@link Jugador}.
+ */
 public interface JugadorRepository extends JpaRepository<Jugador, Long> {
     List<Jugador> findByEquipo(Equipo equipo);
 }

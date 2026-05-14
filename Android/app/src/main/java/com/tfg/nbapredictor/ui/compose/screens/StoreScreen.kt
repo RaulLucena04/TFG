@@ -16,7 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.tfg.nbapredictor.network.CanjearPuntosRequest
-import com.tfg.nbapredictor.network.RetrofitClient
+import com.tfg.nbapredictor.network.SocketApi
 import com.tfg.nbapredictor.util.Session
 import kotlinx.coroutines.launch
 
@@ -33,10 +33,9 @@ fun StoreScreen() {
     LaunchedEffect(Unit) {
         try {
             Session.getCurrentUser()?.id?.let { id ->
-                RetrofitClient.apiService.getUserById(id).body()?.let {
-                    Session.setCurrentUser(it)
-                    user = it
-                }
+                val updated = SocketApi.getUserById(id)
+                Session.setCurrentUser(updated)
+                user = updated
             }
         } catch (_: Exception) { }
     }
@@ -98,11 +97,10 @@ fun StoreScreen() {
                 onClick = {
                     scope.launch {
                         try {
-                            RetrofitClient.apiService.getUserById(u.id!!).body()?.let {
-                                Session.setCurrentUser(it)
-                                Session.notifyUserUpdated()
-                                user = it
-                            }
+                            val updated = SocketApi.getUserById(u.id!!)
+                            Session.setCurrentUser(updated)
+                            Session.notifyUserUpdated()
+                            user = updated
                         } catch (_: Exception) { }
                     }
                 }
@@ -134,20 +132,19 @@ fun StoreScreen() {
                     }
                     scope.launch {
                         try {
-                            val resp = RetrofitClient.apiService.canjearPuntos(
+                            val resp = SocketApi.canjearPuntos(
                                 CanjearPuntosRequest(u.id, puntos, emailPayPal.trim())
-                            ).body()
-                            if (resp != null && resp.exito) {
+                            )
+                            if (resp.exito) {
                                 mensaje = "¡Canje exitoso! ${String.format(java.util.Locale.US, "%.2f", resp.eurosTransferidos)}€ transferidos a PayPal."
                                 esExito = true
                                 puntosStr = ""
-                                RetrofitClient.apiService.getUserById(u.id).body()?.let {
-                                    Session.setCurrentUser(it)
-                                    Session.notifyUserUpdated()
-                                    user = it
-                                }
+                                val updated = SocketApi.getUserById(u.id)
+                                Session.setCurrentUser(updated)
+                                Session.notifyUserUpdated()
+                                user = updated
                             } else {
-                                mensaje = resp?.mensaje ?: "Error al canjear"
+                                mensaje = resp.mensaje
                                 esExito = false
                             }
                         } catch (e: Exception) {

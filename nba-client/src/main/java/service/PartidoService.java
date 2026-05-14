@@ -1,14 +1,6 @@
 package service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import model.Partido;
-import util.Config;
-
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,17 +14,7 @@ import java.util.List;
  * @version 1.0
  */
 public class PartidoService {
-
-    /**
-     * Obtiene la URL base para operaciones de partidos.
-     * 
-     * @return la URL base del endpoint de partidos
-     */
-    private static String getBaseUrl() {
-        return Config.getServerUrl() + "/partidos";
-    }
-    private final HttpClient httpClient = HttpClient.newHttpClient();
-    private final ObjectMapper mapper;
+    private final SocketApiClient api = new SocketApiClient();
 
     /**
      * Constructor del servicio de partidos.
@@ -40,8 +22,6 @@ public class PartidoService {
      * <p>Inicializa el ObjectMapper con soporte para LocalDateTime.
      */
     public PartidoService() {
-        this.mapper = new ObjectMapper();
-        this.mapper.registerModule(new JavaTimeModule());
     }
 
     /**
@@ -52,18 +32,8 @@ public class PartidoService {
     public List<Partido> listarPartidos() {
 
         try {
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(getBaseUrl()))
-                    .GET()
-                    .build();
-
-            HttpResponse<String> response =
-                    httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-            if (response.statusCode() == 200) {
-                Partido[] partidos = mapper.readValue(response.body(), Partido[].class);
-                return Arrays.asList(partidos);
-            }
+            return api.request("match.list", java.util.Map.of(),
+                    new com.fasterxml.jackson.core.type.TypeReference<List<Partido>>() {});
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -82,19 +52,7 @@ public class PartidoService {
      */
     public Partido crearPartido(Partido partido) {
         try {
-            String json = mapper.writeValueAsString(partido);
-
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(getBaseUrl()))
-                    .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(json))
-                    .build();
-
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-            if (response.statusCode() == 200 || response.statusCode() == 201) {
-                return mapper.readValue(response.body(), Partido.class);
-            }
+            return api.request("match.create", partido, Partido.class);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -116,16 +74,10 @@ public class PartidoService {
      */
     public boolean finalizarPartido(Long id, Integer puntosLocal, Integer puntosVisitante) {
         try {
-            String url = getBaseUrl() + "/" + id + "/finalizar?puntosLocal=" + puntosLocal + "&puntosVisitante=" + puntosVisitante;
-
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
-                    .PUT(HttpRequest.BodyPublishers.noBody())
-                    .build();
-
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-            return response.statusCode() == 200;
+            api.request("match.finalize",
+                    java.util.Map.of("id", id, "puntosLocal", puntosLocal, "puntosVisitante", puntosVisitante),
+                    Partido.class);
+            return true;
 
         } catch (Exception e) {
             e.printStackTrace();

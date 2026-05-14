@@ -2,17 +2,25 @@ package model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javafx.beans.property.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
+/**
+ * Modelo de partido usado por el cliente JavaFX.
+ *
+ * <p>El backend representa la fecha como {@link LocalDateTime}; el cliente expone además
+ * {@link #getFechaSoloDia()} para casos de filtrado por día.</p>
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Partido {
 
     private final LongProperty id = new SimpleLongProperty();
 
     @JsonProperty("fecha")
-    private final ObjectProperty<LocalDate> fecha = new SimpleObjectProperty<>();
+    private final ObjectProperty<LocalDateTime> fecha = new SimpleObjectProperty<>();
 
     @JsonProperty("equipoLocal")
     private Equipo equipoLocal;
@@ -38,9 +46,14 @@ public class Partido {
     public void setId(long id) { this.id.set(id); }
     public LongProperty idProperty() { return id; }
 
-    public LocalDate getFecha() { return fecha.get(); }
-    public void setFecha(LocalDate fecha) { this.fecha.set(fecha); }
-    public ObjectProperty<LocalDate> fechaProperty() { return fecha; }
+    public LocalDateTime getFecha() { return fecha.get(); }
+    public void setFecha(LocalDateTime fecha) { this.fecha.set(fecha); }
+    public ObjectProperty<LocalDateTime> fechaProperty() { return fecha; }
+
+    @JsonIgnore
+    public LocalDate getFechaSoloDia() {
+        return getFecha() != null ? getFecha().toLocalDate() : null;
+    }
 
     public Equipo getEquipoLocal() { return equipoLocal; }
     public void setEquipoLocal(Equipo equipoLocal) { this.equipoLocal = equipoLocal; }

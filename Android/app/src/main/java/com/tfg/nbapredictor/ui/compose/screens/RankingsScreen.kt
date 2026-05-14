@@ -15,7 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.tfg.nbapredictor.model.User
-import com.tfg.nbapredictor.network.RetrofitClient
+import com.tfg.nbapredictor.network.SocketApi
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RankingsScreen() {
@@ -23,9 +23,7 @@ fun RankingsScreen() {
 
     LaunchedEffect(Unit) {
         try {
-                RetrofitClient.apiService.getAllUsers().body()?.let {
-                    users = it.sortedByDescending { u -> u.points }
-                }
+            users = SocketApi.getAllUsers().toList().sortedByDescending { u -> u.points }
         } catch (_: Exception) { }
     }
 

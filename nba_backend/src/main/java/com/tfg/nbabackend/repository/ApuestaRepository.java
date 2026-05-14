@@ -7,6 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
+/**
+ * Repositorio JPA para la entidad {@link Apuesta}.
+ *
+ * <p>Proporciona consultas derivadas para recuperar apuestas por usuario y por partido.</p>
+ */
 public interface ApuestaRepository extends JpaRepository<Apuesta, Long> {
 
     List<Apuesta> findByUsuario(Usuario usuario);

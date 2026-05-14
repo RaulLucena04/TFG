@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tfg.nbapredictor.databinding.FragmentRankingsBinding
 import com.tfg.nbapredictor.model.Apuesta
 import com.tfg.nbapredictor.model.User
-import com.tfg.nbapredictor.network.RetrofitClient
+import com.tfg.nbapredictor.network.SocketApi
 import com.tfg.nbapredictor.util.Session
 import kotlinx.coroutines.launch
 
@@ -56,17 +56,11 @@ class RankingsFragment : Fragment() {
     private fun loadRankings() {
         lifecycleScope.launch {
             try {
-                val usersResponse = RetrofitClient.apiService.getAllUsers()
-                if (!usersResponse.isSuccessful) {
-                    Toast.makeText(context, "Error al cargar usuarios", Toast.LENGTH_SHORT).show()
-                    return@launch
-                }
-                val usuarios = usersResponse.body() ?: emptyList()
+                val usuarios = SocketApi.getAllUsers().toList()
 
                 val rows = mutableListOf<RankingRow>()
                 for (usuario in usuarios) {
-                    val apuestasResponse = RetrofitClient.apiService.getApuestasByUsuario(usuario.id!!)
-                    val apuestas = if (apuestasResponse.isSuccessful) apuestasResponse.body() ?: emptyList() else emptyList()
+                    val apuestas = SocketApi.getApuestasByUsuario(usuario.id!!).toList()
                     rows.add(calcularEstadisticasUsuario(usuario, apuestas))
                 }
 

@@ -10,7 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tfg.nbapredictor.databinding.FragmentProfileBinding
 import com.tfg.nbapredictor.model.Apuesta
-import com.tfg.nbapredictor.network.RetrofitClient
+import com.tfg.nbapredictor.network.SocketApi
 import com.tfg.nbapredictor.ui.bets.BetsAdapter
 import com.tfg.nbapredictor.ui.auth.LoginActivity
 import com.tfg.nbapredictor.util.Session
@@ -74,15 +74,11 @@ class ProfileFragment : Fragment() {
         val userId = user.id ?: return
         lifecycleScope.launch {
             try {
-                val response = RetrofitClient.apiService.getUserById(userId)
-                if (response.isSuccessful) {
-                    response.body()?.let { updated ->
-                        Session.setCurrentUser(updated)
-                        Session.notifyUserUpdated()
-                        loadUserData()
-                        loadStatsAndRecentBets()
-                    }
-                }
+                val updated = SocketApi.getUserById(userId)
+                Session.setCurrentUser(updated)
+                Session.notifyUserUpdated()
+                loadUserData()
+                loadStatsAndRecentBets()
             } catch (_: Exception) { }
         }
     }
@@ -94,9 +90,7 @@ class ProfileFragment : Fragment() {
 
         lifecycleScope.launch {
             try {
-                val apuestasResponse = RetrofitClient.apiService.getApuestasByUsuario(userId)
-                if (!apuestasResponse.isSuccessful) return@launch
-                val apuestas = apuestasResponse.body() ?: emptyList()
+                val apuestas = SocketApi.getApuestasByUsuario(userId).toList()
 
                 binding.tvPoints.text = Session.getCurrentUser()?.points?.toString() ?: user.points.toString()
                 binding.tvTotalBets.text = apuestas.size.toString()
@@ -106,14 +100,9 @@ class ProfileFragment : Fragment() {
                     String.format("%.1f%%", ganadas * 100.0 / finalizadas)
                 } else "0%"
 
-                val usersResponse = RetrofitClient.apiService.getAllUsers()
-                if (usersResponse.isSuccessful) {
-                    val usuarios = usersResponse.body()?.sortedByDescending { it.points } ?: emptyList()
-                    val posicion = usuarios.indexOfFirst { it.id == user.id }
-                    binding.tvRanking.text = if (posicion >= 0) "#${posicion + 1}" else "#?"
-                } else {
-                    binding.tvRanking.text = "#?"
-                }
+                val usuarios = SocketApi.getAllUsers().toList().sortedByDescending { it.points }
+                val posicion = usuarios.indexOfFirst { it.id == user.id }
+                binding.tvRanking.text = if (posicion >= 0) "#${posicion + 1}" else "#?"
 
                 cargarApuestasRecientes(apuestas.take(10))
             } catch (_: Exception) { }

@@ -1,13 +1,5 @@
 package service;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import util.Config;
-
 /**
  * Servicio que gestiona las operaciones relacionadas con la tienda virtual.
  * 
@@ -18,17 +10,7 @@ import util.Config;
  * @version 1.0
  */
 public class TiendaService {
-
-    /**
-     * Obtiene la URL base para operaciones de tienda.
-     * 
-     * @return la URL base del endpoint de tienda
-     */
-    private static String getBaseUrl() {
-        return Config.getServerUrl() + "/tienda";
-    }
-    private final HttpClient httpClient = HttpClient.newHttpClient();
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final SocketApiClient api = new SocketApiClient();
 
     /**
      * Canjea puntos virtuales por dinero mediante transferencia PayPal.
@@ -44,16 +26,7 @@ public class TiendaService {
      */
     public CanjearPuntosResponse canjearPuntos(Long usuarioId, int puntos, String emailPayPal) throws Exception {
         var request = new CanjearPuntosRequest(usuarioId, puntos, emailPayPal);
-        String json = mapper.writeValueAsString(request);
-
-        HttpRequest httpRequest = HttpRequest.newBuilder()
-                .uri(URI.create(getBaseUrl() + "/canjear"))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(json))
-                .build();
-
-        HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-        return mapper.readValue(response.body(), CanjearPuntosResponse.class);
+        return api.request("store.redeem", request, CanjearPuntosResponse.class);
     }
 
     /**

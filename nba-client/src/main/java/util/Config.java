@@ -20,8 +20,10 @@ import java.util.Properties;
  */
 public class Config {
     private static final String CONFIG_FILE = "config.properties";
-    private static final String DEFAULT_SERVER_URL = "http://localhost:8080";
-    private static String serverUrl = DEFAULT_SERVER_URL;
+    private static final String DEFAULT_SERVER_HOST = "localhost";
+    private static final int DEFAULT_SERVER_PORT = 9090;
+    private static String serverHost = DEFAULT_SERVER_HOST;
+    private static int serverPort = DEFAULT_SERVER_PORT;
     
     static {
         loadConfig();
@@ -40,12 +42,35 @@ public class Config {
         if (configFile.exists()) {
             try (FileReader reader = new FileReader(configFile)) {
                 props.load(reader);
-                String url = props.getProperty("server.url", DEFAULT_SERVER_URL);
-                // Asegurar que la URL no termine con /
-                serverUrl = url.endsWith("/") ? url.substring(0, url.length() - 1) : url;
+                String host = props.getProperty("server.host");
+                String portStr = props.getProperty("server.port");
+
+                if (host != null && !host.isBlank() && portStr != null && !portStr.isBlank()) {
+                    serverHost = host.trim();
+                    serverPort = Integer.parseInt(portStr.trim());
+                    return;
+                }
+
+                // Migración: si existe la antigua server.url (HTTP), extraer host/puerto.
+                String legacyUrl = props.getProperty("server.url");
+                if (legacyUrl != null && !legacyUrl.isBlank()) {
+                    HostPort hp = parseHostPort(legacyUrl.trim());
+                    serverHost = hp.host;
+                    serverPort = hp.port;
+                    saveConfig();
+                    return;
+                }
+
+                serverHost = DEFAULT_SERVER_HOST;
+                serverPort = DEFAULT_SERVER_PORT;
             } catch (IOException e) {
                 System.err.println("Error al cargar configuración: " + e.getMessage());
-                serverUrl = DEFAULT_SERVER_URL;
+                serverHost = DEFAULT_SERVER_HOST;
+                serverPort = DEFAULT_SERVER_PORT;
+            } catch (Exception e) {
+                System.err.println("Configuración inválida, usando valores por defecto: " + e.getMessage());
+                serverHost = DEFAULT_SERVER_HOST;
+                serverPort = DEFAULT_SERVER_PORT;
             }
         } else {
             // Crear archivo de configuración por defecto
@@ -58,7 +83,8 @@ public class Config {
      */
     private static void saveConfig() {
         Properties props = new Properties();
-        props.setProperty("server.url", serverUrl);
+        props.setProperty("server.host", serverHost);
+        props.setProperty("server.port", String.valueOf(serverPort));
         
         try (FileWriter writer = new FileWriter(CONFIG_FILE)) {
             props.store(writer, "Configuración del servidor");
@@ -68,36 +94,38 @@ public class Config {
     }
     
     /**
-     * Obtiene la URL base del servidor.
-     * @return La URL base del servidor (sin barra final)
+     * Obtiene el host del servidor de sockets.
      */
-    public static String getServerUrl() {
-        return serverUrl;
+    public static String getServerHost() {
+        return serverHost;
+    }
+
+    /**
+     * Obtiene el puerto del servidor de sockets.
+     */
+    public static int getServerPort() {
+        return serverPort;
     }
     
     /**
-     * Establece la URL base del servidor y guarda la configuración.
+     * Establece host y puerto del servidor y guarda la configuración.
      * 
-     * <p>Normaliza la URL eliminando espacios en blanco y barras finales
-     * para mantener consistencia. La configuración se guarda automáticamente
-     * en el archivo config.properties.
-     * 
-     * @param url La nueva URL del servidor (se normaliza automáticamente)
+     * @param host host o IP
+     * @param port puerto TCP
      */
-    public static void setServerUrl(String url) {
-        if (url != null && !url.trim().isEmpty()) {
-            // Asegurar que la URL no termine con /
-            serverUrl = url.trim().endsWith("/") ? url.trim().substring(0, url.trim().length() - 1) : url.trim();
-            saveConfig();
-        }
+    public static void setServerAddress(String host, int port) {
+        if (host == null || host.trim().isEmpty()) return;
+        if (port <= 0 || port > 65535) return;
+        serverHost = host.trim();
+        serverPort = port;
+        saveConfig();
     }
     
     /**
      * Muestra un diálogo JavaFX para configurar la IP del servidor al inicio de la aplicación.
      * 
-     * <p>Permite al usuario introducir la URL del servidor (por ejemplo, http://192.168.1.100:8080)
-     * para conectar a un servidor en una máquina diferente. Si el usuario cancela,
-     * se mantiene la configuración actual o la URL por defecto.
+     * <p>Permite al usuario introducir host:puerto (por ejemplo, 192.168.1.100:9090)
+     * para conectar a un servidor en una máquina diferente.
      * 
      * <p>Debe llamarse desde el hilo de JavaFX (se ejecuta con Platform.runLater).
      */
@@ -105,19 +133,21 @@ public class Config {
         // Esperar a que JavaFX esté listo
         javafx.application.Platform.runLater(() -> {
             try {
-                javafx.scene.control.TextInputDialog dialog = new javafx.scene.control.TextInputDialog(serverUrl);
+                javafx.scene.control.TextInputDialog dialog =
+                        new javafx.scene.control.TextInputDialog(serverHost + ":" + serverPort);
                 dialog.setTitle("Configuración del Servidor");
                 dialog.setHeaderText("Configurar IP del Servidor");
-                dialog.setContentText("Introduce la URL del servidor (ej: http://192.168.1.100:8080):");
+                dialog.setContentText("Introduce host:puerto (ej: 192.168.1.100:9090):");
                 
                 java.util.Optional<String> result = dialog.showAndWait();
-                result.ifPresent(url -> {
-                    if (!url.trim().isEmpty()) {
-                        setServerUrl(url);
+                result.ifPresent(value -> {
+                    if (!value.trim().isEmpty()) {
+                        HostPort hp = parseHostPort(value.trim());
+                        setServerAddress(hp.host, hp.port);
                         javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
                         alert.setTitle("Configuración Guardada");
                         alert.setHeaderText(null);
-                        alert.setContentText("URL del servidor configurada: " + serverUrl);
+                        alert.setContentText("Servidor configurado: " + serverHost + ":" + serverPort);
                         alert.showAndWait();
                     }
                 });
@@ -125,5 +155,31 @@ public class Config {
                 System.err.println("Error al mostrar diálogo de configuración: " + e.getMessage());
             }
         });
+    }
+
+    private record HostPort(String host, int port) {}
+
+    private static HostPort parseHostPort(String value) {
+        // Permitir valores legacy tipo http://host:puerto o host:puerto
+        String trimmed = value.trim();
+        try {
+            java.net.URI uri;
+            if (trimmed.contains("://")) {
+                uri = java.net.URI.create(trimmed);
+            } else {
+                // Si viene "host:puerto", forzamos esquema para que URI lo parse correctamente
+                uri = java.net.URI.create("tcp://" + trimmed);
+            }
+            String host = uri.getHost();
+            int port = uri.getPort();
+            if (host == null || host.isBlank()) {
+                // Caso raro: "localhost" sin puerto
+                host = trimmed.contains(":") ? trimmed.substring(0, trimmed.indexOf(':')) : trimmed;
+            }
+            if (port <= 0) port = DEFAULT_SERVER_PORT;
+            return new HostPort(host, port);
+        } catch (Exception e) {
+            return new HostPort(DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT);
+        }
     }
 }

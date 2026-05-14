@@ -24,7 +24,7 @@ TFG-main/
 1. Abre una terminal en la carpeta `nba_backend`
 2. Ejecuta:
    ```bash
-   install_server.bat
+   setup_server.bat
    ```
 3. Sigue las instrucciones en pantalla:
    - Introduce tus credenciales de MySQL
@@ -40,7 +40,7 @@ TFG-main/
    ```
 3. Ejecuta:
    ```bash
-   ./install_server.sh
+   ./setup_server.sh
    ```
 4. Sigue las instrucciones en pantalla
 
@@ -59,7 +59,18 @@ Esto añadirá:
 
 ### Iniciar el servidor:
 
-**Opción 1: Con Maven**
+**Opción 1: Script (recomendado)**
+```bash
+nba_backend/install_server.bat
+```
+
+En Linux/Mac:
+
+```bash
+./install_server.sh
+```
+
+**Opción 2: Con Maven**
 ```bash
 mvn spring-boot:run
 ```
@@ -70,7 +81,7 @@ mvn clean package
 java -jar target/nba-backend-0.0.1-SNAPSHOT.jar
 ```
 
-El servidor estará disponible en: `http://localhost:8080`
+El servidor escuchará por sockets en: `localhost:9090` (configurable en `socket.port`)
 
 ## 2. INSTALACIÓN DEL CLIENTE DE ESCRITORIO
 
@@ -104,8 +115,8 @@ Ver `nba-client/README_INSTALADOR.md` para más detalles.
 1. Ejecuta el instalador `.exe` generado
 2. Sigue el asistente de instalación
 3. La primera vez que ejecutes la aplicación, configura la IP del servidor:
-   - Si el servidor está en la misma máquina: `http://localhost:8080`
-   - Si el servidor está en otra máquina: `http://IP_DEL_SERVIDOR:8080`
+   - Si el servidor está en la misma máquina: `localhost:9090`
+   - Si el servidor está en otra máquina: `IP_DEL_SERVIDOR:9090`
 
 ### Ejecutar sin instalador (desarrollo):
 
@@ -165,8 +176,10 @@ La primera vez que abras la aplicación:
 ## RESUMEN DE ARCHIVOS DE INSTALACIÓN
 
 ### Servidor:
-- **Script de instalación Windows**: `nba_backend/install_server.bat`
-- **Script de instalación Linux/Mac**: `nba_backend/install_server.sh`
+- **Script de configuración Windows**: `nba_backend/setup_server.bat`
+- **Script de configuración Linux/Mac**: `nba_backend/setup_server.sh`
+- **Script de arranque Windows**: `nba_backend/install_server.bat`
+- **Script de arranque Linux/Mac**: `nba_backend/install_server.sh`
 - **Base de datos vacía**: `nba_backend/create_empty_database.sql`
 - **Poblar base de datos completa**: `nba_backend/populate_database.sql`
 
@@ -198,9 +211,8 @@ La primera vez que abras la aplicación:
 
 ### El cliente no se conecta al servidor:
 - Verifica que el servidor esté ejecutándose
-- Verifica la IP configurada en `config.properties` (cliente) o en la app (Android)
-- Verifica que no haya firewall bloqueando el puerto 8080
-- Si usas emulador Android, usa `http://10.0.2.2:8080` para servidor local
+- Verifica la IP/puerto configurados en `config.properties` (cliente) o en la app (Android)
+- Verifica que no haya firewall bloqueando el puerto 9090
 
 ### El instalador .exe no funciona:
 - Verifica que Java 17+ esté instalado

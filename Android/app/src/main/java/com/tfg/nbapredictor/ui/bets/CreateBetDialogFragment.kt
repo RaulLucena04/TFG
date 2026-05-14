@@ -16,7 +16,7 @@ import com.tfg.nbapredictor.databinding.DialogCreateBetBinding
 import com.tfg.nbapredictor.model.Apuesta
 import com.tfg.nbapredictor.model.Partido
 import com.tfg.nbapredictor.model.User
-import com.tfg.nbapredictor.network.RetrofitClient
+import com.tfg.nbapredictor.network.SocketApi
 import com.tfg.nbapredictor.util.Session
 import kotlinx.coroutines.launch
 
@@ -78,12 +78,11 @@ class CreateBetDialogFragment(
         }
         lifecycleScope.launch {
             try {
-                val response = RetrofitClient.apiService.getPartidos()
-                if (response.isSuccessful) {
-                    val todos = response.body() ?: emptyList()
+                val todos = SocketApi.getPartidos().toList()
+                run {
                     partidosDisponibles = todos.filter { p ->
                         val e = p.estado?.uppercase() ?: ""
-                        e == "PROGRAMADO" || e == "EN_CURSO"
+                        e == "PROGRAMADO"
                     }
                     val labels = if (partidosDisponibles.isEmpty()) {
                         listOf("No hay partidos disponibles")
@@ -167,9 +166,8 @@ class CreateBetDialogFragment(
         val idLocal = partido.equipoLocal?.id ?: return 2.0
         val idVisitante = partido.equipoVisitante?.id ?: return 2.0
         return try {
-            val statsLocal = RetrofitClient.apiService.getEquipoEstadisticas(idLocal).body()
-            val statsVisitante = RetrofitClient.apiService.getEquipoEstadisticas(idVisitante).body()
-            if (statsLocal == null || statsVisitante == null) return 2.0
+            val statsLocal = SocketApi.getEquipoEstadisticas(idLocal)
+            val statsVisitante = SocketApi.getEquipoEstadisticas(idVisitante)
             val totalLocal = statsLocal.victorias + statsLocal.derrotas
             val totalVisitante = statsVisitante.victorias + statsVisitante.derrotas
             val winRateLocal = if (totalLocal > 0) statsLocal.victorias.toDouble() / totalLocal else 0.5
@@ -229,21 +227,15 @@ class CreateBetDialogFragment(
                 usuario = user
             )
             try {
-                val response = RetrofitClient.apiService.createApuesta(apuesta)
-                if (response.isSuccessful) {
-                    user.id?.let { id ->
-                        RetrofitClient.apiService.getUserById(id).body()?.let { updated ->
-                            Session.setCurrentUser(updated)
-                            Session.notifyUserUpdated()
-                        }
-                    }
+                SocketApi.createApuesta(apuesta)
+                user.id?.let { id ->
+                    val updated = SocketApi.getUserById(id)
+                    Session.setCurrentUser(updated)
+                    Session.notifyUserUpdated()
+                }
                     Toast.makeText(requireContext(), "Apuesta creada correctamente", Toast.LENGTH_SHORT).show()
                     onBetCreated()
                     dismiss()
-                } else {
-                    val body = response.errorBody()?.string()
-                    showError(body ?: "Error al crear apuesta")
-                }
             } catch (e: Exception) {
                 showError("Error: ${e.message}")
             }

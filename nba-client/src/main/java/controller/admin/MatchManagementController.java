@@ -153,8 +153,8 @@ public class MatchManagementController {
 
             // Filtro de fecha
             LocalDate fechaFiltro = dateFilter.getValue();
-            if (fechaFiltro != null && partido.getFecha() != null) {
-                if (!partido.getFecha().equals(fechaFiltro)) {
+            if (fechaFiltro != null && partido.getFechaSoloDia() != null) {
+                if (!partido.getFechaSoloDia().equals(fechaFiltro)) {
                     return false;
                 }
             }

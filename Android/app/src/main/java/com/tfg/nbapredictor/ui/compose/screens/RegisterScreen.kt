@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.tfg.nbapredictor.model.User
-import com.tfg.nbapredictor.network.RetrofitClient
+import com.tfg.nbapredictor.network.SocketApi
 import com.tfg.nbapredictor.util.Session
 import kotlinx.coroutines.launch
 
@@ -129,14 +129,8 @@ fun RegisterScreen(
                 scope.launch {
                     try {
                         val user = User(username = username.trim(), email = email.trim(), password = password)
-                        val response = RetrofitClient.apiService.register(user)
-                        
-                        if (response.isSuccessful && response.body() != null) {
-                            onRegisterSuccess()
-                        } else {
-                            val errorBody = response.errorBody()?.string()
-                            errorMessage = errorBody ?: "Error al registrar usuario"
-                        }
+                        SocketApi.register(user)
+                        onRegisterSuccess()
                     } catch (e: Exception) {
                         errorMessage = "Error de conexión: ${e.message}"
                     } finally {

@@ -3,6 +3,7 @@ package com.tfg.nbabackend.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.tfg.nbabackend.enums.EstadoPartido;
 import com.tfg.nbabackend.model.Partido;
@@ -66,6 +67,7 @@ public class PartidoService {
      * @return el partido finalizado
      * @throws RuntimeException si el partido no existe o ya está finalizado
      */
+    @Transactional
     public Partido finalizarPartido(Long id, Integer puntosLocal, Integer puntosVisitante) {
 
         Partido partido = partidoRepository.findById(id).orElseThrow();
@@ -78,8 +80,12 @@ public class PartidoService {
         partido.setPuntosVisitante(puntosVisitante);
         partido.setEstado(EstadoPartido.FINALIZADO);
 
+        // Guardamos el partido antes de resolver apuestas para que el resultado sea persistente
+        // y consistente si otros procesos consultan el estado durante la resolución.
         partidoRepository.save(partido);
 
+        // Resolver apuestas es parte de la misma operación lógica: debe ser atómica con el cambio
+        // de estado del partido para evitar partidos FINALIZADOS con apuestas aún PENDIENTES.
         apuestaService.resolverApuestas(partido);
 
         return partido;

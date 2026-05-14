@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tfg.nbapredictor.R
 import com.tfg.nbapredictor.databinding.FragmentDashboardBinding
 import com.tfg.nbapredictor.model.Partido
-import com.tfg.nbapredictor.network.RetrofitClient
+import com.tfg.nbapredictor.network.SocketApi
 import com.tfg.nbapredictor.util.Session
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -53,37 +53,30 @@ class DashboardFragment : Fragment() {
 
         lifecycleScope.launch {
             try {
-                RetrofitClient.apiService.getUserById(user.id!!).body()?.let {
-                    Session.setCurrentUser(it)
-                    Session.notifyUserUpdated()
-                }
+                val updated = SocketApi.getUserById(user.id!!)
+                Session.setCurrentUser(updated)
+                Session.notifyUserUpdated()
             } catch (_: Exception) { }
             binding.tvTotalPoints.text = Session.getCurrentUser()?.points?.toString() ?: user.points.toString()
 
             try {
                 // Cargar apuestas del usuario
                 val uid = Session.getCurrentUser()?.id ?: user.id!!
-                val apuestasResponse = RetrofitClient.apiService.getApuestasByUsuario(uid)
-                if (apuestasResponse.isSuccessful) {
-                    val apuestas = apuestasResponse.body() ?: emptyList()
-                    val activas = apuestas.count { it.isActiva() }
-                    val ganadas = apuestas.count { it.isGanada() }
-                    val total = apuestas.size
-                    
-                    binding.tvActiveBets.text = activas.toString()
-                    binding.tvWinRate.text = if (total > 0) {
-                        "${(ganadas * 100 / total)}%"
-                    } else {
-                        "0%"
-                    }
+                val apuestas = SocketApi.getApuestasByUsuario(uid).toList()
+                val activas = apuestas.count { it.isActiva() }
+                val ganadas = apuestas.count { it.isGanada() }
+                val total = apuestas.size
+
+                binding.tvActiveBets.text = activas.toString()
+                binding.tvWinRate.text = if (total > 0) {
+                    "${(ganadas * 100 / total)}%"
+                } else {
+                    "0%"
                 }
 
                 // Cargar partidos próximos
-                val partidosResponse = RetrofitClient.apiService.getPartidos()
-                if (partidosResponse.isSuccessful) {
-                    val partidos = partidosResponse.body()?.filter { it.isProgramado() }?.take(5) ?: emptyList()
-                    setupRecyclerView(partidos)
-                }
+                val partidos = SocketApi.getPartidos().toList().filter { it.isProgramado() }.take(5)
+                setupRecyclerView(partidos)
             } catch (e: Exception) {
                 Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }

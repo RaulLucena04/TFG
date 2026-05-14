@@ -13,6 +13,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import util.Config;
+import service.SocketApiClient;
 
 public class RegisterController {
 
@@ -69,48 +70,16 @@ public class RegisterController {
         }
 
         try {
-            String json = String.format(
-                    "{\"username\":\"%s\", \"email\":\"%s\", \"password\":\"%s\"}",
-                    username, email, password);
+            SocketApiClient api = new SocketApiClient();
+            api.request("user.register",
+                    java.util.Map.of("username", username, "email", email, "password", password),
+                    new com.fasterxml.jackson.core.type.TypeReference<java.util.Map<String, Object>>() {});
 
-            java.net.URL url = new java.net.URL(Config.getServerUrl() + "/usuarios/register");
-            java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setDoOutput(true);
-
-            try (java.io.OutputStream os = conn.getOutputStream()) {
-                byte[] input = json.getBytes("utf-8");
-                os.write(input, 0, input.length);
-            }
-
-            int responseCode = conn.getResponseCode();
-
-            if (responseCode == 200 || responseCode == 201) {
-                handleLogin(event);
-            } else {
-                // Leer el mensaje de error del servidor
-                String errorMessage = "Error al registrar usuario";
-                try (java.io.BufferedReader br = new java.io.BufferedReader(
-                        new java.io.InputStreamReader(conn.getErrorStream(), "utf-8"))) {
-                    StringBuilder response = new StringBuilder();
-                    String responseLine;
-                    while ((responseLine = br.readLine()) != null) {
-                        response.append(responseLine.trim());
-                    }
-                    if (response.length() > 0) {
-                        errorMessage = response.toString();
-                    }
-                } catch (Exception e) {
-                    // Usar mensaje por defecto si no se puede leer el error
-                }
-                lblError.setText(errorMessage);
-                lblError.setVisible(true);
-                lblError.setManaged(true);
-            }
+            handleLogin(event);
 
         } catch (Exception e) {
-            lblError.setText("Error de conexión con el servidor");
+            String msg = e.getMessage() != null ? e.getMessage() : "Error de conexión con el servidor";
+            lblError.setText(msg);
             lblError.setVisible(true);
             lblError.setManaged(true);
             e.printStackTrace();

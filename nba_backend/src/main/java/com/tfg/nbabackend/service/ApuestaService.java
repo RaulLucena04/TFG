@@ -196,7 +196,15 @@ public class ApuestaService {
 
                 apuesta.setResultado(ResultadoApuesta.GANADA);
 
-                Usuario usuario = apuesta.getUsuario();
+                // Importante: recargar el usuario desde BD antes de sumar ganancias.
+                // En aplicaciones con múltiples clientes/sesiones, el objeto referenciado desde la Apuesta
+                // puede no reflejar el último saldo (por ejemplo, si el usuario apostó en otro dispositivo
+                // o se canjearon puntos en tienda). Al recargar, evitamos sobrescribir con un valor "stale".
+                Long usuarioId = apuesta.getUsuario() != null ? apuesta.getUsuario().getId() : null;
+                if (usuarioId == null) {
+                    throw new RuntimeException("Apuesta sin usuario asociado");
+                }
+                Usuario usuario = usuarioRepository.findById(usuarioId).orElseThrow();
 
                 double cuota = apuesta.getCuota() != null ? apuesta.getCuota() : 2.0;
                 int ganancia = (int) Math.round(apuesta.getPuntosApostados() * cuota);

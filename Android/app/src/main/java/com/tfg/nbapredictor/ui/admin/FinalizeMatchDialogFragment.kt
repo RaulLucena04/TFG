@@ -9,7 +9,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.tfg.nbapredictor.databinding.DialogFinalizeMatchBinding
 import com.tfg.nbapredictor.model.Partido
-import com.tfg.nbapredictor.network.RetrofitClient
+import com.tfg.nbapredictor.network.SocketApi
 import kotlinx.coroutines.launch
 
 class FinalizeMatchDialogFragment(
@@ -60,15 +60,10 @@ class FinalizeMatchDialogFragment(
         val id = partido.id ?: return
         lifecycleScope.launch {
             try {
-                val response = RetrofitClient.apiService.finalizarPartido(id, puntosLocal, puntosVisitante)
-                if (response.isSuccessful) {
-                    Toast.makeText(requireContext(), "Partido finalizado correctamente", Toast.LENGTH_SHORT).show()
-                    onFinalized()
-                    dismiss()
-                } else {
-                    binding.tvError.text = "Error al finalizar: ${response.code()}"
-                    binding.tvError.visibility = View.VISIBLE
-                }
+                SocketApi.finalizarPartido(id, puntosLocal, puntosVisitante)
+                Toast.makeText(requireContext(), "Partido finalizado correctamente", Toast.LENGTH_SHORT).show()
+                onFinalized()
+                dismiss()
             } catch (e: Exception) {
                 binding.tvError.text = "Error: ${e.message}"
                 binding.tvError.visibility = View.VISIBLE

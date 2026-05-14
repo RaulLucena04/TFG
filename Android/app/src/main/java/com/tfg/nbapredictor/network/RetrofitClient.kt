@@ -34,8 +34,11 @@ import java.util.concurrent.TimeUnit
 object RetrofitClient {
 
     private fun getBaseUrl(): String {
-        val url = ServerConfig.getServerUrl()
-        // Asegurar que termine con /
+        // Legacy/compat: este cliente HTTP ya no se usa en runtime,
+        // pero se mantiene compilable por compatibilidad del proyecto.
+        val host = ServerConfig.getServerHost()
+        val port = ServerConfig.getServerPort()
+        val url = "http://$host:$port"
         return if (url.endsWith("/")) url else "$url/"
     }
 

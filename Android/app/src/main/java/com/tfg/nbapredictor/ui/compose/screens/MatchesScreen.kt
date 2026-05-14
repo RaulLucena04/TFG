@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.tfg.nbapredictor.ui.compose.components.MatchItem
 import com.tfg.nbapredictor.model.Partido
+import com.tfg.nbapredictor.network.SocketApi
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -28,15 +29,12 @@ fun MatchesScreen(
 
     LaunchedEffect(Unit) {
         try {
-            com.tfg.nbapredictor.network.RetrofitClient.apiService.getPartidos().body()?.let {
-                partidos = it
-            }
+            partidos = SocketApi.getPartidos().toList()
         } catch (_: Exception) { }
     }
 
     val filtered = when (filter) {
         "Próximos" -> partidos.filter { it.isProgramado() }
-        "En curso" -> partidos.filter { "EN_CURSO".equals(it.estado, ignoreCase = true) }
         "Finalizados" -> partidos.filter { it.isFinalizado() }
         else -> partidos
     }

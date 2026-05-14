@@ -46,6 +46,5 @@ controller\estadisticas\StatisticsController.class
 controller\apuestas\ActiveBetsController.class
 controller\admin\MatchFormController$2.class
 controller\estadisticas\TeamsStatsController.class
-service\ApiService.class
 util\Config.class
 controller\apuestas\BetsController.class

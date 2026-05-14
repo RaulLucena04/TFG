@@ -96,6 +96,15 @@ INSERT INTO jugadores (nombre, posicion, promedio_puntos, promedio_asistencias, 
 ON DUPLICATE KEY UPDATE nombre=nombre;
 
 -- ============================================
+-- USUARIO ADMIN (IMPRESCINDIBLE PARA EL PANEL)
+-- ============================================
+-- Usuario admin por defecto para poder gestionar partidos desde el cliente.
+-- Nota: la contraseña puede estar en texto plano; en el primer login se migrará a BCrypt automáticamente.
+INSERT INTO usuarios (username, email, password, puntos, rol) VALUES
+('admin', 'admin@tfg.local', 'admin123', 1000, 'ADMIN')
+ON DUPLICATE KEY UPDATE username=username;
+
+-- ============================================
 -- NOTAS
 -- ============================================
 -- Este script crea solo los datos imprescindibles (equipos y jugadores).

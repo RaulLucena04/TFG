@@ -32,7 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.tfg.nbapredictor.model.Partido
-import com.tfg.nbapredictor.network.RetrofitClient
+import com.tfg.nbapredictor.network.SocketApi
 import kotlinx.coroutines.launch
 import java.time.format.DateTimeFormatter
 
@@ -55,18 +55,14 @@ fun AdminScreen() {
             loading = true
             error = null
             try {
-                val usersRes = RetrofitClient.apiService.getAllUsers()
-                val partidosRes = RetrofitClient.apiService.getPartidos()
-                val equiposRes = RetrofitClient.apiService.getEquipos()
-
-                val users = usersRes.body() ?: emptyList()
-                val partidos = partidosRes.body() ?: emptyList()
-                val equipos = equiposRes.body() ?: emptyList()
+                val users = SocketApi.getAllUsers().toList()
+                val partidos = SocketApi.getPartidos().toList()
+                val equipos = SocketApi.getEquipos().toList()
 
                 totalUsers = users.size
                 val activos = partidos.count { p ->
                     val e = p.estado?.uppercase() ?: ""
-                    e == "PROGRAMADO" || e == "EN_CURSO" || e == "EN CURSO"
+                    e == "PROGRAMADO"
                 }
                 activeMatches = activos
                 totalTeams = equipos.size
@@ -258,13 +254,9 @@ private fun FinalizeMatchDialogCompose(
                     scope.launch {
                         loading = true
                         try {
-                            val response = RetrofitClient.apiService.finalizarPartido(id, puntosLocal, puntosVisitante)
-                            if (response.isSuccessful) {
-                                onFinalized()
-                                onDismiss()
-                            } else {
-                                error = "Error al finalizar: ${response.code()}"
-                            }
+                            SocketApi.finalizarPartido(id, puntosLocal, puntosVisitante)
+                            onFinalized()
+                            onDismiss()
                         } catch (e: Exception) {
                             error = "Error: ${e.message}"
                         } finally {

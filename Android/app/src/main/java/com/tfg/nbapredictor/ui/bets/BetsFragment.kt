@@ -10,7 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tfg.nbapredictor.databinding.FragmentBetsBinding
 import com.tfg.nbapredictor.model.Apuesta
-import com.tfg.nbapredictor.network.RetrofitClient
+import com.tfg.nbapredictor.network.SocketApi
 import com.tfg.nbapredictor.util.Session
 import kotlinx.coroutines.launch
 
@@ -47,10 +47,9 @@ class BetsFragment : Fragment() {
         val userId = user.id ?: return
         lifecycleScope.launch {
             try {
-                RetrofitClient.apiService.getUserById(userId).body()?.let {
-                    Session.setCurrentUser(it)
-                    Session.notifyUserUpdated()
-                }
+                val updated = SocketApi.getUserById(userId)
+                Session.setCurrentUser(updated)
+                Session.notifyUserUpdated()
             } catch (_: Exception) { }
             updatePointsDisplay()
             loadBets()
@@ -70,13 +69,8 @@ class BetsFragment : Fragment() {
 
         lifecycleScope.launch {
             try {
-                val response = RetrofitClient.apiService.getApuestasByUsuario(user.id)
-                if (response.isSuccessful) {
-                    val apuestas = response.body() ?: emptyList()
-                    actualizarUI(apuestas)
-                } else {
-                    Toast.makeText(context, "Error al cargar apuestas", Toast.LENGTH_SHORT).show()
-                }
+                val apuestas = SocketApi.getApuestasByUsuario(user.id).toList()
+                actualizarUI(apuestas)
             } catch (e: Exception) {
                 Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }

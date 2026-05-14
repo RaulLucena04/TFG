@@ -51,12 +51,12 @@ nba-client/
 
 ### 1. URL del Backend
 
-La URL del servidor se configura automáticamente la primera vez que ejecutas la aplicación:
+La dirección del servidor (sockets TCP) se configura automáticamente la primera vez que ejecutas la aplicación:
 
 1. Al iniciar la aplicación, aparecerá un diálogo para configurar la IP del servidor
-2. Introduce la URL del servidor (ejemplo: `http://192.168.1.100:8080`)
-   - Si el servidor está en la misma máquina: `http://localhost:8080`
-   - Si el servidor está en otra máquina: `http://IP_DEL_SERVIDOR:8080`
+2. Introduce `host:puerto` (ejemplo: `192.168.1.100:9090`)
+   - Si el servidor está en la misma máquina: `localhost:9090`
+   - Si el servidor está en otra máquina: `IP_DEL_SERVIDOR:9090`
 3. La configuración se guarda en `config.properties` en la misma carpeta
 
 **Cambiar configuración:**
@@ -135,8 +135,8 @@ Ver `README_INSTALADOR.md` para instrucciones detalladas sobre cómo crear un in
 
 **Error: "No se puede conectar al servidor"**
 - Verifica que el servidor esté ejecutándose
-- Verifica la URL en `config.properties`
-- Verifica que no haya firewall bloqueando el puerto 8080
+- Verifica `server.host` y `server.port` en `config.properties`
+- Verifica que no haya firewall bloqueando el puerto 9090
 
 **Error: "Java no encontrado"**
 - Asegúrate de tener Java 17+ instalado

@@ -1,17 +1,8 @@
 package service;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.Arrays;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
 import model.Apuesta;
-import util.Config;
 
 /**
  * Servicio que gestiona las operaciones relacionadas con apuestas.
@@ -23,16 +14,7 @@ import util.Config;
  * @version 1.0
  */
 public class ApuestaService {
-
-    /**
-     * Obtiene la URL base para operaciones de apuestas.
-     * 
-     * @return la URL base del endpoint de apuestas
-     */
-    private static String getBaseUrl() {
-        return Config.getServerUrl() + "/apuestas";
-    }
-    private final HttpClient httpClient = HttpClient.newHttpClient();
+    private final SocketApiClient api = new SocketApiClient();
 
     /**
      * Obtiene todas las apuestas realizadas por un usuario.
@@ -43,23 +25,9 @@ public class ApuestaService {
     public List<Apuesta> obtenerApuestasUsuario(Long userId) {
 
         try {
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(getBaseUrl() + "/usuario/" + userId))
-                    .GET()
-                    .build();
-
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-            if (response.statusCode() == 200) {
-
-                ObjectMapper mapper = new ObjectMapper();
-                // Registrar módulo para manejar LocalDateTime de Java 8+
-                mapper.registerModule(new JavaTimeModule());
-
-                Apuesta[] apuestas = mapper.readValue(response.body(), Apuesta[].class);
-
-                return Arrays.asList(apuestas);
-            }
+            return api.request("bet.byUser",
+                    java.util.Map.of("userId", userId),
+                    new com.fasterxml.jackson.core.type.TypeReference<List<Apuesta>>() {});
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -81,27 +49,7 @@ public class ApuestaService {
     public void crearApuesta(Apuesta apuesta) throws RuntimeException {
 
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.registerModule(new JavaTimeModule());
-
-            String json = mapper.writeValueAsString(apuesta);
-
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(getBaseUrl()))
-                    .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(json))
-                    .build();
-
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-            if (response.statusCode() != 200 && response.statusCode() != 201) {
-                String errorMessage = response.body();
-                if (errorMessage != null && !errorMessage.isEmpty()) {
-                    throw new RuntimeException(errorMessage);
-                } else {
-                    throw new RuntimeException("Error al crear apuesta. Código: " + response.statusCode());
-                }
-            }
+            api.request("bet.create", apuesta, Apuesta.class);
 
         } catch (RuntimeException e) {
             // Re-lanzar RuntimeException para que el controlador pueda manejarla

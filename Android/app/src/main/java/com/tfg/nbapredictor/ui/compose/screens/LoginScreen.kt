@@ -10,8 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import com.tfg.nbapredictor.network.LoginRequest
-import com.tfg.nbapredictor.network.RetrofitClient
+import com.tfg.nbapredictor.network.SocketApi
 import com.tfg.nbapredictor.util.ServerConfig
 import com.tfg.nbapredictor.util.Session
 import kotlinx.coroutines.launch
@@ -30,7 +29,9 @@ fun LoginScreen(
     var isLoading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var showServerConfig by remember { mutableStateOf(false) }
-    var serverUrl by remember { mutableStateOf(ServerConfig.getServerUrl(context)) }
+    var serverAddress by remember {
+        mutableStateOf("${ServerConfig.getServerHost(context)}:${ServerConfig.getServerPort(context)}")
+    }
     
     // Mostrar diálogo de configuración de servidor la primera vez
     LaunchedEffect(Unit) {
@@ -43,13 +44,17 @@ fun LoginScreen(
     
     if (showServerConfig) {
         ServerConfigDialog(
-            currentUrl = serverUrl,
+            currentUrl = serverAddress,
+            isEmulator = ServerConfig.isProbablyEmulator(),
             onDismiss = { showServerConfig = false },
+            onUseDefault = {
+                val prefs = context.getSharedPreferences("app_prefs", android.content.Context.MODE_PRIVATE)
+                prefs.edit().putBoolean("server_configured", true).apply()
+                showServerConfig = false
+            },
             onSave = { url ->
-                ServerConfig.setServerUrl(context, url)
-                serverUrl = url
-                // Forzar recreación del cliente Retrofit con la nueva URL
-                com.tfg.nbapredictor.network.RetrofitClient.reset()
+                ServerConfig.applyFromHostPortString(context, url)
+                serverAddress = "${ServerConfig.getServerHost(context)}:${ServerConfig.getServerPort(context)}"
                 val prefs = context.getSharedPreferences("app_prefs", android.content.Context.MODE_PRIVATE)
                 prefs.edit().putBoolean("server_configured", true).apply()
                 showServerConfig = false
@@ -129,17 +134,18 @@ fun LoginScreen(
                 
                 scope.launch {
                     try {
-                        val request = LoginRequest(username = username.trim(), password = password)
-                        val response = RetrofitClient.apiService.login(request)
-                        
-                        if (response.isSuccessful && response.body() != null) {
-                            Session.setCurrentUser(response.body()!!)
+                        val user = SocketApi.login(username.trim(), password)
+                        Session.setCurrentUser(user)
                             onLoginSuccess()
-                        } else {
-                            errorMessage = "Usuario o contraseña incorrectos"
-                        }
                     } catch (e: Exception) {
-                        errorMessage = "Error de conexión: ${e.message}"
+                        val host = ServerConfig.getServerHost(context)
+                        val port = ServerConfig.getServerPort(context)
+                        val hint = if (ServerConfig.isProbablyEmulator()) {
+                            "Comprueba que el backend esté en marcha y escuche el puerto $port. Si MySQL está parado, Spring puede no arrancar."
+                        } else {
+                            "En móvil físico no uses 10.0.2.2; pon la IP LAN de tu PC (ej. 192.168.x.x:$port), mismo Wi‑Fi, y firewall abierto para TCP $port."
+                        }
+                        errorMessage = "No se pudo conectar al servidor en $host:$port (${e.message}). $hint"
                     } finally {
                         isLoading = false
                     }
@@ -181,7 +187,9 @@ fun LoginScreen(
 @Composable
 private fun ServerConfigDialog(
     currentUrl: String,
+    isEmulator: Boolean,
     onDismiss: () -> Unit,
+    onUseDefault: () -> Unit,
     onSave: (String) -> Unit
 ) {
     var url by remember { mutableStateOf(currentUrl) }
@@ -191,12 +199,25 @@ private fun ServerConfigDialog(
         title = { Text("Configurar Servidor") },
         text = {
             Column {
-                Text("Introduce la URL del servidor (ej: http://192.168.1.100:8080):")
+                Text(
+                    "La app no conecta a MySQL directamente: habla con el backend Java por TCP (socket) en el puerto 9090. " +
+                        "El backend es quien usa la base de datos."
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    if (isEmulator) {
+                        "Emulador: suele funcionar 10.0.2.2:9090 (apunta al localhost de tu PC)."
+                    } else {
+                        "Movil fisico: usa la IP de tu PC en la red Wi-Fi (cmd, ipconfig), ej. 192.168.1.50:9090."
+                    }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text("Introduce host:puerto (ej: 10.0.2.2:9090):")
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     value = url,
                     onValueChange = { url = it },
-                    label = { Text("URL del servidor") },
+                    label = { Text("Servidor") },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true
                 )
@@ -214,7 +235,7 @@ private fun ServerConfigDialog(
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
+            TextButton(onClick = onUseDefault) {
                 Text("Usar por defecto")
             }
         }

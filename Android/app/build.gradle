@@ -8,6 +8,13 @@ android {
     namespace 'com.tfg.nbapredictor'
     compileSdk 35
 
+    // Windows / OneDrive: "sección asignada a usuario abierta" en dexBuilderDebug suele deberse a
+    // mmap sobre intermediates dentro de Documents. Mueve el build del módulo a %LOCALAPPDATA%.
+    def localAppBuild = System.getenv('LOCALAPPDATA')
+            ? new File(System.getenv('LOCALAPPDATA'), 'TFG-NBAPredictor/app-build')
+            : new File(System.getProperty('user.home'), '.tfg/android-app-build')
+    layout.buildDirectory.set(localAppBuild)
+
     defaultConfig {
         applicationId "com.tfg.nbapredictor"
         minSdk 24

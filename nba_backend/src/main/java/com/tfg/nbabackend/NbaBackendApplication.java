@@ -2,6 +2,7 @@ package com.tfg.nbabackend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.WebApplicationType;
 
 /**
  * Clase principal de la aplicación Spring Boot del backend de NBA Predictor.
@@ -36,7 +37,9 @@ public class NbaBackendApplication {
      * @param args argumentos de línea de comandos (no utilizados)
      */
 	public static void main(String[] args) {
-		SpringApplication.run(NbaBackendApplication.class, args);
+		SpringApplication app = new SpringApplication(NbaBackendApplication.class);
+		app.setWebApplicationType(WebApplicationType.NONE);
+		app.run(args);
 	}
 
 }

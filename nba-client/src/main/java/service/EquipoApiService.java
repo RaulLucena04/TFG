@@ -1,15 +1,8 @@
 package service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import model.Equipo;
 import model.Jugador;
 import model.Partido;
-import util.Config;
-
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,44 +16,7 @@ import java.util.List;
  * @version 1.0
  */
 public class EquipoApiService {
-
-    /**
-     * Obtiene la URL base del servidor.
-     * 
-     * @return la URL base del servidor
-     */
-    private static String getBaseUrl() {
-        return Config.getServerUrl();
-    }
-    
-    /**
-     * Obtiene la URL del endpoint de equipos.
-     * 
-     * @return la URL del endpoint de equipos
-     */
-    private static String getUrlEquipos() {
-        return getBaseUrl() + "/equipos";
-    }
-    
-    /**
-     * Obtiene la URL base del endpoint de jugadores por equipo.
-     * 
-     * @return la URL base del endpoint de jugadores
-     */
-    private static String getUrlJugadores() {
-        return getBaseUrl() + "/jugadores/equipo/";
-    }
-    
-    /**
-     * Obtiene la URL base del endpoint de partidos por equipo.
-     * 
-     * @return la URL base del endpoint de partidos
-     */
-    private static String getUrlPartidos() {
-        return getBaseUrl() + "/partidos/equipo/";
-    }
-
-    private final ObjectMapper mapper;
+    private final SocketApiClient api = new SocketApiClient();
 
     /**
      * Constructor del servicio de equipos.
@@ -68,9 +24,6 @@ public class EquipoApiService {
      * <p>Inicializa el ObjectMapper con soporte para LocalDateTime.
      */
     public EquipoApiService() {
-        this.mapper = new ObjectMapper();
-        // Registro para manejar LocalDateTime
-        this.mapper.registerModule(new JavaTimeModule());
     }
 
     /**
@@ -80,13 +33,9 @@ public class EquipoApiService {
      * @throws Exception si hay un error en la comunicación con el servidor
      */
     public List<Equipo> obtenerEquipos() throws Exception {
-        URL url = new URL(getUrlEquipos());
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-
-        InputStream input = connection.getInputStream();
-        Equipo[] equipos = mapper.readValue(input, Equipo[].class);
-        return Arrays.asList(equipos);
+        var equipos = api.request("team.list", java.util.Map.of(),
+                new com.fasterxml.jackson.core.type.TypeReference<List<Equipo>>() {});
+        return equipos;
     }
 
     /**
@@ -98,13 +47,12 @@ public class EquipoApiService {
      * @throws Exception si hay un error en la comunicación con el servidor
      */
     public List<Equipo> obtenerEquiposConEstadisticas() throws Exception {
-        URL url = new URL(getBaseUrl() + "/equipos-con-estadisticas");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-
-        InputStream input = connection.getInputStream();
-        Equipo[] equipos = mapper.readValue(input, Equipo[].class);
-        return Arrays.asList(equipos);
+        // El backend devuelve DTO (EquipoConEstadisticasDTO). En el cliente usamos el modelo Equipo
+        // existente, que no incluye victorias/derrotas/ppg/rpg/apg; aquí se mantiene el método por compatibilidad
+        // y se mapea al modelo Equipo (campos comunes).
+        var equipos = api.request("team.withStats", java.util.Map.of(),
+                new com.fasterxml.jackson.core.type.TypeReference<List<Equipo>>() {});
+        return equipos;
     }
 
     /**
@@ -115,13 +63,9 @@ public class EquipoApiService {
      * @throws Exception si hay un error en la comunicación con el servidor
      */
     public List<Jugador> obtenerJugadoresEquipo(Long equipoId) throws Exception {
-        URL url = new URL(getUrlJugadores() + equipoId);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-
-        InputStream input = connection.getInputStream();
-        Jugador[] jugadores = mapper.readValue(input, Jugador[].class);
-        return Arrays.asList(jugadores);
+        return api.request("player.byTeam",
+                java.util.Map.of("equipoId", equipoId),
+                new com.fasterxml.jackson.core.type.TypeReference<List<Jugador>>() {});
     }
 
     /**
@@ -135,13 +79,9 @@ public class EquipoApiService {
      * @throws Exception si hay un error en la comunicación con el servidor
      */
     public List<Partido> obtenerPartidosEquipo(Long equipoId) throws Exception {
-        URL url = new URL(getUrlPartidos() + equipoId);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-
-        InputStream input = connection.getInputStream();
-        Partido[] partidos = mapper.readValue(input, Partido[].class);
-        return Arrays.asList(partidos);
+        return api.request("match.byTeam",
+                java.util.Map.of("equipoId", equipoId),
+                new com.fasterxml.jackson.core.type.TypeReference<List<Partido>>() {});
     }
 
     /**
@@ -151,12 +91,8 @@ public class EquipoApiService {
      * @throws Exception si hay un error en la comunicación con el servidor
      */
     public List<Jugador> obtenerTodosJugadores() throws Exception {
-        URL url = new URL(getBaseUrl() + "/jugadores");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        InputStream input = connection.getInputStream();
-        Jugador[] jugadores = mapper.readValue(input, Jugador[].class);
-        return Arrays.asList(jugadores);
+        return api.request("player.list", java.util.Map.of(),
+                new com.fasterxml.jackson.core.type.TypeReference<List<Jugador>>() {});
     }
 
     /**
@@ -169,10 +105,8 @@ public class EquipoApiService {
      * @throws Exception si hay un error en la comunicación con el servidor
      */
     public model.EquipoEstadisticas obtenerEstadisticasEquipo(Long equipoId) throws Exception {
-        URL url = new URL(getUrlEquipos() + "/" + equipoId + "/estadisticas");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        InputStream input = connection.getInputStream();
-        return mapper.readValue(input, model.EquipoEstadisticas.class);
+        return api.request("team.stats",
+                java.util.Map.of("equipoId", equipoId),
+                model.EquipoEstadisticas.class);
     }
 }

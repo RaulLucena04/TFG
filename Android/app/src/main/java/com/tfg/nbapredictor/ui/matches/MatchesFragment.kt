@@ -14,7 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tfg.nbapredictor.databinding.FragmentMatchesBinding
 import com.tfg.nbapredictor.model.Partido
-import com.tfg.nbapredictor.network.RetrofitClient
+import com.tfg.nbapredictor.network.SocketApi
 import com.tfg.nbapredictor.ui.dashboard.MatchesAdapter
 import kotlinx.coroutines.launch
 
@@ -57,13 +57,8 @@ class MatchesFragment : Fragment() {
     private fun loadMatches() {
         lifecycleScope.launch {
             try {
-                val response = RetrofitClient.apiService.getPartidos()
-                if (response.isSuccessful) {
-                    todosLosPartidos = response.body() ?: emptyList()
-                    aplicarFiltro()
-                } else {
-                    Toast.makeText(context, "Error al cargar partidos", Toast.LENGTH_SHORT).show()
-                }
+                todosLosPartidos = SocketApi.getPartidos().toList()
+                aplicarFiltro()
             } catch (e: Exception) {
                 Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
@@ -75,7 +70,6 @@ class MatchesFragment : Fragment() {
         val filtro = binding.spinnerFilter.selectedItem?.toString() ?: "Todos"
         val filtrados = when (filtro) {
             "Próximos" -> todosLosPartidos.filter { it.isProgramado() }
-            "En curso" -> todosLosPartidos.filter { "EN_CURSO".equals(it.estado, ignoreCase = true) }
             "Finalizados" -> todosLosPartidos.filter { it.isFinalizado() }
             else -> todosLosPartidos
         }

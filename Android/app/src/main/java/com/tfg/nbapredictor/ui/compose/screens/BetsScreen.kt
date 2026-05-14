@@ -20,7 +20,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.tfg.nbapredictor.model.Apuesta
-import com.tfg.nbapredictor.network.RetrofitClient
+import com.tfg.nbapredictor.network.SocketApi
 import com.tfg.nbapredictor.util.Session
 import kotlinx.coroutines.flow.collectLatest
 
@@ -36,14 +36,12 @@ fun BetsScreen() {
         val user = Session.getCurrentUser() ?: return
         user.id ?: return
         try {
-            RetrofitClient.apiService.getUserById(user.id).body()?.let {
-                Session.setCurrentUser(it)
-                Session.notifyUserUpdated()
-                points = it.points
-            }
-            RetrofitClient.apiService.getApuestasByUsuario(user.id).body()?.let {
-                apuestas = it
-            }
+            val updated = SocketApi.getUserById(user.id)
+            Session.setCurrentUser(updated)
+            Session.notifyUserUpdated()
+            points = updated.points
+
+            apuestas = SocketApi.getApuestasByUsuario(user.id).toList()
         } catch (_: Exception) { }
     }
 

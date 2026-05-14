@@ -2,6 +2,12 @@ package model;
 
 import java.util.List;
 
+/**
+ * Modelo de equipo usado por el cliente.
+ *
+ * <p>Incluye información básica del equipo y, opcionalmente, estadísticas agregadas
+ * y colecciones auxiliares (jugadores/partidos) cuando el backend las devuelve.</p>
+ */
 public class Equipo {
     private Long id;
     private String nombre;
