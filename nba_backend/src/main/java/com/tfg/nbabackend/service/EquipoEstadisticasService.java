@@ -80,6 +80,11 @@ public class EquipoEstadisticasService {
             apg += (j.getPromedioAsistencias() != null ? j.getPromedioAsistencias() : 0);
         }
 
-        return new EquipoEstadisticasDTO(victorias, derrotas, ppg, rpg, apg);
+        return new EquipoEstadisticasDTO(victorias, derrotas, roundOneDecimal(ppg), roundOneDecimal(rpg), roundOneDecimal(apg));
+    }
+
+    /** Reduce ruido de coma flotante al serializar o mostrar en UI. */
+    private static double roundOneDecimal(double v) {
+        return Math.round(v * 10.0) / 10.0;
     }
 }

@@ -44,6 +44,15 @@ if %ERRORLEVEL% NEQ 0 (
 
 REM Compilar el proyecto primero
 echo [1/3] Compilando el proyecto...
+echo.
+echo Liberando carpeta target (evita fallos de "Failed to delete" en Windows/OneDrive)...
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\pre-clean-target.ps1" -TargetDir "%~dp0target"
+if %ERRORLEVEL% NEQ 0 (
+    echo ERROR: No se pudo vaciar target\. Revisa el mensaje anterior, cierra la app/IDE y vuelve a intentarlo.
+    pause
+    exit /b 1
+)
+echo.
 call mvn clean package -DskipTests
 if %ERRORLEVEL% NEQ 0 (
     echo ERROR: La compilacion fallo.

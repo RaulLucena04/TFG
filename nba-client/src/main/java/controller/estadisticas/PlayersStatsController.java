@@ -17,6 +17,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import model.Jugador;
 import service.EquipoApiService;
+import util.TableFormatters;
 
 public class PlayersStatsController {
 
@@ -62,6 +63,9 @@ public class PlayersStatsController {
         colPPG.setCellValueFactory(new PropertyValueFactory<>("ppg"));
         colRPG.setCellValueFactory(new PropertyValueFactory<>("rpg"));
         colAPG.setCellValueFactory(new PropertyValueFactory<>("apg"));
+        TableFormatters.oneDecimalCell(colPPG);
+        TableFormatters.oneDecimalCell(colRPG);
+        TableFormatters.oneDecimalCell(colAPG);
 
         cargarJugadores();
         cargarFiltros();

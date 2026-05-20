@@ -16,6 +16,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import model.Equipo;
 import service.EquipoApiService;
+import util.TableFormatters;
 
 public class TeamsStatsController implements Initializable {
 
@@ -50,6 +51,9 @@ public class TeamsStatsController implements Initializable {
         colPPG.setCellValueFactory(new PropertyValueFactory<>("ppg"));
         colRPG.setCellValueFactory(new PropertyValueFactory<>("rpg"));
         colAPG.setCellValueFactory(new PropertyValueFactory<>("apg"));
+        TableFormatters.oneDecimalCell(colPPG);
+        TableFormatters.oneDecimalCell(colRPG);
+        TableFormatters.oneDecimalCell(colAPG);
 
         cargarEquipos();
 

@@ -1,6 +1,7 @@
 package controller.estadisticas;
 
 import java.util.List;
+import java.util.Locale;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,6 +15,7 @@ import model.Equipo;
 import model.Jugador;
 import model.Partido;
 import service.EquipoApiService;
+import util.TableFormatters;
 
 public class TeamDetailController {
 
@@ -68,6 +70,9 @@ public class TeamDetailController {
                     data -> new javafx.beans.property.SimpleDoubleProperty(data.getValue().getRpg()).asObject());
             colPlayerAPG.setCellValueFactory(
                     data -> new javafx.beans.property.SimpleDoubleProperty(data.getValue().getApg()).asObject());
+            TableFormatters.oneDecimalCell(colPlayerPPG);
+            TableFormatters.oneDecimalCell(colPlayerRPG);
+            TableFormatters.oneDecimalCell(colPlayerAPG);
 
             // Calcular PPG, RPG, APG desde jugadores (suma del equipo)
             double ppg = 0, rpg = 0, apg = 0;
@@ -76,9 +81,9 @@ public class TeamDetailController {
                 rpg += j.getRpg();
                 apg += j.getApg();
             }
-            lblPPG.setText(String.format("%.1f", ppg));
-            lblRPG.setText(String.format("%.1f", rpg));
-            lblAPG.setText(String.format("%.1f", apg));
+            lblPPG.setText(String.format(Locale.US, "%.1f", ppg));
+            lblRPG.setText(String.format(Locale.US, "%.1f", rpg));
+            lblAPG.setText(String.format(Locale.US, "%.1f", apg));
 
         } catch (Exception e) {
             e.printStackTrace();
