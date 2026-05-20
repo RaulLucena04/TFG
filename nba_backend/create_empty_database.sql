@@ -1,9 +1,11 @@
 -- ============================================
 -- SCRIPT PARA CREAR BASE DE DATOS VACÍA
 -- ============================================
--- Este script crea la base de datos con solo los datos imprescindibles:
--- - Equipos de la NBA
--- - Jugadores de cada equipo
+-- Este script:
+-- 1) Crea la base de datos `nba_app`
+-- 2) Crea las tablas necesarias (DDL) — imprescindible si ejecutas solo este SQL
+--    sin haber arrancado antes el backend con Hibernate.
+-- 3) Inserta datos mínimos: equipos, jugadores y usuario admin.
 -- ============================================
 -- IMPORTANTE: Ejecuta este script ANTES de ejecutar populate_database.sql
 -- ============================================
@@ -11,6 +13,83 @@
 -- Crear la base de datos si no existe
 CREATE DATABASE IF NOT EXISTS nba_app;
 USE nba_app;
+
+-- ============================================
+-- ESQUEMA (tablas)
+-- ============================================
+-- Sin estas tablas, los INSERT fallan con ERROR 1146.
+-- Hibernate con ddl-auto=update puede alterar columnas después; este DDL
+-- coincide con las entidades JPA para poder poblar la BD solo con mysql.
+
+SET FOREIGN_KEY_CHECKS = 0;
+
+CREATE TABLE IF NOT EXISTS equipo (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(255) NOT NULL,
+    conferencia VARCHAR(255),
+    division VARCHAR(255),
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_equipo_nombre (nombre)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS jugadores (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(255) NOT NULL,
+    posicion VARCHAR(255),
+    promedio_puntos DOUBLE,
+    promedio_asistencias DOUBLE,
+    promedio_rebotes DOUBLE,
+    equipo_id BIGINT,
+    PRIMARY KEY (id),
+    KEY idx_jugadores_equipo (equipo_id),
+    UNIQUE KEY uk_jugador_equipo_nombre (nombre, equipo_id),
+    CONSTRAINT fk_jugadores_equipo FOREIGN KEY (equipo_id) REFERENCES equipo (id)
+        ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS usuarios (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    username VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    puntos INT NOT NULL,
+    rol VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_usuarios_username (username),
+    UNIQUE KEY uk_usuarios_email (email)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS partido (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    fecha DATETIME(6),
+    equipo_local_id BIGINT,
+    equipo_visitante_id BIGINT,
+    puntos_local INT,
+    puntos_visitante INT,
+    estado VARCHAR(255),
+    PRIMARY KEY (id),
+    KEY idx_partido_local (equipo_local_id),
+    KEY idx_partido_visitante (equipo_visitante_id),
+    CONSTRAINT fk_partido_equipo_local FOREIGN KEY (equipo_local_id) REFERENCES equipo (id),
+    CONSTRAINT fk_partido_equipo_visitante FOREIGN KEY (equipo_visitante_id) REFERENCES equipo (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS apuesta (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    puntos_apostados INT NOT NULL,
+    prediccion VARCHAR(255),
+    cuota DOUBLE,
+    resultado VARCHAR(255) NOT NULL,
+    usuario_id BIGINT,
+    partido_id BIGINT,
+    PRIMARY KEY (id),
+    KEY idx_apuesta_usuario (usuario_id),
+    KEY idx_apuesta_partido (partido_id),
+    CONSTRAINT fk_apuesta_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios (id),
+    CONSTRAINT fk_apuesta_partido FOREIGN KEY (partido_id) REFERENCES partido (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+SET FOREIGN_KEY_CHECKS = 1;
 
 -- ============================================
 -- EQUIPOS
