@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * }
  * </pre>
  *
- * <p>Este JSON se envía dentro de un frame definido por {@link SocketProtocol}.</p>
+ * <p>Este JSON se envía dentro de una trama serializada con {@link SocketFrameSerializer}.</p>
  */
 public class SocketRequest {
     public String requestId;

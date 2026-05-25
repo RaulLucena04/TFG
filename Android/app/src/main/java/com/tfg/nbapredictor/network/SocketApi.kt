@@ -45,8 +45,8 @@ object SocketApi {
                 val out = DataOutputStream(socket.getOutputStream())
                 val input = DataInputStream(socket.getInputStream())
 
-                SocketProtocol.writeFrame(out, gson.toJson(req))
-                val respJson = SocketProtocol.readFrame(input)
+                SocketFrameSerializer.writeFrame(out, gson.toJson(req))
+                val respJson = SocketFrameSerializer.readFrame(input)
                 val resp = gson.fromJson(respJson, SocketResponse::class.java)
 
                 if (!resp.ok) {

@@ -30,10 +30,10 @@ import java.util.Map;
  * <h2>Flujo completo (vista rápida)</h2>
  * <ol>
  *   <li>El cliente envía un JSON con {@code requestId}, {@code action} y {@code payload}.</li>
- *   <li>{@link SocketServerRunner} lee el frame, parsea el JSON a {@link SocketRequest}.</li>
+ *   <li>{@link SocketClientHandler} lee la trama ({@link SocketFrameSerializer}), parsea el JSON a {@link SocketRequest}.</li>
  *   <li>Este dispatcher mira {@code action} y llama al servicio correspondiente.</li>
  *   <li>Devuelve un {@link SocketResponse} con {@code ok=true,data=...} o {@code ok=false,error=...}.</li>
- *   <li>{@link SocketServerRunner} serializa la respuesta a JSON y la envía como frame.</li>
+ *   <li>{@link SocketClientHandler} serializa la respuesta y la escribe como trama.</li>
  * </ol>
  *
  * <h2>Convenciones</h2>

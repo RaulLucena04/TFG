@@ -4,7 +4,13 @@ import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.nio.charset.StandardCharsets
 
-internal object SocketProtocol {
+/**
+ * Serialización de tramas TCP: `int` big-endian (longitud en bytes UTF-8) + cuerpo JSON en UTF-8.
+ *
+ * El protocolo de aplicación (acciones `user.login`, `team.list`, etc.) lo define el backend
+ * en la clase `SocketDispatcher`; esta clase solo empaqueta bytes, igual que `SocketFrameSerializer` en Java.
+ */
+internal object SocketFrameSerializer {
     fun writeFrame(out: DataOutputStream, json: String) {
         val bytes = json.toByteArray(StandardCharsets.UTF_8)
         out.writeInt(bytes.size)
@@ -20,4 +26,3 @@ internal object SocketProtocol {
         return String(buf, StandardCharsets.UTF_8)
     }
 }
-
