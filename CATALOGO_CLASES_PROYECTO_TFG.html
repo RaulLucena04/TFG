@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Catálogo de clases — TFG NBA Predictor</title>
+  <style>
+    :root {
+      --bg: #fafafa;
+      --text: #1a1a1a;
+      --muted: #555;
+      --border: #ccc;
+      --accent: #0d47a1;
+      --thead: #e3eefc;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      line-height: 1.45;
+      color: var(--text);
+      background: var(--bg);
+      margin: 0;
+      padding: 1.5rem clamp(1rem, 4vw, 3rem) 3rem;
+      max-width: 58rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    h1 {
+      font-size: 1.75rem;
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 0.35rem;
+      margin-top: 0;
+    }
+    h2 { font-size: 1.35rem; margin-top: 2rem; color: var(--accent); }
+    h3 { font-size: 1.1rem; margin-top: 1.5rem; color: #333; }
+    p { margin: 0.75rem 0; }
+    p.lead { color: var(--muted); font-size: 0.95rem; }
+    hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 0.75rem 0 1.25rem;
+      background: #fff;
+      box-shadow: 0 1px 2px rgba(0,0,0,.06);
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 0.45rem 0.55rem;
+      vertical-align: top;
+      text-align: left;
+    }
+    th { background: var(--thead); font-weight: 600; }
+    tr:nth-child(even) td { background: #f9f9f9; }
+    code {
+      font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+      font-size: 0.86em;
+      background: #eee;
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+    }
+    .note { font-size: 0.9rem; color: var(--muted); }
+    footer { margin-top: 2.5rem; font-size: 0.85rem; color: var(--muted); }
+    @media print {
+      body { background: #fff; max-width: none; }
+      h2 { page-break-after: avoid; }
+      table { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+<h1>Catálogo de clases del proyecto TFG (NBA Predictor)</h1>
+
+<p class="lead">Este documento describe la <strong>funcionalidad</strong> de cada clase del código fuente del proyecto, organizada por módulo: <strong>servidor</strong> (<code>nba_backend</code>), <strong>cliente de escritorio</strong> (<code>nba-client</code>) y <strong>Android</strong> (<code>Android/app/src/main/java</code>). No incluye archivos generados por Gradle ni stubs de KAPT.</p>
+
+<p><strong>Convención de rutas:</strong> las rutas son relativas a la raíz del repositorio <code>TFG</code>.</p>
+
+<hr>
+
+<h2>1. Visión general de la arquitectura</h2>
+
+<table>
+  <thead>
+    <tr><th>Módulo</th><th>Tecnología</th><th>Rol</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>nba_backend</code></td>
+      <td>Spring Boot, JPA, MySQL</td>
+      <td>Persistencia, reglas de negocio, servidor TCP en el puerto 9090</td>
+    </tr>
+    <tr>
+      <td><code>nba-client</code></td>
+      <td>JavaFX</td>
+      <td>Aplicación de escritorio para usuario y administrador; habla con el backend por <strong>TCP + JSON</strong></td>
+    </tr>
+    <tr>
+      <td><code>Android</code></td>
+      <td>Kotlin, Jetpack (Fragments, Compose), Gson</td>
+      <td>App móvil; misma API TCP que el cliente JavaFX</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Los <strong>modelos</strong> (usuario, partido, apuesta, etc.) se repiten en los tres módulos como clases independientes adaptadas a cada plataforma (Java vs Kotlin, anotaciones JPA solo en el servidor).</p>
+
+<hr>
+
+<h2>2. Servidor — <code>nba_backend</code></h2>
+
+<p><strong>Paquete base:</strong> <code>com.tfg.nbabackend</code></p>
+
+<h3>2.1 Punto de entrada y configuración</h3>
+<table>
+  <thead><tr><th>Clase</th><th>Ruta</th><th>Funcionalidad</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong><code>NbaBackendApplication</code></strong></td>
+      <td><code>nba_backend/src/main/java/com/tfg/nbabackend/NbaBackendApplication.java</code></td>
+      <td>Clase principal de Spring Boot (<code>@SpringBootApplication</code>). Arranca el contexto de la aplicación, escanea componentes y activa JPA. Junto con el arranque normal de Spring, el componente <code>SocketServerRunner</code> abre el servidor TCP.</td>
+    </tr>
+    <tr>
+      <td><strong><code>JacksonConfig</code></strong></td>
+      <td><code>.../config/JacksonConfig.java</code></td>
+      <td>Configuración de <strong>Jackson</strong> (<code>ObjectMapper</code>) para serialización JSON coherente en el backend (incluye soporte de fechas/hora Java 8 si está registrado en el bean). Lo usa el protocolo socket al convertir peticiones y respuestas.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>2.2 Capa socket (protocolo TCP)</h3>
+<table>
+  <thead><tr><th>Clase</th><th>Ruta</th><th>Funcionalidad</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong><code>SocketServerRunner</code></strong></td>
+      <td><code>.../socket/SocketServerRunner.java</code></td>
+      <td>Implementa <code>CommandLineRunner</code> y <code>DisposableBean</code>. Tras el arranque de Spring, crea un <code>ServerSocket</code> en <code>0.0.0.0:9090</code> (configurable) y un hilo dedicado que hace <code>accept()</code> en bucle. Cada conexión entrante se delega al pool de hilos ejecutando <code>SocketClientHandler</code>. Al apagar la aplicación, cierra el <code>ServerSocket</code> y el pool.</td>
+    </tr>
+    <tr>
+      <td><strong><code>SocketClientHandler</code></strong></td>
+      <td><code>.../socket/SocketClientHandler.java</code></td>
+      <td><code>Runnable</code> que atiende <strong>una</strong> conexión TCP. Bucle: lee una trama con <code>SocketFrameSerializer</code>, parsea JSON a <code>SocketRequest</code>, invoca <code>SocketDispatcher.dispatch</code>, escribe la respuesta como trama. Si el cliente cierra o hay error de lectura, termina el bucle.</td>
+    </tr>
+    <tr>
+      <td><strong><code>SocketFrameSerializer</code></strong></td>
+      <td><code>.../socket/SocketFrameSerializer.java</code></td>
+      <td>Capa de transporte: escribe y lee tramas <strong>int32 big-endian (longitud en bytes)</strong> + cuerpo <strong>UTF-8</strong>. No interpreta el negocio; solo bytes.</td>
+    </tr>
+    <tr>
+      <td><strong><code>SocketDispatcher</code></strong></td>
+      <td><code>.../socket/SocketDispatcher.java</code></td>
+      <td><strong>Router</strong> del protocolo de aplicación. Según el campo <code>action</code> del JSON (<code>user.login</code>, <code>match.list</code>, <code>bet.create</code>, etc.) delega en el servicio correspondiente, construye <code>SocketResponse</code> con <code>ok</code>/<code>data</code> o <code>ok</code>/<code>error</code>. Convierte <code>payload</code> con Jackson a DTOs o entidades según la acción.</td>
+    </tr>
+    <tr>
+      <td><strong><code>SocketRequest</code></strong></td>
+      <td><code>.../socket/SocketRequest.java</code></td>
+      <td>DTO de entrada del protocolo: <code>requestId</code>, <code>action</code>, <code>payload</code> (nodo JSON genérico).</td>
+    </tr>
+    <tr>
+      <td><strong><code>SocketResponse</code></strong></td>
+      <td><code>.../socket/SocketResponse.java</code></td>
+      <td>DTO de salida: <code>requestId</code>, <code>ok</code>, <code>data</code> (opcional), <code>error</code> (opcional).</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>2.3 Modelo de dominio y persistencia (JPA)</h3>
+<table>
+  <thead><tr><th>Clase</th><th>Ruta</th><th>Funcionalidad</th></tr></thead>
+  <tbody>
+    <tr><td><strong><code>Usuario</code></strong></td><td><code>.../model/Usuario.java</code></td><td>Entidad JPA del usuario: credenciales, rol, puntos, saldo, etc. Mapea a la tabla de usuarios en MySQL.</td></tr>
+    <tr><td><strong><code>Partido</code></strong></td><td><code>.../model/Partido.java</code></td><td>Entidad JPA del partido: equipos locales/visitantes, fechas, estado (<code>EstadoPartido</code>), marcador, etc.</td></tr>
+    <tr><td><strong><code>Apuesta</code></strong></td><td><code>.../model/Apuesta.java</code></td><td>Entidad JPA de la apuesta: usuario, partido, pronóstico, importe, resultado (<code>ResultadoApuesta</code>), estado.</td></tr>
+    <tr><td><strong><code>Equipo</code></strong></td><td><code>.../model/Equipo.java</code></td><td>Entidad JPA del equipo NBA (nombre, ciudad, etc.).</td></tr>
+    <tr><td><strong><code>Jugador</code></strong></td><td><code>.../model/Jugador.java</code></td><td>Entidad JPA del jugador asociado a un equipo y estadísticas agregadas en BD.</td></tr>
+    <tr><td><strong><code>Rol</code></strong></td><td><code>.../model/Rol.java</code></td><td>Enum o tipo de rol de usuario (por ejemplo <code>USER</code>, <code>ADMIN</code>) usado en <code>Usuario</code>.</td></tr>
+    <tr><td><strong><code>EstadoPartido</code></strong></td><td><code>.../enums/EstadoPartido.java</code></td><td>Enum del ciclo de vida del partido (programado, en curso, finalizado, etc.).</td></tr>
+    <tr><td><strong><code>ResultadoApuesta</code></strong></td><td><code>.../enums/ResultadoApuesta.java</code></td><td>Enum del resultado de la apuesta respecto al partido (ganada, perdida, pendiente, etc.).</td></tr>
+    <tr><td><strong><code>UsuarioRepository</code></strong></td><td><code>.../repository/UsuarioRepository.java</code></td><td>Interfaz Spring Data JPA para CRUD y consultas sobre <code>Usuario</code>.</td></tr>
+    <tr><td><strong><code>PartidoRepository</code></strong></td><td><code>.../repository/PartidoRepository.java</code></td><td>Repositorio JPA de <code>Partido</code>.</td></tr>
+    <tr><td><strong><code>ApuestaRepository</code></strong></td><td><code>.../repository/ApuestaRepository.java</code></td><td>Repositorio JPA de <code>Apuesta</code>; puede incluir consultas por usuario o partido.</td></tr>
+    <tr><td><strong><code>EquipoRepository</code></strong></td><td><code>.../repository/EquipoRepository.java</code></td><td>Repositorio JPA de <code>Equipo</code>.</td></tr>
+    <tr><td><strong><code>JugadorRepository</code></strong></td><td><code>.../repository/JugadorRepository.java</code></td><td>Repositorio JPA de <code>Jugador</code> (por ejemplo por equipo).</td></tr>
+  </tbody>
+</table>
+
+<h3>2.4 Servicios de negocio</h3>
+<table>
+  <thead><tr><th>Clase</th><th>Ruta</th><th>Funcionalidad</th></tr></thead>
+  <tbody>
+    <tr><td><strong><code>UsuarioService</code></strong></td><td><code>.../service/UsuarioService.java</code></td><td>Lógica de usuarios: registro, login (validación de contraseña/hash), listado, actualización, consulta por id. Invocado desde <code>SocketDispatcher</code> en acciones <code>user.*</code>.</td></tr>
+    <tr><td><strong><code>PartidoService</code></strong></td><td><code>.../service/PartidoService.java</code></td><td>Gestión de partidos: crear, listar, obtener, actualizar marcador/estado, <strong>finalizar partido</strong> (transaccional). Al finalizar puede disparar la resolución de apuestas vía <code>ApuestaService</code>.</td></tr>
+    <tr><td><strong><code>ApuestaService</code></strong></td><td><code>.../service/ApuestaService.java</code></td><td>Crear apuestas, listar por usuario, historial, <strong>resolver apuestas</strong> cuando un partido termina (comparar pronóstico con resultado, actualizar puntos/saldo del usuario).</td></tr>
+    <tr><td><strong><code>EquipoService</code></strong></td><td><code>.../service/EquipoService.java</code></td><td>Listar equipos, obtener detalle, operaciones de catálogo de equipos.</td></tr>
+    <tr><td><strong><code>JugadorService</code></strong></td><td><code>.../service/JugadorService.java</code></td><td>Listado y consulta de jugadores por equipo u otros criterios.</td></tr>
+    <tr><td><strong><code>EquipoEstadisticasService</code></strong></td><td><code>.../service/EquipoEstadisticasService.java</code></td><td>Cálculo o agregación de estadísticas de equipos para rankings o pantallas de estadísticas.</td></tr>
+    <tr><td><strong><code>TiendaService</code></strong></td><td><code>.../service/TiendaService.java</code></td><td>Lógica de <strong>canje de puntos</strong> por recompensas o integración con flujo de “tienda” expuesto por socket.</td></tr>
+    <tr><td><strong><code>PayPalService</code></strong></td><td><code>.../service/PayPalService.java</code></td><td>Cliente HTTP (<code>HttpClient</code>) hacia la API de <strong>PayPal</strong> (OAuth2, sandbox/producción). Usado cuando el negocio requiere validar o crear pagos reales o de prueba según configuración en <code>application.properties</code>.</td></tr>
+  </tbody>
+</table>
+
+<h3>2.5 DTOs y utilidades del servidor</h3>
+<table>
+  <thead><tr><th>Clase</th><th>Ruta</th><th>Funcionalidad</th></tr></thead>
+  <tbody>
+    <tr><td><strong><code>EquipoEstadisticasDTO</code></strong></td><td><code>.../dto/EquipoEstadisticasDTO.java</code></td><td>Objeto de transferencia con estadísticas de un equipo para enviar al cliente sin exponer la entidad JPA completa.</td></tr>
+    <tr><td><strong><code>EquipoConEstadisticasDTO</code></strong></td><td><code>.../dto/EquipoConEstadisticasDTO.java</code></td><td>DTO que combina datos de equipo con bloque de estadísticas para listados enriquecidos.</td></tr>
+    <tr><td><strong><code>CanjearPuntosRequest</code></strong></td><td><code>.../dto/CanjearPuntosRequest.java</code></td><td>Cuerpo de petición para operaciones de canje de puntos (campos acordados con el cliente).</td></tr>
+    <tr><td><strong><code>CanjearPuntosResponse</code></strong></td><td><code>.../dto/CanjearPuntosResponse.java</code></td><td>Respuesta estructurada tras un canje (éxito, mensaje, saldos actualizados, etc.).</td></tr>
+    <tr><td><strong><code>ApiError</code></strong></td><td><code>.../exception/ApiError.java</code></td><td>Representación de error de API (mensaje) para respuestas uniformes en capas que no usan solo el socket.</td></tr>
+    <tr><td><strong><code>PasswordHashGenerator</code></strong></td><td><code>.../util/PasswordHashGenerator.java</code></td><td>Utilidad de línea de comandos o helper para generar hashes de contraseña (BCrypt u otro) usados al poblar usuarios de prueba o administración fuera de la app.</td></tr>
+  </tbody>
+</table>
+
+<h3>2.6 Pruebas</h3>
+<table>
+  <thead><tr><th>Clase</th><th>Ruta</th><th>Funcionalidad</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong><code>NbaBackendApplicationTests</code></strong></td>
+      <td><code>nba_backend/src/test/java/com/tfg/nbabackend/NbaBackendApplicationTests.java</code></td>
+      <td>Test de integración ligero de Spring Boot: verifica que el contexto de la aplicación arranca correctamente (<code>@SpringBootTest</code>).</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2>3. Cliente de escritorio — <code>nba-client</code></h2>
+
+<p><strong>Paquetes típicos:</strong> <code>start</code>, <code>controller.*</code>, <code>service</code>, <code>model</code>, <code>util</code>, <code>session</code></p>
+
+<h3>3.1 Arranque</h3>
+<table>
+  <thead><tr><th>Clase</th><th>Ruta</th><th>Funcionalidad</th></tr></thead>
+  <tbody>
+    <tr><td><strong><code>Main</code></strong></td><td><code>nba-client/src/main/java/start/Main.java</code></td><td>Punto de entrada JavaFX: inicializa el toolkit, carga la primera vista (login o layout principal según diseño) y arranca el ciclo de vida de la aplicación de escritorio.</td></tr>
+  </tbody>
+</table>
+
+<h3>3.2 Sesión y configuración</h3>
+<table>
+  <thead><tr><th>Clase</th><th>Ruta</th><th>Funcionalidad</th></tr></thead>
+  <tbody>
+    <tr><td><strong><code>Session</code></strong></td><td><code>nba-client/src/main/java/session/Session.java</code></td><td>Singleton o contenedor del <strong>usuario logueado</strong> y datos de sesión (token lógico, usuario actual) compartidos entre controladores tras el login.</td></tr>
+    <tr><td><strong><code>Config</code></strong></td><td><code>nba-client/src/main/java/util/Config.java</code></td><td>Lectura de <strong>host y puerto</strong> del servidor socket (propiedades o valores por defecto) usados por <code>SocketApiClient</code>.</td></tr>
+  </tbody>
+</table>
+
+<h3>3.3 Comunicación con el backend</h3>
+<table>
+  <thead><tr><th>Clase</th><th>Ruta</th><th>Funcionalidad</th></tr></thead>
+  <tbody>
+    <tr><td><strong><code>SocketApiClient</code></strong></td><td><code>nba-client/src/main/java/service/SocketApiClient.java</code></td><td>Cliente TCP: abre <code>Socket</code>, envía JSON con <code>requestId</code>, <code>action</code>, <code>payload</code> en trama length-prefixed, lee la respuesta, interpreta <code>ok</code>/<code>error</code>/<code>data</code> con Jackson. Es el equivalente Java del <code>SocketApi</code> de Android.</td></tr>
+  </tbody>
+</table>
+
+<h3>3.4 Servicios del cliente (fachada sobre el socket)</h3>
+<p class="note">Estas clases agrupan llamadas a <code>SocketApiClient</code> por dominio para que los controladores no construyan JSON a mano.</p>
+<table>
+  <thead><tr><th>Clase</th><th>Ruta</th><th>Funcionalidad</th></tr></thead>
+  <tbody>
+    <tr><td><strong><code>UsuarioService</code></strong></td><td><code>nba-client/src/main/java/service/UsuarioService.java</code></td><td>Login, registro, perfil, listado de usuarios (admin), actualización de usuario vía socket.</td></tr>
+    <tr><td><strong><code>PartidoService</code></strong></td><td><code>.../service/PartidoService.java</code></td><td>Listado, creación, detalle, finalización de partidos (admin).</td></tr>
+    <tr><td><strong><code>ApuestaService</code></strong></td><td><code>.../service/ApuestaService.java</code></td><td>Crear apuesta, listar activas, historial, detalle.</td></tr>
+    <tr><td><strong><code>EquipoApiService</code></strong></td><td><code>.../service/EquipoApiService.java</code></td><td>Equipos y posiblemente estadísticas de equipos desde el backend.</td></tr>
+    <tr><td><strong><code>JugadorService</code></strong></td><td><code>.../service/JugadorService.java</code></td><td>Jugadores por equipo o listados globales.</td></tr>
+    <tr><td><strong><code>TiendaService</code></strong></td><td><code>.../service/TiendaService.java</code></td><td>Operaciones de tienda / canje de puntos contra el backend.</td></tr>
+  </tbody>
+</table>
+
+<h3>3.5 Modelos del cliente (POJO, sin JPA)</h3>
+<p class="note">Reflejan la forma de los JSON que intercambian cliente y servidor; no se persisten en el cliente.</p>
+<table>
+  <thead><tr><th>Clase</th><th>Ruta</th><th>Funcionalidad</th></tr></thead>
+  <tbody>
+    <tr><td><strong><code>User</code></strong></td><td><code>nba-client/src/main/java/model/User.java</code></td><td>Modelo de usuario para vistas y envío en peticiones.</td></tr>
+    <tr><td><strong><code>Partido</code></strong></td><td><code>.../model/Partido.java</code></td><td>Modelo de partido para tablas y formularios.</td></tr>
+    <tr><td><strong><code>Apuesta</code></strong></td><td><code>.../model/Apuesta.java</code></td><td>Modelo de apuesta para listados y detalle.</td></tr>
+    <tr><td><strong><code>Equipo</code></strong></td><td><code>.../model/Equipo.java</code></td><td>Modelo de equipo.</td></tr>
+    <tr><td><strong><code>Jugador</code></strong></td><td><code>.../model/Jugador.java</code></td><td>Modelo de jugador.</td></tr>
+    <tr><td><strong><code>EquipoEstadisticas</code></strong></td><td><code>.../model/EquipoEstadisticas.java</code></td><td>Estadísticas agregadas de equipo para pantallas de ranking/estadísticas.</td></tr>
+  </tbody>
+</table>
+
+<h3>3.6 Utilidades de UI</h3>
+<table>
+  <thead><tr><th>Clase</th><th>Ruta</th><th>Funcionalidad</th></tr></thead>
+  <tbody>
+    <tr><td><strong><code>TableFormatters</code></strong></td><td><code>nba-client/src/main/java/util/TableFormatters.java</code></td><td>Formateo de celdas JavaFX (fechas, decimales, enums) para <code>TableView</code> y controles similares.</td></tr>
+  </tbody>
+</table>
+
+<h3>3.7 Controladores JavaFX (por área funcional)</h3>
+<p class="note">Los controladores enlazan FXML/eventos con los servicios y actualizan la UI.</p>
+<table>
+  <thead><tr><th>Clase</th><th>Ruta</th><th>Funcionalidad</th></tr></thead>
+  <tbody>
+    <tr><td><strong><code>LoginController</code></strong></td><td><code>.../controller/auth/login/LoginController.java</code></td><td>Pantalla de login: validación básica, llamada a <code>UsuarioService</code>, guardado en <code>Session</code>, navegación al dashboard.</td></tr>
+    <tr><td><strong><code>RegisterController</code></strong></td><td><code>.../controller/auth/registro/RegisterController.java</code></td><td>Registro de nuevo usuario.</td></tr>
+    <tr><td><strong><code>ChangePasswordController</code></strong></td><td><code>.../controller/auth/password/ChangePasswordController.java</code></td><td>Cambio de contraseña del usuario autenticado.</td></tr>
+    <tr><td><strong><code>MainLayoutController</code></strong></td><td><code>.../controller/layout/MainLayoutController.java</code></td><td>Layout principal (menú, barra, contenedor de vistas hijas).</td></tr>
+    <tr><td><strong><code>DashboardController</code></strong></td><td><code>.../controller/dashboard/DashboardController.java</code></td><td>Panel principal del usuario: resumen, accesos a partidos/apuestas.</td></tr>
+    <tr><td><strong><code>MatchesController</code></strong></td><td><code>.../controller/partidos/MatchesController.java</code></td><td>Listado de partidos disponibles para apostar o consultar.</td></tr>
+    <tr><td><strong><code>MatchDetailController</code></strong></td><td><code>.../controller/partidos/MatchDetailController.java</code></td><td>Detalle de un partido concreto.</td></tr>
+    <tr><td><strong><code>CreateBetController</code></strong></td><td><code>.../controller/apuestas/CreateBetController.java</code></td><td>Formulario de creación de apuesta.</td></tr>
+    <tr><td><strong><code>BetsController</code></strong></td><td><code>.../controller/apuestas/BetsController.java</code></td><td>Contenedor o pestaña de apuestas del usuario.</td></tr>
+    <tr><td><strong><code>ActiveBetsController</code></strong></td><td><code>.../controller/apuestas/ActiveBetsController.java</code></td><td>Listado de apuestas activas.</td></tr>
+    <tr><td><strong><code>BetHistoryController</code></strong></td><td><code>.../controller/apuestas/BetHistoryController.java</code></td><td>Historial de apuestas resueltas.</td></tr>
+    <tr><td><strong><code>BetDetailController</code></strong></td><td><code>.../controller/apuestas/BetDetailController.java</code></td><td>Detalle de una apuesta.</td></tr>
+    <tr><td><strong><code>ProfileController</code></strong></td><td><code>.../controller/perfil/ProfileController.java</code></td><td>Perfil del usuario (datos, puntos, edición limitada).</td></tr>
+    <tr><td><strong><code>RankingsController</code></strong></td><td><code>.../controller/rankings/RankingsController.java</code></td><td>Ranking de usuarios por puntos.</td></tr>
+    <tr><td><strong><code>TiendaController</code></strong></td><td><code>.../controller/tienda/TiendaController.java</code></td><td>Pantalla de tienda / canje.</td></tr>
+    <tr><td><strong><code>StatisticsController</code></strong></td><td><code>.../controller/estadisticas/StatisticsController.java</code></td><td>Navegación o contenedor de la sección de estadísticas.</td></tr>
+    <tr><td><strong><code>TeamsStatsController</code></strong></td><td><code>.../controller/estadisticas/TeamsStatsController.java</code></td><td>Estadísticas por equipos.</td></tr>
+    <tr><td><strong><code>PlayersStatsController</code></strong></td><td><code>.../controller/estadisticas/PlayersStatsController.java</code></td><td>Estadísticas por jugadores.</td></tr>
+    <tr><td><strong><code>TeamDetailController</code></strong></td><td><code>.../controller/estadisticas/TeamDetailController.java</code></td><td>Detalle estadístico de un equipo.</td></tr>
+    <tr><td><strong><code>AdminDashboardController</code></strong></td><td><code>.../controller/admin/AdminDashboardController.java</code></td><td>Panel de administración: accesos a gestión de partidos y usuarios.</td></tr>
+    <tr><td><strong><code>MatchManagementController</code></strong></td><td><code>.../controller/admin/MatchManagementController.java</code></td><td>Gestión del ciclo de vida de partidos (crear, editar, listar para admin).</td></tr>
+    <tr><td><strong><code>MatchFormController</code></strong></td><td><code>.../controller/admin/MatchFormController.java</code></td><td>Formulario alta/edición de partido.</td></tr>
+    <tr><td><strong><code>UserManagementController</code></strong></td><td><code>.../controller/admin/UserManagementController.java</code></td><td>Administración de usuarios (roles, bloqueo, puntos si aplica).</td></tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2>4. Aplicación Android — <code>Android/app/src/main/java/com/tfg/nbapredictor</code></h2>
+
+<h3>4.1 Aplicación y contexto</h3>
+<table>
+  <thead><tr><th>Clase / objeto</th><th>Ruta</th><th>Funcionalidad</th></tr></thead>
+  <tbody>
+    <tr><td><strong><code>NBAPredictorApplication</code></strong></td><td><code>.../NBAPredictorApplication.kt</code></td><td>Subclase de <code>Application</code> para inicialización global (si está configurada en el <code>AndroidManifest</code>).</td></tr>
+    <tr><td><strong><code>AppContext</code></strong></td><td><code>.../util/AppContext.kt</code></td><td>Acceso al <code>Context</code> de aplicación de forma estática o centralizada donde hace falta fuera de <code>Activity</code> (por ejemplo para <code>ServerConfig</code> o inicializaciones).</td></tr>
+  </tbody>
+</table>
+
+<h3>4.2 Configuración de red y sesión</h3>
+<table>
+  <thead><tr><th>Clase / objeto</th><th>Ruta</th><th>Funcionalidad</th></tr></thead>
+  <tbody>
+    <tr><td><strong><code>ServerConfig</code></strong></td><td><code>.../util/ServerConfig.kt</code></td><td>Singleton: guarda y lee <strong>host</strong> y <strong>puerto</strong> del backend en <code>SharedPreferences</code>; valores por defecto para emulador (<code>10.0.2.2:9090</code>); heurística <code>isProbablyEmulator()</code>; puede resetear el cliente Retrofit al cambiar la base URL si la app usa ambos canales.</td></tr>
+    <tr><td><strong><code>Session</code></strong></td><td><code>.../util/Session.kt</code></td><td>Estado de sesión del usuario logueado en memoria (objeto <code>User</code> o similar) compartido entre pantallas.</td></tr>
+  </tbody>
+</table>
+
+<h3>4.3 Red: sockets (canal principal con el backend)</h3>
+<table>
+  <thead><tr><th>Clase / objeto</th><th>Ruta</th><th>Funcionalidad</th></tr></thead>
+  <tbody>
+    <tr><td><strong><code>SocketApi</code></strong></td><td><code>.../network/SocketApi.kt</code></td><td>Objeto singleton con funciones <code>suspend</code> que ejecutan en <code>Dispatchers.IO</code>: para cada operación abre <code>Socket</code>, serializa petición con <strong>Gson</strong>, usa <code>SocketFrameSerializer</code>, parsea <code>SocketResponse</code> y devuelve modelos Kotlin o lanza excepción si <code>ok == false</code>. Agrupa métodos (<code>login</code>, <code>getPartidos</code>, <code>createBet</code>, etc.) mapeados a <code>action</code> del backend.</td></tr>
+    <tr><td><strong><code>SocketFrameSerializer</code></strong></td><td><code>.../network/SocketFrameSerializer.kt</code></td><td>Igual que en el servidor: trama <strong>4 bytes longitud + UTF-8</strong>.</td></tr>
+    <tr><td><strong><code>LocalDateTimeAdapter</code></strong></td><td><code>.../network/LocalDateTimeAdapter.kt</code></td><td><code>TypeAdapter</code> de Gson para serializar/deserializar <code>LocalDateTime</code> de forma compatible con el JSON del backend.</td></tr>
+  </tbody>
+</table>
+
+<h3>4.4 Red: Retrofit (API REST declarada; uso según evolución del proyecto)</h3>
+<table>
+  <thead><tr><th>Clase / interfaz</th><th>Ruta</th><th>Funcionalidad</th></tr></thead>
+  <tbody>
+    <tr><td><strong><code>ApiService</code></strong></td><td><code>.../network/ApiService.kt</code></td><td>Interfaz <strong>Retrofit</strong> con endpoints REST (<code>usuarios</code>, <code>partidos</code>, etc.). Incluye <code>LoginRequest</code> y el data class <strong><code>ApiError</code></strong> para parsear cuerpos de error <code>{"error":"..."}</code>. Puede coexistir con <code>SocketApi</code> si alguna pantalla aún usa HTTP; la documentación del TFG debe aclarar qué flujo está activo en producción.</td></tr>
+    <tr><td><strong><code>RetrofitClient</code></strong></td><td><code>.../network/RetrofitClient.kt</code></td><td>Construye la instancia de Retrofit (base URL desde <code>ServerConfig</code>, OkHttp, conversores Gson).</td></tr>
+  </tbody>
+</table>
+
+<h3>4.5 Modelos Kotlin</h3>
+<table>
+  <thead><tr><th>Clase</th><th>Ruta</th><th>Funcionalidad</th></tr></thead>
+  <tbody>
+    <tr><td><strong><code>User</code></strong></td><td><code>.../model/User.kt</code></td><td>Data class usuario (id, username, puntos, rol, etc.) alineada con el JSON del backend.</td></tr>
+    <tr><td><strong><code>Partido</code></strong></td><td><code>.../model/Partido.kt</code></td><td>Data class partido.</td></tr>
+    <tr><td><strong><code>Apuesta</code></strong></td><td><code>.../model/Apuesta.kt</code></td><td>Data class apuesta.</td></tr>
+    <tr><td><strong><code>Equipo</code></strong></td><td><code>.../model/Equipo.kt</code></td><td>Data class equipo.</td></tr>
+    <tr><td><strong><code>Jugador</code></strong></td><td><code>.../model/Jugador.kt</code></td><td>Data class jugador.</td></tr>
+    <tr><td><strong><code>EquipoEstadisticas</code></strong></td><td><code>.../model/EquipoEstadisticas.kt</code></td><td>Estadísticas de equipo para rankings.</td></tr>
+  </tbody>
+</table>
+
+<h3>4.6 Actividades “clásicas” y flujo híbrido</h3>
+<table>
+  <thead><tr><th>Clase</th><th>Ruta</th><th>Funcionalidad</th></tr></thead>
+  <tbody>
+    <tr><td><strong><code>LoginActivity</code></strong></td><td><code>.../ui/auth/LoginActivity.kt</code></td><td>Actividad de login (puede lanzar Compose o fragments según diseño).</td></tr>
+    <tr><td><strong><code>RegisterActivity</code></strong></td><td><code>.../ui/auth/RegisterActivity.kt</code></td><td>Actividad de registro.</td></tr>
+    <tr><td><strong><code>MainActivity</code></strong></td><td><code>.../ui/main/MainActivity.kt</code></td><td>Actividad principal con navegación por <strong>Fragments</strong> y <code>BottomNavigation</code> (flujo “clásico” XML).</td></tr>
+    <tr><td><strong><code>ComposeMainActivity</code></strong></td><td><code>.../ui/compose/ComposeMainActivity.kt</code></td><td>Actividad host de <strong>Jetpack Compose</strong> que carga el árbol <code>NBAComposeApp</code>.</td></tr>
+    <tr><td><strong><code>AdminActivity</code></strong></td><td><code>.../ui/admin/AdminActivity.kt</code></td><td>Pantalla o contenedor de administración (gestión de partidos en móvil).</td></tr>
+  </tbody>
+</table>
+
+<h3>4.7 Fragments (vista XML / ViewBinding)</h3>
+<table>
+  <thead><tr><th>Clase</th><th>Ruta</th><th>Funcionalidad</th></tr></thead>
+  <tbody>
+    <tr><td><strong><code>DashboardFragment</code></strong></td><td><code>.../ui/dashboard/DashboardFragment.kt</code></td><td>Inicio del usuario: partidos destacados, accesos.</td></tr>
+    <tr><td><strong><code>MatchesFragment</code></strong></td><td><code>.../ui/matches/MatchesFragment.kt</code></td><td>Listado de partidos.</td></tr>
+    <tr><td><strong><code>MatchDetailFragment</code></strong></td><td><code>.../ui/matches/MatchDetailFragment.kt</code></td><td>Detalle de partido.</td></tr>
+    <tr><td><strong><code>BetsFragment</code></strong></td><td><code>.../ui/bets/BetsFragment.kt</code></td><td>Listado de apuestas del usuario.</td></tr>
+    <tr><td><strong><code>CreateBetDialogFragment</code></strong></td><td><code>.../ui/bets/CreateBetDialogFragment.kt</code></td><td>Diálogo para crear apuesta (wrapper que puede invocar lógica Compose o vistas).</td></tr>
+    <tr><td><strong><code>ProfileFragment</code></strong></td><td><code>.../ui/profile/ProfileFragment.kt</code></td><td>Perfil y datos del usuario.</td></tr>
+    <tr><td><strong><code>RankingsFragment</code></strong></td><td><code>.../ui/rankings/RankingsFragment.kt</code></td><td>Fragment contenedor de ranking.</td></tr>
+  </tbody>
+</table>
+
+<h3>4.8 Adaptadores de <code>RecyclerView</code></h3>
+<table>
+  <thead><tr><th>Clase</th><th>Ruta</th><th>Funcionalidad</th></tr></thead>
+  <tbody>
+    <tr><td><strong><code>MatchesAdapter</code></strong></td><td><code>.../ui/dashboard/MatchesAdapter.kt</code></td><td>Adaptador de lista de partidos en dashboard.</td></tr>
+    <tr><td><strong><code>BetsAdapter</code></strong></td><td><code>.../ui/bets/BetsAdapter.kt</code></td><td>Adaptador de lista de apuestas.</td></tr>
+    <tr><td><strong><code>RankingsAdapter</code></strong></td><td><code>.../ui/rankings/RankingsAdapter.kt</code></td><td>Adaptador de filas de ranking.</td></tr>
+    <tr><td><strong><code>AdminMatchesAdapter</code></strong></td><td><code>.../ui/admin/AdminMatchesAdapter.kt</code></td><td>Lista de partidos para administrador (acciones de finalizar, etc.).</td></tr>
+  </tbody>
+</table>
+
+<h3>4.9 Diálogos admin</h3>
+<table>
+  <thead><tr><th>Clase</th><th>Ruta</th><th>Funcionalidad</th></tr></thead>
+  <tbody>
+    <tr><td><strong><code>FinalizeMatchDialogFragment</code></strong></td><td><code>.../ui/admin/FinalizeMatchDialogFragment.kt</code></td><td>Diálogo para introducir resultado final y llamar al backend para <strong>finalizar</strong> el partido (resolución de apuestas en servidor).</td></tr>
+  </tbody>
+</table>
+
+<h3>4.10 Jetpack Compose — navegación y pantallas</h3>
+<table>
+  <thead><tr><th>Clase / objeto</th><th>Ruta</th><th>Funcionalidad</th></tr></thead>
+  <tbody>
+    <tr><td><strong><code>NBAComposeApp</code></strong></td><td><code>.../ui/compose/NBAComposeApp.kt</code></td><td>Raíz Compose: <code>NavHost</code>, tema y pantallas registradas. Incluye el <code>data class</code> privado <strong><code>BottomNavItem</code></strong> (ruta, etiqueta, icono) para los ítems de la barra inferior.</td></tr>
+    <tr><td><strong><code>NavSharedState</code></strong></td><td><code>.../ui/compose/NavSharedState.kt</code></td><td>Estado compartido entre pantallas Compose (usuario actual, flags de navegación, etc.).</td></tr>
+    <tr><td><strong><code>DashboardViewModel</code></strong></td><td><code>.../ui/compose/viewmodel/DashboardViewModel.kt</code></td><td><code>ViewModel</code> del dashboard Compose: expone <code>StateFlow&lt;DashboardState&gt;</code>, carga partidos y datos vía corrutinas y <code>SocketApi</code>.</td></tr>
+    <tr><td><strong><code>DashboardState</code></strong></td><td><code>.../ui/compose/viewmodel/DashboardViewModel.kt</code></td><td><code>data class</code> en el mismo archivo que <code>DashboardViewModel</code>: estado inmutable de la UI del dashboard (cargando, error, lista de partidos).</td></tr>
+    <tr><td><strong><code>LoginScreen</code></strong></td><td><code>.../ui/compose/screens/LoginScreen.kt</code></td><td>UI Compose de login y configuración de servidor.</td></tr>
+    <tr><td><strong><code>RegisterScreen</code></strong></td><td><code>.../ui/compose/screens/RegisterScreen.kt</code></td><td>UI Compose de registro.</td></tr>
+    <tr><td><strong><code>DashboardScreen</code></strong></td><td><code>.../ui/compose/screens/DashboardScreen.kt</code></td><td>UI Compose del panel principal.</td></tr>
+    <tr><td><strong><code>MatchesScreen</code></strong></td><td><code>.../ui/compose/screens/MatchesScreen.kt</code></td><td>Listado de partidos en Compose.</td></tr>
+    <tr><td><strong><code>MatchDetailScreen</code></strong></td><td><code>.../ui/compose/screens/MatchDetailScreen.kt</code></td><td>Detalle de partido en Compose.</td></tr>
+    <tr><td><strong><code>BetsScreen</code></strong></td><td><code>.../ui/compose/screens/BetsScreen.kt</code></td><td>Apuestas en Compose.</td></tr>
+    <tr><td><strong><code>CreateBetDialog</code></strong></td><td><code>.../ui/compose/screens/CreateBetDialog.kt</code></td><td>Diálogo Compose para nueva apuesta.</td></tr>
+    <tr><td><strong><code>RankingsScreen</code></strong></td><td><code>.../ui/compose/screens/RankingsScreen.kt</code></td><td>Ranking en Compose.</td></tr>
+    <tr><td><strong><code>ProfileScreen</code></strong></td><td><code>.../ui/compose/screens/ProfileScreen.kt</code></td><td>Perfil en Compose.</td></tr>
+    <tr><td><strong><code>StoreScreen</code></strong></td><td><code>.../ui/compose/screens/StoreScreen.kt</code></td><td>Tienda / canje en Compose.</td></tr>
+    <tr><td><strong><code>AdminScreen</code></strong></td><td><code>.../ui/compose/screens/AdminScreen.kt</code></td><td>Administración de partidos en Compose.</td></tr>
+    <tr><td><strong><code>MatchItem</code></strong></td><td><code>.../ui/compose/components/MatchItem.kt</code></td><td>Composable reutilizable que pinta una fila de partido.</td></tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2>5. Cómo mantener este catálogo</h2>
+<ul>
+  <li>Al <strong>añadir</strong> una clase nueva, incorpórala en la sección del módulo correspondiente con: nombre, ruta relativa y una frase de responsabilidad.</li>
+  <li>Al <strong>refactorizar</strong> (por ejemplo renombrar <code>SocketProtocol</code> a <code>SocketFrameSerializer</code>), actualiza el nombre aquí y en <code>nba_backend/docs/README.md</code> si aplica.</li>
+  <li>Los <strong>scripts SQL</strong> (<code>create_empty_database.sql</code>, <code>populate_database.sql</code>) no son clases; documentan el esquema de BD aparte.</li>
+</ul>
+
+<hr>
+
+<h2>6. Referencias cruzadas</h2>
+<table>
+  <thead><tr><th>Documento</th><th>Contenido</th></tr></thead>
+  <tbody>
+    <tr><td><code>nba_backend/docs/PROTOCOLO_COMUNICACION_SOCKETS.md</code></td><td>Lista de <code>action</code> y payloads</td></tr>
+    <tr><td><code>nba_backend/docs/SOCKETS_ANDROID_Y_SERVIDOR.md</code></td><td>Conexión TCP y clases implicadas</td></tr>
+    <tr><td><code>nba_backend/docs/FLUJO_APLICACION_DETALLADO.md</code></td><td>Flujo de datos entre capas</td></tr>
+  </tbody>
+</table>
+
+<footer>
+  <p>Documento generado para el TFG — catálogo de clases del código fuente (servidor, cliente JavaFX, Android).</p>
+  <p><strong>PDF:</strong> abre este archivo en el navegador → <kbd>Ctrl</kbd>+<kbd>P</kbd> → Guardar como PDF.</p>
+</footer>
+
+</body>
+</html>

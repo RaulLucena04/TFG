@@ -48,13 +48,21 @@ fun LoginScreen(
             isEmulator = ServerConfig.isProbablyEmulator(),
             onDismiss = { showServerConfig = false },
             onUseDefault = {
+                ServerConfig.applyDefaultSocketServer(context)
+                serverAddress =
+                    "${ServerConfig.getServerHost(context)}:${ServerConfig.getServerPort(context)}"
                 val prefs = context.getSharedPreferences("app_prefs", android.content.Context.MODE_PRIVATE)
                 prefs.edit().putBoolean("server_configured", true).apply()
                 showServerConfig = false
             },
             onSave = { url ->
-                ServerConfig.applyFromHostPortString(context, url)
-                serverAddress = "${ServerConfig.getServerHost(context)}:${ServerConfig.getServerPort(context)}"
+                if (url.isBlank()) {
+                    ServerConfig.applyDefaultSocketServer(context)
+                } else {
+                    ServerConfig.applyFromHostPortString(context, url.trim())
+                }
+                serverAddress =
+                    "${ServerConfig.getServerHost(context)}:${ServerConfig.getServerPort(context)}"
                 val prefs = context.getSharedPreferences("app_prefs", android.content.Context.MODE_PRIVATE)
                 prefs.edit().putBoolean("server_configured", true).apply()
                 showServerConfig = false
@@ -143,7 +151,7 @@ fun LoginScreen(
                         val hint = if (ServerConfig.isProbablyEmulator()) {
                             "Comprueba que el backend esté en marcha y escuche el puerto $port. Si MySQL está parado, Spring puede no arrancar."
                         } else {
-                            "En móvil físico no uses 10.0.2.2; pon la IP LAN de tu PC (ej. 192.168.x.x:$port), mismo Wi‑Fi, y firewall abierto para TCP $port."
+                            "En móvil físico no uses 10.0.2.2; pon la IP LAN de tu PC (ej. 192.168.1.138:$port), mismo Wi‑Fi, y firewall abierto para TCP $port."
                         }
                         errorMessage = "No se pudo conectar al servidor en $host:$port (${e.message}). $hint"
                     } finally {
@@ -192,8 +200,8 @@ private fun ServerConfigDialog(
     onUseDefault: () -> Unit,
     onSave: (String) -> Unit
 ) {
-    var url by remember { mutableStateOf(currentUrl) }
-    
+    var url by remember(currentUrl) { mutableStateOf(currentUrl) }
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Configurar Servidor") },
@@ -208,7 +216,7 @@ private fun ServerConfigDialog(
                     if (isEmulator) {
                         "Emulador: suele funcionar 10.0.2.2:9090 (apunta al localhost de tu PC)."
                     } else {
-                        "Movil fisico: usa la IP de tu PC en la red Wi-Fi (cmd, ipconfig), ej. 192.168.1.50:9090."
+                        "Móvil físico: usa la IP de tu PC en la red Wi‑Fi (cmd → ipconfig), ej. 192.168.1.138:9090."
                     }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -225,11 +233,7 @@ private fun ServerConfigDialog(
         },
         confirmButton = {
             TextButton(
-                onClick = {
-                    if (url.isNotBlank()) {
-                        onSave(url.trim())
-                    }
-                }
+                onClick = { onSave(url.trim()) }
             ) {
                 Text("Guardar")
             }

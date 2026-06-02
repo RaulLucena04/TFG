@@ -26,6 +26,7 @@ public final class SocketClientHandler implements Runnable {
 
     @Override
     public void run() {
+        java.net.SocketAddress remote = client.getRemoteSocketAddress();
         try (Socket c = client;
              DataInputStream in = new DataInputStream(c.getInputStream());
              DataOutputStream out = new DataOutputStream(c.getOutputStream())) {
@@ -49,7 +50,7 @@ public final class SocketClientHandler implements Runnable {
                 SocketFrameSerializer.writeFrame(out, mapper.writeValueAsString(resp));
             }
         } catch (Exception e) {
-            System.err.println("Cliente desconectado/error: " + e.getMessage());
+            System.err.println("[socket] Cliente " + remote + " desconectado/error: " + e.getMessage());
         }
     }
 }

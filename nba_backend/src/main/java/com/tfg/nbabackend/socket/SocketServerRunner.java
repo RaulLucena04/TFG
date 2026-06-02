@@ -61,6 +61,7 @@ public class SocketServerRunner implements CommandLineRunner, DisposableBean {
         while (serverSocket != null && !serverSocket.isClosed()) {
             try {
                 Socket client = serverSocket.accept();
+                System.out.println("[socket] Conexión entrante desde " + client.getRemoteSocketAddress());
                 clientPool.submit(new SocketClientHandler(client, mapper, dispatcher));
             } catch (Exception e) {
                 if (serverSocket == null || serverSocket.isClosed()) {

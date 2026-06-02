@@ -24,11 +24,39 @@ import java.nio.charset.StandardCharsets;
 final class SocketFrameSerializer {
     private SocketFrameSerializer() {}
 
+    /**
+     * Si los 4 bytes leídos como big-endian parecen "POST", "GET ", "HTTP", etc., el cliente
+     * está hablando HTTP en el puerto del socket (tramas int32+JSON), no el protocolo TFG.
+     */
+    private static String describeIfLooksLikeHttp(int len) {
+        byte[] b = new byte[]{
+                (byte) (len >>> 24),
+                (byte) (len >>> 16),
+                (byte) (len >>> 8),
+                (byte) len
+        };
+        String s = new String(b, StandardCharsets.US_ASCII);
+        boolean printable = true;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c < 32 || c > 126) {
+                printable = false;
+                break;
+            }
+        }
+        if (!printable) {
+            return "";
+        }
+        return " — los 4 primeros bytes parecen ASCII \"" + s
+                + "\": suele ser una petición HTTP (p. ej. Retrofit/OkHttp o navegador) "
+                + "contra el puerto del socket; ese puerto solo acepta int32 longitud + JSON UTF-8.";
+    }
+
     static String readFrame(DataInputStream in) throws IOException {
         try {
             int len = in.readInt();
             if (len < 0 || len > 50_000_000) {
-                throw new IOException("Longitud de frame inválida: " + len);
+                throw new IOException("Longitud de frame inválida: " + len + describeIfLooksLikeHttp(len));
             }
             byte[] buf = new byte[len];
             in.readFully(buf);

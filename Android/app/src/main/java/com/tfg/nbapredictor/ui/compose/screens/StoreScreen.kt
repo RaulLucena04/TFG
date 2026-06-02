@@ -144,7 +144,7 @@ fun StoreScreen() {
                                 Session.notifyUserUpdated()
                                 user = updated
                             } else {
-                                mensaje = resp.mensaje
+                                mensaje = resp.mensaje ?: "Canje no completado"
                                 esExito = false
                             }
                         } catch (e: Exception) {

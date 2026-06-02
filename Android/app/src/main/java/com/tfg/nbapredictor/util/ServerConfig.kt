@@ -4,17 +4,15 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import android.util.Log
-import com.tfg.nbapredictor.network.RetrofitClient
 
 /**
  * Objeto singleton que gestiona la configuración de la URL del servidor.
  * 
  * Almacena la URL del servidor en SharedPreferences y proporciona métodos
- * para obtener y establecer la configuración. Cuando se cambia la URL,
- * automáticamente resetea el cliente Retrofit para usar la nueva configuración.
+ * para obtener y establecer la configuración.
  * 
  * <p><b>Importante:</b> la app Android <b>no</b> se conecta directamente a MySQL. Habla con el
- * backend Java por <b>TCP (socket)</b> en [host]:9090; el backend es quien usa la base de datos.</p>
+ * backend Java por <b>TCP (socket)</b> en host:9090; el backend es quien usa la base de datos.</p>
  * 
  * @author TFG
  * @version 1.0
@@ -33,7 +31,7 @@ object ServerConfig {
     private const val TAG = "ServerConfig"
 
     /**
-     * Heurística para saber si la app corre en emulador. En emulador, [DEFAULT_SERVER_HOST] apunta al PC anfitrión.
+     * Heurística para saber si la app corre en emulador. En emulador, el host por defecto apunta al PC anfitrión.
      * En dispositivo físico hay que configurar la IP LAN del PC (misma Wi‑Fi) en el diálogo de login.
      */
     fun isProbablyEmulator(): Boolean {
@@ -81,10 +79,7 @@ object ServerConfig {
     /**
      * Establece la URL base del servidor.
      * 
-     * <p>Normaliza la URL eliminando espacios en blanco y barras finales.
-     * Resetea automáticamente el cliente Retrofit para que use la nueva URL
-     * sin necesidad de reiniciar la aplicación. Esto permite cambiar la configuración
-     * del servidor dinámicamente.
+     * <p>Normaliza host y puerto. La app usa solo sockets TCP (`SocketApi`), no HTTP contra este puerto.
      * 
      * @param context el contexto de la aplicación
      * @param url la nueva URL del servidor (se normaliza automáticamente)
@@ -97,13 +92,6 @@ object ServerConfig {
             .putString(KEY_SERVER_HOST, cleanHost)
             .putInt(KEY_SERVER_PORT, cleanPort)
             .apply()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            try {
-                RetrofitClient.reset()
-            } catch (_: Throwable) {
-                // Retrofit puede no estar disponible en tests
-            }
-        }
     }
 
     /**
@@ -112,6 +100,14 @@ object ServerConfig {
     fun applyFromHostPortString(context: Context, hostPort: String) {
         val (h, p) = parseHostPort(hostPort)
         setServerAddress(context, h, p)
+    }
+
+    /**
+     * Fuerza host/puerto por defecto del socket (emulador: 10.0.2.2:9090) y los persiste.
+     * Usar desde el boton "Usar por defecto" del dialogo de login para que coincida con lo que usa SocketApi.
+     */
+    fun applyDefaultSocketServer(context: Context) {
+        setServerAddress(context, DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT)
     }
 
     /**
@@ -132,7 +128,6 @@ object ServerConfig {
      * Establece la URL base del servidor sin necesidad de Context.
      * 
      * <p>Usa el contexto de la aplicación almacenado en AppContext si está disponible.
-     * Resetea automáticamente el cliente Retrofit para que use la nueva URL.
      * 
      * @param url la nueva URL del servidor (se normaliza automáticamente)
      */
