@@ -67,10 +67,24 @@ Las dependencias están configuradas en `app/build.gradle`. Ejecuta:
 
 ## Compilación y Ejecución
 
+### Desde Android Studio
+
 1. Abre el proyecto en Android Studio
 2. Sincroniza el proyecto (Sync Project)
 3. Conecta un dispositivo o inicia un emulador
 4. Ejecuta la aplicación (Run 'app')
+
+### APK con script (carpeta sencilla `Android/apk/`)
+
+Desde la carpeta `Android`:
+
+| Acción | Windows | Linux / Mac |
+|--------|---------|-------------|
+| Release (firma release si está configurada) | `build_release_apk.bat` | `./build_release_apk.sh` |
+| Debug | `build_release_apk.bat debug` | `./build_release_apk.sh debug` |
+
+El script hace `gradlew clean`, compila, **borra** los `.apk` viejos en `Android/apk/` y copia el resultado como `NBA-Predictor-release.apk` o `NBA-Predictor-debug.apk`.  
+La salida interna de Gradle en Windows usa `%LOCALAPPDATA%\TFG-APK\build` (ruta corta, fuera de Documents).
 
 ## Requisitos
 

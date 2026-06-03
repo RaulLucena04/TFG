@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Respuestas — 100 preguntas defensa TFG</title>
+  <style>
+    :root { --bg:#fafafa; --text:#1a1a1a; --muted:#555; --border:#ccc; --accent:#1565c0; --card:#fff; }
+    * { box-sizing: border-box; }
+    body { font-family: "Segoe UI", system-ui, sans-serif; line-height: 1.45; color: var(--text); background: var(--bg); margin: 0; padding: 1.5rem clamp(1rem, 4vw, 2.5rem) 2.5rem; max-width: 52rem; margin-left: auto; margin-right: auto; }
+    h1 { font-size: 1.55rem; border-bottom: 2px solid var(--accent); padding-bottom: 0.35rem; margin-top: 0; }
+    .sub { color: var(--muted); font-size: 0.95rem; margin: 0.5rem 0 1.25rem; }
+    h2 { font-size: 1.1rem; color: var(--accent); margin-top: 1.75rem; margin-bottom: 0.65rem; }
+    .ans { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 0.55rem 0.75rem; margin: 0.4rem 0; }
+    .ans strong:first-child { color: #0d47a1; min-width: 2rem; display: inline-block; }
+    code { font-family: ui-monospace, Consolas, monospace; font-size: 0.88em; background: #eee; padding: 0.1em 0.35em; border-radius: 3px; }
+    hr { border: none; border-top: 1px solid var(--border); margin: 1.25rem 0; }
+    footer { margin-top: 2rem; font-size: 0.88rem; color: var(--muted); }
+    footer a { color: var(--accent); }
+    @media print { body { background: #fff; } .ans { break-inside: avoid; } }
+  </style>
+</head>
+<body>
+
+<h1>Respuestas — 100 preguntas para la defensa del TFG</h1>
+<p class="sub">Respuestas orientativas para estudio; adáptalas a lo que realmente implementaste y documentaste en tu memoria.</p>
+
+<h2>1–10 · Metodología, alcance y rigor</h2>
+<p class="ans"><strong>1.</strong> La aportación no es «otra app de apuestas», sino un <strong>sistema integrado</strong> (backend + persistencia + dos clientes) con un <strong>protocolo de comunicación definido</strong> (TCP + tramas + acciones), reglas de negocio propias (partidos, apuestas, resolución, tienda) y documentación del flujo. Lo defendible es la <strong>integración</strong>, las <strong>decisiones técnicas</strong> y la <strong>trazabilidad</strong> del dato, no competir con productos comerciales cerrados.</p>
+<p class="ans"><strong>2.</strong> Ejemplo: «Un único backend puede servir a escritorio y móvil con el mismo contrato». Se valida si <strong>ambos clientes</strong> funcionan contra el mismo servidor y las <strong>acciones</strong> documentadas coinciden con el comportamiento observado (login, listados, finalizar partido). Si no hubo hipótesis formal, admítelo: el TFG fue <strong>iterativo</strong> y la validación fue <strong>prueba manual + compilación + revisión de código</strong>.</p>
+<p class="ans"><strong>3.</strong> Frase tipo: «Centralizar la gestión de partidos y apuestas de un torneo simulado con persistencia y clientes multiplataforma». Un stakeholder lo adoptaría si reduce <strong>coste de operación</strong> (un solo servidor) o sirve como <strong>base</strong> para un piloto interno.</p>
+<p class="ans"><strong>4.</strong> Prometiste seguridad básica (contraseñas no en claro), usabilidad (configuración de servidor en Android) y mantenibilidad (capas socket/dispatcher/servicio). Mide lo que puedas demostrar: <strong>tiempo de respuesta</strong> en LAN, <strong>logs</strong> del servidor, <strong>tests</strong> de arranque del backend, checklist de flujos críticos.</p>
+<p class="ans"><strong>5.</strong> Alcance pequeño: es un TFG acotado en tiempo; profundizas en <strong>integración real</strong>. Alcance grande: admite <strong>MVP</strong> y deja extensiones (TLS, notificaciones, tests E2E) como trabajo futuro explícito en conclusiones.</p>
+<p class="ans"><strong>6.</strong> Riesgos típicos: entorno Windows/OneDrive con Gradle, MySQL no levantado, IP incorrecta en móvil físico, desalineación cliente–servidor. El que más duele suele ser <strong>red + despliegue</strong>; documenta cómo lo resolviste.</p>
+<p class="ans"><strong>7.</strong> Ejemplos: tests automatizados más temprano, unificar solo Compose o solo Fragments, CI desde el principio, menos duplicación de modelos entre plataformas.</p>
+<p class="ans"><strong>8.</strong> Memoria con diagramas de despliegue y secuencia; <code>README</code> del repo; documentos de <strong>protocolo</strong> y <strong>flujo</strong>; comentarios en clases críticas (<code>SocketDispatcher</code>, servicios transaccionales).</p>
+<p class="ans"><strong>9.</strong> Limitaciones honestas: sin TLS, sin horizonte de escala masiva, datos sintéticos, poca cobertura de tests, sin panel de auditoría completo. La validez académica viene de <strong>coherencia</strong> y <strong>demostración</strong> dentro de esas fronteras.</p>
+<p class="ans"><strong>10.</strong> Integración significa que <strong>cambias una regla en el backend</strong> y <strong>afecta a ambos clientes</strong>; que el <strong>protocolo</strong> es tuyo; que hay <strong>persistencia</strong> y <strong>flujos</strong> no triviales (finalizar partido + apuestas). Un tutorial copiado no tiene esa trazabilidad ni tus decisiones documentadas.</p>
+
+<h2>11–20 · Arquitectura y diseño</h2>
+<p class="ans"><strong>11.</strong> Típico: PC con MySQL + proceso Spring Boot (puerto app por defecto si hay web; <strong>socket 9090</strong>); clientes Android y JavaFX en otras máquinas o emulador; flechas: clientes → TCP:9090 → servicios → JDBC → MySQL.</p>
+<p class="ans"><strong>12.</strong> Mejora: <strong>despliegue y evolución</strong> del contrato en un solo lugar (servidor). Empeora: <strong>tres codebases</strong> a mantener; mitigación con DTOs claros y documentación del protocolo.</p>
+<p class="ans"><strong>13.</strong> MVVM si usas <code>ViewModel</code> + estado observable y pantallas «tontas»; si la lógica está repartida sin criterio, reconócelo y propón refactor. La defensa gana con <strong>autocrítica</strong>.</p>
+<p class="ans"><strong>14.</strong> Primero el <strong>pool de hilos</strong> del socket o la <strong>BD</strong> (conexiones, locks); el <code>ServerSocket</code> acepta muchas conexiones pero el cuello suele ser <strong>I/O de BD</strong> y <strong>lógica transaccional</strong>.</p>
+<p class="ans"><strong>15.</strong> Negocio en <strong>servicios</strong> y <code>SocketDispatcher</code>; presentación solo orquesta llamadas y estado UI. Si hay reglas en la UI, son validaciones <strong>UX</strong>, no fuente de verdad.</p>
+<p class="ans"><strong>16.</strong> Ejemplo: modelos duplicados User/Usuario/JSON; mitigación: generación de código, OpenAPI futuro, o capa DTO compartida (complejo en TFG).</p>
+<p class="ans"><strong>17.</strong> Es <strong>deuda razonable</strong> en TFG: pragmatismo. Ideal sería contrato único generado; defiendes <strong>coste/beneficio</strong> del tiempo disponible.</p>
+<p class="ans"><strong>18.</strong> Invariantes: «no se resuelven apuestas dos veces», «puntos consistentes con resultado»; en código: <strong>transacción</strong> en finalización + resolución; lo que queda en papel: auditoría legal completa.</p>
+<p class="ans"><strong>19.</strong> Rechazaste REST en el mismo puerto que el socket para no mezclar semánticas; o rechazaste WebSockets porque tu caso es <strong>request/response</strong> sin push servidor.</p>
+<p class="ans"><strong>20.</strong> Ejemplo: <strong>S</strong>ingle Responsibility: <code>SocketClientHandler</code> solo I/O, dispatcher solo enrutado; <strong>O</strong>pen/Closed: nuevas acciones tocando dispatcher; admite acoplamientos donde no aplicaste OCP al 100%.</p>
+
+<h2>21–30 · Red, sockets y protocolo</h2>
+<p class="ans"><strong>21.</strong> TCP da <strong>flujo fiable y ordenado</strong>; UDP no garantiza entrega ni orden para mensajes de aplicación tipo petición/respuesta con JSON.</p>
+<p class="ans"><strong>22.</strong> JSON puede contener saltos de línea; sin longitud fijas mal el parsing y mezclas mensajes en el stream TCP.</p>
+<p class="ans"><strong>23.</strong> <code>DataInputStream.readInt()</code> es <strong>big-endian</strong> por especificación Java; cliente y servidor deben usar el mismo convenio; si uno escribiera LE, leerías longitudes absurdas (similar al bug «POST» interpretado como entero).</p>
+<p class="ans"><strong>24.</strong> Sin push nativo: <strong>polling</strong> del cliente tras acciones admin, o segundo canal (SSE/WebSocket) en otro puerto; o mensajes «long poll» simulados en el mismo socket (diseño complejo).</p>
+<p class="ans"><strong>25.</strong> Un socket por petición: <strong>simple</strong> y aísla fallos; persistente: menos overhead TCP pero más estado y timeouts en el handler.</p>
+<p class="ans"><strong>26.</strong> Los primeros bytes forman palabras HTTP (<code>POST</code>, <code>GET</code>); log y mensaje de diagnóstico; comparar con trama esperada <code>{</code> o tamaño razonable.</p>
+<p class="ans"><strong>27.</strong> Fin de stream inesperado: cerraron el socket antes de terminar la trama, protocolo mezclado (HTTP vs tramas), o timeout; hay que correlacionar con logs del servidor.</p>
+<p class="ans"><strong>28.</strong> Campo <code>protocolVersion</code> en el JSON o prefijo de acción <code>v2.user.login</code>; clientes antiguos ignoran acciones nuevas; servidor mantiene ramas compatibles un tiempo.</p>
+<p class="ans"><strong>29.</strong> En LAN: <strong>sniffing</strong> en Wi‑Fi sin cifrado, MITM en redes hostiles; asumiste red de laboratorio <strong>semi confiable</strong>; en producción exigirías TLS y autenticación fuerte.</p>
+<p class="ans"><strong>30.</strong> Aceptable en TFG/demo controlada; indefendible con datos reales de pago o exposición en Internet sin cifrado.</p>
+
+<h2>31–40 · Backend (Spring, JPA)</h2>
+<p class="ans"><strong>31.</strong> <code>@Transactional</code> agrupa operaciones en <strong>una unidad atómica</strong>: commit único o rollback si hay excepción no capturada; evita estados donde el partido quedó finalizado y las apuestas a medias.</p>
+<p class="ans"><strong>32.</strong> <code>REQUIRED</code> (por defecto) <strong>une</strong> a la transacción existente o crea una nueva; importa si llamas a métodos <code>@Transactional</code> anidados: comparten contexto salvo que configures <code>REQUIRES_NEW</code>.</p>
+<p class="ans"><strong>33.</strong> Respuesta honesta mirando tu código: si todo está en una transacción, <strong>rollback global</strong>; si capturas excepciones dentro sin propagar, podría haber <strong>inconsistencia</strong> — idealmente propagas o compensas explícitamente.</p>
+<p class="ans"><strong>34.</strong> Evitas perder actualizaciones: otra petición pudo cambiar puntos; <strong>recargar</strong> asegura sumar sobre el estado más reciente o detectar conflicto.</p>
+<p class="ans"><strong>35.</strong> Hibernate trackea cambios en entidades gestionadas y genera UPDATE al commit; puede generar <strong>updates inesperados</strong> si mutas entidades cargadas sin querer.</p>
+<p class="ans"><strong>36.</strong> Lazy por defecto en asociaciones; N+1 si listas partidos y accedes a equipos en bucle sin <code>JOIN FETCH</code> o DTO; demuestra con <code>show-sql</code> y cuenta de queries.</p>
+<p class="ans"><strong>37.</strong> JPA y BD pueden usar <strong>bloqueo optimista</strong> (<code>@Version</code>) o pesimista; sin versión, la última escritura gana; riesgo de <strong>lost update</strong> si no diseñas bloqueo.</p>
+<p class="ans"><strong>38.</strong> Productividad y menos boilerplate; coste: magia y performance menos predecible; para TFG el trade-off suele ser razonable.</p>
+<p class="ans"><strong>39.</strong> Validación de negocio en <strong>servicio</strong>; entidad con invariantes mínimos; dispatcher solo <strong>parseo y delegación</strong> para no inflar la capa de transporte.</p>
+<p class="ans"><strong>40.</strong> Mapa <code>action → Command</code>, o clases por dominio (<code>UserActions</code>, <code>MatchActions</code>); dispatcher solo despacha.</p>
+
+<h2>41–50 · Base de datos</h2>
+<p class="ans"><strong>41.</strong> Requisito del proyecto, tooling del equipo, o familiaridad; PostgreSQL sería igualmente válido; SQLite si fuera single-user local.</p>
+<p class="ans"><strong>42.</strong> Índices en <strong>FK</strong> (<code>usuario_id</code>, <code>partido_id</code>), en campos de búsqueda frecuente (<code>username</code> único); demuestra <code>EXPLAIN</code> en consultas lentas.</p>
+<p class="ans"><strong>43.</strong> Flyway/Liquibase con migraciones versionadas; nunca <code>ddl-auto=update</code> ciego en prod.</p>
+<p class="ans"><strong>44.</strong> Podrías duplicar datos de equipo en partido para histórico; aceptable si documentas <strong>denormalización intencional</strong> para snapshot de nombres.</p>
+<p class="ans"><strong>45.</strong> Restricción <strong>UNIQUE</strong> compuesta, o comprobación en servicio antes de insertar; idealmente ambos.</p>
+<p class="ans"><strong>46.</strong> Hibernate puede <strong>alterar tablas</strong> automáticamente; riesgo de pérdida de datos o migraciones impredecibles; en prod migraciones explícitas.</p>
+<p class="ans"><strong>47.</strong> <code>mysqldump</code> de <code>nba_app</code>, zip, y restore en otra máquina; script documentado en README.</p>
+<p class="ans"><strong>48.</strong> PII: email, usuario; contraseñas con hash; minimizar logs con datos sensibles; PayPal en sandbox.</p>
+<p class="ans"><strong>49.</strong> Depende de <code>ON DELETE RESTRICT/CASCADE</code>; si no hay FK física, riesgo de huérfanos — defiende integridad referencial explícita.</p>
+<p class="ans"><strong>50.</strong> Nombres genéricos «Equipo A», estadísticas inventadas; no usar logos/marcas registradas sin permiso; cita uso académico en memoria.</p>
+
+<h2>51–60 · Seguridad</h2>
+<p class="ans"><strong>51.</strong> Idealmente <strong>BCrypt</strong> o similar; si hay legado en texto plano, admítelo como <strong>migración</strong> y mitigación (forzar cambio de contraseña).</p>
+<p class="ans"><strong>52.</strong> Tablas precalculadas hash→contraseña; mitigación: <strong>salt</strong> por usuario + algoritmo lento.</p>
+<p class="ans"><strong>53.</strong> CSRF ataca sesiones web en navegador; tu socket no usa cookies de sesión del mismo modelo; riesgo distinto (token en payload si lo añadieras).</p>
+<p class="ans"><strong>54.</strong> JPA parametriza queries; no concatenar SQL con input usuario; riesgo bajo si no usas <code>@Query</code> nativo inseguro.</p>
+<p class="ans"><strong>55.</strong> Cualquier máquina en la red puede intentar conectar; en cafetería es grave; mitigación firewall, bind a interfaz LAN, autenticación fuerte.</p>
+<p class="ans"><strong>56.</strong> Tras login, <strong>token JWT</strong> o sesión UUID en cada mensaje; servidor valida token en cache/BD sin revalidar password.</p>
+<p class="ans"><strong>57.</strong> Limitar intentos por IP/usuario, backoff, captcha en entorno web; en socket, contador en servidor.</p>
+<p class="ans"><strong>58.</strong> Cleartext permite HTTP sin TLS en desarrollo; inaceptable con credenciales reales en Internet público.</p>
+<p class="ans"><strong>59.</strong> Revocar credenciales en PayPal, rotar en <code>application.properties</code>, <strong>borrar del historial Git</strong> con <code>git filter-repo</code> y considerar secretos filtrados comprometidos para siempre.</p>
+<p class="ans"><strong>60.</strong> Ejemplo: <strong>Spoofing</strong> de cliente (credenciales robadas), <strong>Tampering</strong> de payload JSON sin firma, <strong>Repudiation</strong> sin logs; la más seria suele ser <strong>credenciales débiles + red abierta</strong>.</p>
+
+<h2>61–70 · Android</h2>
+<p class="ans"><strong>61.</strong> <code>AsyncTask</code> está deprecado; corrutinas son el modelo moderno, composables con cancelación e integración con lifecycle.</p>
+<p class="ans"><strong>62.</strong> <code>coroutineScope</code> cancela hijos al destruir el scope; evitas fugas y trabajo innecesario al salir de la pantalla.</p>
+<p class="ans"><strong>63.</strong> Gson no serializa <code>LocalDateTime</code> ISO-8601 igual que Jackson por defecto; <strong>TypeAdapter</strong> o formato string acordado con backend.</p>
+<p class="ans"><strong>64.</strong> <code>remember</code> se pierde en rotación/process death; <code>rememberSaveable</code> sobrevive a muchos casos de recreación de Activity.</p>
+<p class="ans"><strong>65.</strong> <code>10.0.2.2</code> mapea al host del PC desde el emulador; en físico falla con timeout/refused si no pones la IP LAN del PC.</p>
+<p class="ans"><strong>66.</strong> Red en main thread lanza <code>NetworkOnMainThreadException</code> en APIs modernas; ANR si bloqueas UI de otra forma.</p>
+<p class="ans"><strong>67.</strong> ViewModel sobrevive a rotación; no pongas <strong>Context</strong> de Activity ni vistas; estado UI derivado del modelo.</p>
+<p class="ans"><strong>68.</strong> <code>waitUntil</code>, semánticas de test, congelar animaciones en opciones de test, ids semánticos.</p>
+<p class="ans"><strong>69.</strong> <code>AppContext</code> da <code>ApplicationContext</code> global; riesgo: retener <strong>Activity</strong>, o fugas si pasas contextos incorrectos a singletons.</p>
+<p class="ans"><strong>70.</strong> Defendible si migras gradualmente; deuda si duplica navegación sin plan; di que el TFG priorizó <strong>entregar funcionalidad</strong> con convivencia temporal.</p>
+
+<h2>71–75 · JavaFX y comparación</h2>
+<p class="ans"><strong>71.</strong> Menor footprint que Chromium embebido; buen encaje si el equipo domina Java; Electron brilla en UI web compartida con navegador.</p>
+<p class="ans"><strong>72.</strong> <code>Platform.runLater</code> para tocar UI desde hilos de red; servicios <code>Task</code>/<code>Service</code> de JavaFX.</p>
+<p class="ans"><strong>73.</strong> FXML separa layout de lógica; acelera iteración visual; coste: navegación entre archivos.</p>
+<p class="ans"><strong>74.</strong> Comparten <strong>mismo JSON de acciones</strong> y tramas; duele duplicar modelos y validaciones en Java y Kotlin.</p>
+<p class="ans"><strong>75.</strong> Reproduce con <strong>tercera herramienta</strong> (cliente mínimo, logs en servidor); si el servidor responde bien con prueba manual, el bug es del cliente.</p>
+
+<h2>76–80 · Calidad y DevOps</h2>
+<p class="ans"><strong>76.</strong> Di el número real (p. ej. solo test de contexto Spring); honestidad: «baja cobertura, mitigada con pruebas manuales documentadas».</p>
+<p class="ans"><strong>77.</strong> Login + listar partidos + crear apuesta + ver ranking en secuencia con datos conocidos.</p>
+<p class="ans"><strong>78.</strong> Jobs matrix: JDK 17, <code>mvn test</code>, <code>./gradlew assembleDebug</code>, cache de dependencias.</p>
+<p class="ans"><strong>79.</strong> <code>pom.xml</code>/<code>build.gradle</code> con versiones fijas + wrapper de Gradle/Maven committed.</p>
+<p class="ans"><strong>80.</strong> Bugs bloqueantes, vulnerabilidades de dependencias; ignorar estilo menor si no afecta legibilidad (con justificación).</p>
+
+<h2>81–85 · Rendimiento</h2>
+<p class="ans"><strong>81.</strong> Cached pool crece con carga; cuello: BD o CPU en JSON; sin medición, admite que es <strong>estimación</strong>.</p>
+<p class="ans"><strong>82.</strong> Deberías limitar tamaño de frame en servidor (como ya haces con tope razonable) y rechazar; evita OOM.</p>
+<p class="ans"><strong>83.</strong> Cada hilo de socket pide conexión del pool; agotar pool → esperas; dimensionar pool según carga esperada.</p>
+<p class="ans"><strong>84.</strong> En payloads pequeños la diferencia es marginal; red y BD dominan.</p>
+<p class="ans"><strong>85.</strong> <code>jstack</code>, VisualVM, profiler de IDE, logs de tiempo por acción en dispatcher.</p>
+
+<h2>86–90 · PayPal y negocio</h2>
+<p class="ans"><strong>86.</strong> Sandbox no mueve dinero real ni carga legal completa; APIs y errores pueden diferir.</p>
+<p class="ans"><strong>87.</strong> Ideal: transacción única o <strong>saga</strong> con compensación; idempotencia con id de operación único.</p>
+<p class="ans"><strong>88.</strong> Deshabilitar botón tras click, debounce, token de idempotencia en servidor.</p>
+<p class="ans"><strong>89.</strong> Fuera de alcance académico; reconoces limitación y propondrías fuentes oficiales de resultados y moderación.</p>
+<p class="ans"><strong>90.</strong> Log de administrador + timestamp + payload de <code>match.finalize</code>; tabla de auditoría si existiera.</p>
+
+<h2>91–95 · Ética y legal</h2>
+<p class="ans"><strong>91.</strong> Uso académico no comercial suele ser más tolerable; marcas y logos son más delicados; cita <strong>fair use</strong> y recomendación del tutor; no afirmar legalidad sin asesoría.</p>
+<p class="ans"><strong>92.</strong> Consentimiento informado, minimización de datos, anonimización en demos públicas.</p>
+<p class="ans"><strong>93.</strong> Aclaras que son <strong>puntos ficticios</strong> / simulación; disclaimer de no juego con dinero real en esta versión.</p>
+<p class="ans"><strong>94.</strong> Ranking por puntos favorece volumen de aciertos vs calidad; alternativas: ELO, porcentaje de acierto ponderado.</p>
+<p class="ans"><strong>95.</strong> Harassing, apuestas ilegales: límites técnicos (KYC fuera de alcance), términos de uso, desactivación de features peligrosas.</p>
+
+<h2>96–100 · Trampas de tribunal</h2>
+<p class="ans"><strong>96.</strong> Ejemplo: «Centralizo torneo simulado NBA con apuestas ficticias; un backend Spring con MySQL sirve a Android y escritorio por un protocolo TCP con JSON; el admin cierra partidos y el sistema resuelve apuestas y puntos de forma persistente.»</p>
+<p class="ans"><strong>97.</strong> Vídeo corto grabado, capturas, diagramas en PDF, o emulador + backend en el mismo portátil sin Wi‑Fi externa.</p>
+<p class="ans"><strong>98.</strong> Ejemplo: duplicación de lógica entre clientes; no refactorizaste por <strong>deadline</strong>; plan de extracción a módulo común o contrato generado.</p>
+<p class="ans"><strong>99.</strong> Elige una fuerte (p. ej. «¿Cómo garantizas consistencia bajo concurrencia?») y respóndela con transacciones + límites del diseño.</p>
+<p class="ans"><strong>100.</strong> Vídeo de respaldo, APK preinstalada, base de datos de demo embebida en script, o narración paso a paso con logs si la demo falla.</p>
+
+<hr>
+
+<footer>
+  <p>Estudia adaptando cada respuesta a tu memoria y al código real del repositorio.</p>
+  <p><strong>Preguntas:</strong> <a href="PREGUNTAS_DEFENSA_TFG.html">PREGUNTAS_DEFENSA_TFG.html</a> · <strong>PDF:</strong> Ctrl+P → Guardar como PDF.</p>
+</footer>
+
+</body>
+</html>

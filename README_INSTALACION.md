@@ -131,7 +131,14 @@ java -jar target/TFG-1.0.0.jar
 
 #### APK de Debug (desarrollo):
 
-Ya está compilado en: `Android/app/build/outputs/apk/debug/app-debug.apk`
+Tras `gradlew assembleDebug`, el APK queda bajo `%LOCALAPPDATA%\TFG-APK\build\...` (ruta interna de Gradle).  
+Para una copia **sencilla** en el proyecto, desde la carpeta `Android` ejecuta:
+
+```bash
+build_release_apk.bat debug
+```
+
+(o `./build_release_apk.sh debug`). El archivo quedará en: `Android/apk/NBA-Predictor-debug.apk`
 
 #### APK de Release (producción):
 
@@ -145,7 +152,11 @@ Ya está compilado en: `Android/app/build/outputs/apk/debug/app-debug.apk`
    chmod +x build_release_apk.sh
    ./build_release_apk.sh
    ```
-3. El APK se generará en: `Android/app/build/outputs/apk/release/app-release.apk`
+   Para **debug**: añade `debug` como argumento (ver arriba).
+3. El script **borra** los `.apk` antiguos en `Android/apk/`, compila y deja el APK en:
+   - **Release:** `Android/apk/NBA-Predictor-release.apk`
+   - **Debug:** `Android/apk/NBA-Predictor-debug.apk`  
+   La compilación intermedia usa la ruta corta `%LOCALAPPDATA%\TFG-APK\build` (Windows) o `~/.tfg/apk-build` (Linux/Mac).
 
 ### Instalar APK:
 
@@ -162,7 +173,7 @@ Ya está compilado en: `Android/app/build/outputs/apk/debug/app-debug.apk`
 1. Arrastra el APK al emulador, o
 2. Usa ADB:
    ```bash
-   adb install app-release.apk
+   adb install -r Android/apk/NBA-Predictor-release.apk
    ```
 
 ### Configuración inicial:
@@ -189,8 +200,9 @@ La primera vez que abras la aplicación:
 - **Documentación**: `nba-client/README_INSTALADOR.md`
 
 ### Android:
-- **APK Debug**: `Android/app/build/outputs/apk/debug/app-debug.apk`
-- **APK Release**: `Android/app/build/outputs/apk/release/app-release.apk` (generar con script)
+- **Script APK (release / debug)**: `Android/build_release_apk.bat` o `Android/build_release_apk.sh` (argumento opcional `debug`)
+- **APK listo para instalar**: `Android/apk/NBA-Predictor-release.apk` o `Android/apk/NBA-Predictor-debug.apk` (la carpeta `apk/` se limpia en cada ejecución del script)
+- **Salida interna de Gradle** (Windows): `%LOCALAPPDATA%\TFG-APK\build\outputs\apk\...`
 
 ## ORDEN DE INSTALACIÓN RECOMENDADO
 

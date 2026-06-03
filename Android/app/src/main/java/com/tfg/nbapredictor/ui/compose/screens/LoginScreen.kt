@@ -146,14 +146,33 @@ fun LoginScreen(
                         Session.setCurrentUser(user)
                             onLoginSuccess()
                     } catch (e: Exception) {
-                        val host = ServerConfig.getServerHost(context)
-                        val port = ServerConfig.getServerPort(context)
-                        val hint = if (ServerConfig.isProbablyEmulator()) {
-                            "Comprueba que el backend esté en marcha y escuche el puerto $port. Si MySQL está parado, Spring puede no arrancar."
+                        val raw = e.message.orEmpty()
+                        // Errores de red vs respuesta del backend (login fallido devuelve ok=false y SocketApi lanza RuntimeException con el mensaje del servidor)
+                        val looksLikeNetworkFailure =
+                            e is java.io.IOException ||
+                                raw.contains("ECONNREFUSED", ignoreCase = true) ||
+                                raw.contains("ETIMEDOUT", ignoreCase = true) ||
+                                raw.contains("timeout", ignoreCase = true) ||
+                                raw.contains("Failed to connect", ignoreCase = true) ||
+                                raw.contains("Connection refused", ignoreCase = true) ||
+                                raw.contains("Network is unreachable", ignoreCase = true) ||
+                                raw.contains("unable to resolve", ignoreCase = true) ||
+                                raw.contains("Socket closed", ignoreCase = true) ||
+                                raw.contains("Software caused connection abort", ignoreCase = true) ||
+                                raw.contains("unexpected end of stream", ignoreCase = true)
+
+                        errorMessage = if (looksLikeNetworkFailure) {
+                            val host = ServerConfig.getServerHost(context)
+                            val port = ServerConfig.getServerPort(context)
+                            val hint = if (ServerConfig.isProbablyEmulator()) {
+                                "Comprueba que el backend esté en marcha y escuche el puerto $port. Si MySQL está parado, Spring puede no arrancar."
+                            } else {
+                                "En móvil físico no uses 10.0.2.2; pon la IP LAN de tu PC (cmd → ipconfig), ej. 192.168.1.x:$port, mismo Wi‑Fi, y firewall abierto para TCP $port."
+                            }
+                            "No se pudo conectar al servidor en $host:$port ($raw). $hint"
                         } else {
-                            "En móvil físico no uses 10.0.2.2; pon la IP LAN de tu PC (ej. 192.168.1.138:$port), mismo Wi‑Fi, y firewall abierto para TCP $port."
+                            raw.ifBlank { "Error al iniciar sesión." }
                         }
-                        errorMessage = "No se pudo conectar al servidor en $host:$port (${e.message}). $hint"
                     } finally {
                         isLoading = false
                     }

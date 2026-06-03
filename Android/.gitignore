@@ -13,3 +13,6 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# APK generados por build_release_apk.* (copia local sencilla)
+/apk/
