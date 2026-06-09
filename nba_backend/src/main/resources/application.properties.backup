@@ -1,6 +1,5 @@
 spring.application.name=nba-backend
-# useUnicode/characterEncoding: evita tildes rotas (p. ej. Pacífico) al leer VARCHAR desde MySQL
-spring.datasource.url=jdbc:mysql://localhost:3306/nba_app?useUnicode=true&characterEncoding=UTF-8
+spring.datasource.url=jdbc:mysql://localhost:3306/nba_app
 spring.datasource.username=root
 spring.datasource.password=root
 

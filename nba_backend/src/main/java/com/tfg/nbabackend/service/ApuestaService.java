@@ -3,6 +3,7 @@ package com.tfg.nbabackend.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.tfg.nbabackend.enums.ResultadoApuesta;
 import com.tfg.nbabackend.model.Apuesta;
@@ -147,12 +148,16 @@ public class ApuestaService {
 
     /**
      * Obtiene todas las apuestas realizadas por un usuario.
-     * 
+     *
      * @param usuario el usuario del que se quieren obtener las apuestas
      * @return lista de apuestas del usuario
      */
+    @Transactional(readOnly = true)
     public List<Apuesta> obtenerPorUsuario(Usuario usuario) {
-        return apuestaRepository.findByUsuario(usuario);
+        if (usuario == null || usuario.getId() == null) {
+            return List.of();
+        }
+        return apuestaRepository.findAllByUsuarioIdWithRelations(usuario.getId());
     }
 
     /**

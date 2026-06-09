@@ -2,6 +2,7 @@ package com.tfg.nbapredictor.ui.compose.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import android.util.Log
 import com.tfg.nbapredictor.model.Partido
 import com.tfg.nbapredictor.network.SocketApi
 import com.tfg.nbapredictor.util.Session
@@ -28,7 +29,9 @@ class DashboardViewModel : ViewModel() {
                 val updated = SocketApi.getUserById(user.id!!)
                 Session.setCurrentUser(updated)
                 Session.notifyUserUpdated()
-            } catch (_: Exception) { }
+            } catch (e: Exception) {
+                Log.e("DashboardVM", "getUserById", e)
+            }
 
             val currentUser = Session.getCurrentUser() ?: return@launch
             _state.value = _state.value.copy(points = currentUser.points)
@@ -45,7 +48,9 @@ class DashboardViewModel : ViewModel() {
 
                 val partidos = SocketApi.getPartidos().toList().filter { it.isProgramado() }.take(5)
                 _state.value = _state.value.copy(upcomingMatches = partidos)
-            } catch (_: Exception) { }
+            } catch (e: Exception) {
+                Log.e("DashboardVM", "apuestas/partidos", e)
+            }
         }
     }
 }

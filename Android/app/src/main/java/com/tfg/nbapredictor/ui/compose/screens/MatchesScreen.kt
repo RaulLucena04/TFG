@@ -1,5 +1,6 @@
 package com.tfg.nbapredictor.ui.compose.screens
 
+import android.util.Log
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
@@ -12,12 +13,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.tfg.nbapredictor.ui.compose.components.MatchItem
 import com.tfg.nbapredictor.model.Partido
 import com.tfg.nbapredictor.network.SocketApi
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,11 +25,16 @@ fun MatchesScreen(
 ) {
     var partidos by remember { mutableStateOf<List<Partido>>(emptyList()) }
     var filter by remember { mutableStateOf("Todos") }
+    var loadError by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) {
+        loadError = null
         try {
             partidos = SocketApi.getPartidos().toList()
-        } catch (_: Exception) { }
+        } catch (e: Exception) {
+            Log.e("MatchesScreen", "getPartidos", e)
+            loadError = e.message ?: e.toString()
+        }
     }
 
     val filtered = when (filter) {
@@ -42,6 +46,20 @@ fun MatchesScreen(
     Column(Modifier.padding(16.dp)) {
         Text("Partidos", style = MaterialTheme.typography.headlineMedium)
         Spacer(Modifier.height(16.dp))
+        loadError?.let { err ->
+            Card(
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    "No se pudieron cargar los partidos (la app no habla con MySQL directamente: va al backend por TCP).\n\n$err",
+                    color = MaterialTheme.colorScheme.onErrorContainer,
+                    modifier = Modifier.padding(12.dp),
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+            Spacer(Modifier.height(12.dp))
+        }
         FilterChips(
             options = listOf("Todos", "Próximos", "En curso", "Finalizados"),
             selected = filter,

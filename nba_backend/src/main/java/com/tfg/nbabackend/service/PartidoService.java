@@ -38,11 +38,12 @@ public class PartidoService {
 
     /**
      * Obtiene todos los partidos del sistema.
-     * 
+     *
      * @return lista de todos los partidos
      */
+    @Transactional(readOnly = true)
     public List<Partido> listarPartidos() {
-        return partidoRepository.findAll();
+        return partidoRepository.findAllWithEquipos();
     }
 
     /**

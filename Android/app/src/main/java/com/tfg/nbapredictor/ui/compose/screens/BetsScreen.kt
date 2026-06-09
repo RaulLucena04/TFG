@@ -1,6 +1,7 @@
 package com.tfg.nbapredictor.ui.compose.screens
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,11 +31,13 @@ fun BetsScreen() {
     var apuestas by remember { mutableStateOf<List<Apuesta>>(emptyList()) }
     var points by remember { mutableStateOf(Session.getCurrentUser()?.points ?: 0) }
     var showCreateDialog by remember { mutableStateOf(false) }
+    var loadError by remember { mutableStateOf<String?>(null) }
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun loadBets() {
         val user = Session.getCurrentUser() ?: return
         user.id ?: return
+        loadError = null
         try {
             val updated = SocketApi.getUserById(user.id)
             Session.setCurrentUser(updated)
@@ -42,7 +45,10 @@ fun BetsScreen() {
             points = updated.points
 
             apuestas = SocketApi.getApuestasByUsuario(user.id).toList()
-        } catch (_: Exception) { }
+        } catch (e: Exception) {
+            Log.e("BetsScreen", "loadBets", e)
+            loadError = e.message ?: e.toString()
+        }
     }
 
     LaunchedEffect(Unit) { loadBets() }
@@ -72,6 +78,20 @@ fun BetsScreen() {
             item {
                 Text("Apuestas", style = MaterialTheme.typography.headlineMedium)
                 Spacer(Modifier.height(16.dp))
+                loadError?.let { err ->
+                    Card(
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            "No se pudieron cargar las apuestas.\n\n$err",
+                            color = MaterialTheme.colorScheme.onErrorContainer,
+                            modifier = Modifier.padding(12.dp),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                    Spacer(Modifier.height(12.dp))
+                }
                 Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     Text("Puntos: $points")
                     Text("Total: ${apuestas.size}")

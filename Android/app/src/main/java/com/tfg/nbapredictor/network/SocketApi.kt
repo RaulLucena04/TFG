@@ -1,41 +1,50 @@
 package com.tfg.nbapredictor.network
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
-import com.tfg.nbapredictor.model.*
+import android.util.Log
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.JavaType
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.tfg.nbapredictor.model.Apuesta
+import com.tfg.nbapredictor.model.Equipo
+import com.tfg.nbapredictor.model.EquipoEstadisticas
+import com.tfg.nbapredictor.model.Partido
+import com.tfg.nbapredictor.model.User
 import com.tfg.nbapredictor.util.ServerConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.net.Socket
-import java.time.LocalDateTime
+import java.util.ArrayList
 import java.util.UUID
 
 /**
  * Cliente TCP por sockets para hablar con el backend (JSON + frames length-prefixed).
+ *
+ * Las respuestas se interpretan con **Jackson** (JavaTime + Kotlin), alineado con el `ObjectMapper`
+ * del servidor. Así se evitan fallos del adaptador Kotlin de **Gson** (p. ej.
+ * `Array must have size 1, but has size 5`) al deserializar listas de `Partido` / `Apuesta`.
  */
 object SocketApi {
-    private val gson: Gson = GsonBuilder()
-        .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeAdapter())
-        .create()
 
-    private data class SocketResponse(
-        val requestId: String? = null,
-        val ok: Boolean = false,
-        val data: JsonElement? = null,
-        val error: String? = null
-    )
+    private val mapper: ObjectMapper = ObjectMapper().apply {
+        registerModule(JavaTimeModule())
+        registerModule(KotlinModule.Builder().build())
+        configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+    }
 
-    private suspend fun <T> call(action: String, payload: Any?, clazz: Class<T>): T =
+    private suspend fun exchange(action: String, payload: Any?): JsonNode =
         withContext(Dispatchers.IO) {
             val requestId = UUID.randomUUID().toString()
-            val req = JsonObject().apply {
-                addProperty("requestId", requestId)
-                addProperty("action", action)
-                add("payload", gson.toJsonTree(payload ?: emptyMap<String, Any>()))
+            val req = mapper.createObjectNode().apply {
+                put("requestId", requestId)
+                put("action", action)
+                set<JsonNode>("payload", mapper.valueToTree(payload ?: emptyMap<String, Any>()))
             }
 
             val host = ServerConfig.getServerHost()
@@ -45,60 +54,79 @@ object SocketApi {
                 val out = DataOutputStream(socket.getOutputStream())
                 val input = DataInputStream(socket.getInputStream())
 
-                SocketFrameSerializer.writeFrame(out, gson.toJson(req))
+                SocketFrameSerializer.writeFrame(out, mapper.writeValueAsString(req))
                 val respJson = SocketFrameSerializer.readFrame(input)
-                val resp = gson.fromJson(respJson, SocketResponse::class.java)
+                val root = mapper.readTree(respJson)
 
-                if (!resp.ok) {
-                    throw RuntimeException(resp.error ?: "Error desconocido")
+                if (!root.path("ok").asBoolean()) {
+                    val err = root.path("error").asText(null)
+                    throw RuntimeException(err?.takeIf { it.isNotBlank() } ?: "Error desconocido")
                 }
 
-                val data = resp.data
-                    ?: throw RuntimeException("Respuesta sin data")
-
-                gson.fromJson(data, clazz)
+                root.get("data") ?: throw RuntimeException("Respuesta sin data")
             }
         }
 
+    private suspend fun <T> convert(action: String, payload: Any?, javaType: JavaType): T =
+        try {
+            val data = exchange(action, payload)
+            mapper.convertValue(data, javaType)
+        } catch (e: Exception) {
+            Log.e("SocketApi", "Fallo parseando respuesta (acción=$action)", e)
+            throw RuntimeException(
+                "No se pudo interpretar la respuesta del servidor (${e.javaClass.simpleName}: ${e.message}). " +
+                    "Si acabas de actualizar solo el backend o solo la app, alinea ambas versiones.",
+                e
+            )
+        }
+
+    private fun <T> typeOf(clazz: Class<T>): JavaType = mapper.typeFactory.constructType(clazz)
+
+    private fun <E> listTypeOf(element: Class<E>): JavaType =
+        mapper.typeFactory.constructCollectionType(ArrayList::class.java, element)
+
     // ===== Usuarios =====
     suspend fun login(username: String, password: String): User =
-        call("user.login", mapOf("username" to username, "password" to password), User::class.java)
+        convert("user.login", mapOf("username" to username, "password" to password), typeOf(User::class.java))
 
     suspend fun register(user: User): User =
-        call("user.register", user, User::class.java)
+        convert("user.register", user, typeOf(User::class.java))
 
     suspend fun getUserById(id: Long): User =
-        call("user.get", mapOf("id" to id), User::class.java)
+        convert("user.get", mapOf("id" to id), typeOf(User::class.java))
 
-    suspend fun getAllUsers(): Array<User> =
-        call("user.list", emptyMap<String, Any>(), Array<User>::class.java)
+    suspend fun getAllUsers(): List<User> =
+        convert("user.list", emptyMap<String, Any>(), listTypeOf(User::class.java))
 
     suspend fun updateUser(user: User): User =
-        call("user.update", user, User::class.java)
+        convert("user.update", user, typeOf(User::class.java))
 
     // ===== Partidos =====
-    suspend fun getPartidos(): Array<Partido> =
-        call("match.list", emptyMap<String, Any>(), Array<Partido>::class.java)
+    suspend fun getPartidos(): List<Partido> =
+        convert("match.list", emptyMap<String, Any>(), listTypeOf(Partido::class.java))
 
     suspend fun finalizarPartido(id: Long, puntosLocal: Int, puntosVisitante: Int): Partido =
-        call("match.finalize", mapOf("id" to id, "puntosLocal" to puntosLocal, "puntosVisitante" to puntosVisitante), Partido::class.java)
+        convert(
+            "match.finalize",
+            mapOf("id" to id, "puntosLocal" to puntosLocal, "puntosVisitante" to puntosVisitante),
+            typeOf(Partido::class.java)
+        )
 
     // ===== Apuestas =====
     suspend fun createApuesta(apuesta: Apuesta): Apuesta =
-        call("bet.create", apuesta, Apuesta::class.java)
+        convert("bet.create", apuesta, typeOf(Apuesta::class.java))
 
-    suspend fun getApuestasByUsuario(id: Long): Array<Apuesta> =
-        call("bet.byUser", mapOf("userId" to id), Array<Apuesta>::class.java)
+    suspend fun getApuestasByUsuario(id: Long): List<Apuesta> =
+        convert("bet.byUser", mapOf("userId" to id), listTypeOf(Apuesta::class.java))
 
     // ===== Equipos / Estadísticas =====
-    suspend fun getEquipos(): Array<Equipo> =
-        call("team.list", emptyMap<String, Any>(), Array<Equipo>::class.java)
+    suspend fun getEquipos(): List<Equipo> =
+        convert("team.list", emptyMap<String, Any>(), listTypeOf(Equipo::class.java))
 
     suspend fun getEquipoEstadisticas(equipoId: Long): EquipoEstadisticas =
-        call("team.stats", mapOf("equipoId" to equipoId), EquipoEstadisticas::class.java)
+        convert("team.stats", mapOf("equipoId" to equipoId), typeOf(EquipoEstadisticas::class.java))
 
     // ===== Tienda =====
     suspend fun canjearPuntos(request: CanjearPuntosRequest): CanjearPuntosResponse =
-        call("store.redeem", request, CanjearPuntosResponse::class.java)
+        convert("store.redeem", request, typeOf(CanjearPuntosResponse::class.java))
 }
-
