@@ -179,10 +179,10 @@ build_release_apk.bat debug
 ### Configuración inicial:
 
 La primera vez que abras la aplicación:
-1. Aparecerá un diálogo para configurar la IP del servidor
-2. Introduce la URL:
-   - Emulador: `http://10.0.2.2:8080` (servidor en tu ordenador)
-   - Dispositivo físico: `http://IP_DEL_SERVIDOR:8080` (IP real del servidor en la red)
+1. Aparecerá un diálogo para configurar el **host y puerto** del backend (comunicación **TCP por socket**, no HTTP).
+2. Introduce `host:puerto` (ejemplos):
+   - Emulador: `10.0.2.2:9090` (apunta al PC anfitrión; puerto por defecto del backend en `application.properties`)
+   - Dispositivo físico: `IP_LAN_DEL_PC:9090` (misma Wi‑Fi que el ordenador donde corre Spring Boot)
 
 ## RESUMEN DE ARCHIVOS DE INSTALACIÓN
 
@@ -219,7 +219,7 @@ La primera vez que abras la aplicación:
 ### El servidor no inicia:
 - Verifica que MySQL esté ejecutándose
 - Verifica las credenciales en `application.properties`
-- Verifica que el puerto 8080 esté libre
+- Verifica que el puerto **9090** (socket del backend) esté libre en el PC servidor
 
 ### El cliente no se conecta al servidor:
 - Verifica que el servidor esté ejecutándose

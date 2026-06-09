@@ -72,7 +72,7 @@ pandoc "Manual de usuario/Manual de Usuario.md" -o "Manual de usuario/Manual de 
 
 ## NOTAS
 
-- Los documentos están escritos en Markdown estándar
+- Los documentos están escritos en Markdown estándar; **los `.md` son la referencia actualizada**. Si entregas también `.pdf`, conviene **regenerarlos** desde el Markdown tras cada revisión importante.
 - Las secciones están numeradas según el formato requerido
 - Se pueden añadir capturas de pantalla en las secciones correspondientes del Manual de Usuario
 - Los diagramas UML y E/R mencionados en el Análisis deben generarse con herramientas CASE (PlantUML, Draw.io, MySQL Workbench, etc.)

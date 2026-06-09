@@ -19,7 +19,7 @@ Aplicación de escritorio desarrollada en JavaFX para el sistema de predicciones
 - **Java 17** - Lenguaje de programación
 - **JavaFX 17** - Interfaz gráfica de usuario
 - **Maven** - Gestión de dependencias
-- **Jackson** - Serialización JSON para comunicación con API REST
+- **Jackson** - Serialización JSON para comunicación con el backend por **socket TCP** (puerto 9090 por defecto)
 
 ## Estructura del Proyecto
 

@@ -15,43 +15,45 @@ Aplicación móvil Android desarrollada en Kotlin para el sistema de prediccione
 ## Tecnologías
 
 - **Kotlin** - Lenguaje de programación
-- **Retrofit** - Cliente HTTP para llamadas a la API
+- **Jetpack Compose** - Interfaz declarativa (flujo principal)
+- **Gson** - Serialización JSON en el protocolo socket
+- **Socket TCP** - Cliente `SocketApi` contra el backend (tramas JSON)
 - **Coroutines** - Programación asíncrona
-- **Material Design** - Componentes de UI
-- **ViewBinding** - Binding de vistas
-- **Navigation Component** - Navegación entre pantallas
+- **Material Design 3** - Componentes de UI
+- **Navigation Compose** - Navegación entre pantallas
 
 ## Estructura del Proyecto
 
 ```
 app/src/main/java/com/tfg/nbapredictor/
 ├── model/              # Modelos de datos (User, Partido, Apuesta, etc.)
-├── network/            # Servicios de red (Retrofit, ApiService)
-├── ui/                 # Actividades y Fragmentos
-│   ├── auth/          # Login y Registro
-│   ├── main/          # Actividad principal
-│   ├── dashboard/     # Dashboard
-│   ├── matches/       # Partidos
-│   ├── bets/          # Apuestas
-│   ├── rankings/      # Rankings
-│   ├── profile/       # Perfil
-│   └── admin/         # Administración
-└── util/              # Utilidades (Session, etc.)
+├── network/            # Cliente socket (SocketApi), serialización de tramas
+├── ui/
+│   ├── auth/           # Login y registro (actividades)
+│   ├── compose/        # Shell Compose, navegación y pantallas
+│   ├── main/           # Actividad de arranque / redirección
+│   ├── dashboard/      # Fragmentos legacy (conviven con Compose)
+│   ├── matches/
+│   ├── bets/
+│   ├── rankings/
+│   ├── profile/
+│   └── admin/
+└── util/               # Utilidades (Session, ServerConfig, etc.)
 ```
 
 ## Configuración
 
-### 1. URL del Backend
+### 1. Host y puerto del backend (TCP)
 
-La URL del servidor se configura desde la interfaz de usuario:
+El cliente Android habla con Spring Boot por **socket TCP** (JSON en tramas), **no** por HTTP/REST en el puerto 8080.
 
-1. **Primera vez**: Al abrir la aplicación por primera vez, aparecerá un diálogo para configurar la URL del servidor
-2. **Cambiar configuración**: Desde la pantalla de login, toca el botón "Configurar Servidor"
-3. **URLs recomendadas**:
-   - **Emulador Android**: `http://10.0.2.2:8080` (para servidor en tu ordenador)
-   - **Dispositivo físico**: `http://IP_DEL_SERVIDOR:8080` (IP real del servidor en la red)
+1. **Primera vez**: Al abrir la aplicación, configura **host:puerto** (ej. `10.0.2.2:9090`).
+2. **Cambiar configuración**: Desde el login, botón **Configurar servidor**.
+3. **Valores típicos**:
+   - **Emulador**: `10.0.2.2:9090` (el emulador ve así el `localhost` de tu PC).
+   - **Dispositivo físico**: `IP_LAN_DEL_PC:9090` (puerto definido en `nba_backend` → `socket.port`, por defecto 9090).
 
-La configuración se guarda automáticamente en las preferencias de la aplicación.
+La configuración se guarda en `SharedPreferences` (`ServerConfig`).
 
 ### 2. Permisos
 
@@ -91,34 +93,26 @@ La salida interna de Gradle en Windows usa `%LOCALAPPDATA%\TFG-APK\build` (ruta 
 - Android Studio Hedgehog o superior
 - Android SDK 24 (Android 7.0) o superior
 - JDK 17
-- Backend Spring Boot ejecutándose en `http://localhost:8080`
+- Backend Spring Boot en ejecución con el **servidor TCP** activo (por defecto `0.0.0.0:9090` en el PC donde corre el `.jar`)
 
 ## Notas
 
-- La aplicación permite configurar la URL del servidor desde la interfaz de usuario
-- La URL por defecto es `http://10.0.2.2:8080` (para emulador)
+- La app permite configurar host y puerto del backend desde la interfaz
+- El valor por defecto en código es `10.0.2.2:9090` (emulador → PC anfitrión)
 - Para dispositivos físicos, usa la IP real del servidor en la red local
-- El cliente Retrofit se actualiza automáticamente cuando cambias la configuración del servidor
-- Asegúrate de que el backend tenga CORS configurado para permitir peticiones desde la app
+- Tras cambiar host o puerto, la nueva configuración se aplica en la **siguiente** conexión (p. ej. al volver a iniciar sesión)
+- El backend **no** expone una API HTTP de negocio para la app; no aplica CORS en ese canal (solo TCP + JSON)
 
 ## Funcionalidades Implementadas
 
-### ✅ Completado
-- Estructura del proyecto
-- Modelos de datos
-- Servicios de red (Retrofit)
-- Autenticación (Login/Registro)
-- Actividad principal con navegación
-- Dashboard básico
-- Gestión de sesión
+### ✅ Completado (resumen)
+- Flujo Compose principal (`ComposeMainActivity`, pantallas en `ui.compose.screens`)
+- Autenticación, partidos, apuestas, rankings, perfil, tienda y panel admin (según pantallas y ViewModels actuales)
+- Cliente `SocketApi` contra el backend TCP
 
-### 🚧 Pendiente
-- Fragmentos completos (Matches, Bets, Rankings, Profile)
-- Adaptadores para RecyclerViews
-- Panel de administración
-- Validaciones adicionales
-- Manejo de errores mejorado
-- Caché de datos
+### 🚧 Posibles extensiones
+- Pulido de UX, pruebas automatizadas amplias y caché offline
+- Notificaciones push y métricas
 
 ## Contribución
 

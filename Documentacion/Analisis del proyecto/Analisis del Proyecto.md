@@ -1,6 +1,8 @@
 # ANÁLISIS DEL PROYECTO
 ## NBA PREDICTOR - Sistema de Predicciones y Apuestas Virtuales
 
+> **Nota de alineación con el código:** el backend expone la lógica a clientes mediante **TCP + JSON** (`SocketServerRunner`, puerto **9090** por defecto en `application.properties`), sin servidor HTTP embebido para la API de negocio. La implementación está en `com.tfg.nbabackend.socket`; los clientes usan `SocketApi` (Android) y `SocketApiClient` (JavaFX). Las referencias a REST/Retrofit en versiones antiguas de este documento se sustituyeron por esta arquitectura.
+
 ---
 
 ## 1. INTRODUCCIÓN
@@ -37,7 +39,7 @@ El proyecto NBA Predictor responde a la necesidad de crear una plataforma multip
 - Rankings globales de usuarios
 - Panel de administración para gestión de partidos y usuarios
 - Tienda virtual para canjear puntos por dinero (integración PayPal simulada)
-- Comunicación cliente-servidor mediante API REST
+- Comunicación cliente-servidor mediante **socket TCP** (JSON en tramas; puerto configurable, por defecto 9090)
 - Aplicación de escritorio con JavaFX
 - Aplicación Android con Jetpack Compose
 
@@ -66,7 +68,7 @@ El proyecto NBA Predictor responde a la necesidad de crear una plataforma multip
 
 1. **Desarrollar una aplicación multiplataforma** que permita a los usuarios realizar predicciones sobre partidos de la NBA mediante un sistema de apuestas virtuales.
 
-2. **Implementar un sistema cliente-servidor robusto** utilizando tecnologías modernas (Spring Boot, JavaFX, Android) con comunicación mediante API REST.
+2. **Implementar un sistema cliente-servidor robusto** utilizando tecnologías modernas (Spring Boot, JavaFX, Android) con comunicación mediante **socket TCP y mensajes JSON** (puerto configurable; por defecto 9090).
 
 3. **Crear una base de datos relacional** que gestione eficientemente usuarios, equipos, jugadores, partidos y apuestas.
 
@@ -120,20 +122,20 @@ El proyecto NBA Predictor responde a la necesidad de crear una plataforma multip
 **Cliente de escritorio:**
 - JavaFX 17 (Interfaz gráfica)
 - Java 17
-- Jackson (Comunicación JSON con API)
+- Jackson (serialización JSON en tramas socket)
 - Maven (Gestión de dependencias)
 
 **Cliente Android:**
 - Kotlin (Lenguaje de programación)
 - Jetpack Compose (Interfaz de usuario moderna)
-- Retrofit 2.11.0 (Cliente HTTP para API REST)
-- OkHttp (Cliente HTTP)
+- Gson 2.11.0 (serialización JSON)
 - Coroutines (Programación asíncrona)
 - Material Design 3 (Diseño de interfaz)
+- Cliente socket (`SocketApi`, `SocketFrameSerializer`)
 
 **Comunicación:**
-- API REST (JSON)
-- HTTP/HTTPS
+- Socket TCP con mensajes JSON (mismo protocolo en JavaFX y Android)
+- PayPal u otros servicios externos pueden usar HTTP/HTTPS donde aplique
 
 **Viabilidad económica:**
 
@@ -154,7 +156,7 @@ El proyecto es **totalmente viable económicamente** ya que utiliza únicamente 
 
 **Justificación de la solución elegida:**
 
-1. **Spring Boot**: Framework maduro y ampliamente utilizado, facilita el desarrollo rápido de APIs REST con configuración mínima.
+1. **Spring Boot**: Framework maduro que aporta inyección de dependencias, JPA y ciclo de vida de aplicación; la exposición a los clientes de escritorio y móvil se implementó con un **servidor TCP** dedicado, no con `RestController` para la API de negocio.
 
 2. **JavaFX**: Tecnología nativa de Java para interfaces gráficas, permite crear aplicaciones de escritorio modernas sin dependencias externas pesadas.
 
@@ -162,7 +164,7 @@ El proyecto es **totalmente viable económicamente** ya que utiliza únicamente 
 
 4. **MySQL**: Base de datos relacional robusta, gratuita y ampliamente soportada, ideal para datos estructurados.
 
-5. **API REST**: Estándar de comunicación que permite fácil integración entre diferentes plataformas y futuras extensiones.
+5. **Socket + JSON**: Protocolo ligero compartido entre JavaFX y Android, con tipos de mensaje desacoplados de HTTP y fácil de extender con nuevas acciones.
 
 6. **Arquitectura cliente-servidor**: Permite centralizar la lógica de negocio y facilitar el mantenimiento y actualizaciones.
 
@@ -174,28 +176,28 @@ El proyecto es **totalmente viable económicamente** ya que utiliza únicamente 
 - Análisis de requisitos
 - Diseño de base de datos
 - Diseño de arquitectura
-- Planificación de API REST
+- Planificación del protocolo de mensajes (acciones, payloads JSON)
 
 **Fase 2: Backend (3-4 semanas)**
 - Configuración del proyecto Spring Boot
 - Implementación de entidades JPA
 - Desarrollo de repositorios
 - Implementación de servicios
-- Desarrollo de controladores REST
-- Pruebas de API
+- Servidor TCP, serialización de tramas y despacho de acciones (`socket`)
+- Pruebas de comunicación y de servicios
 
 **Fase 3: Cliente de Escritorio (3-4 semanas)**
 - Configuración del proyecto JavaFX
 - Diseño de interfaces FXML
 - Implementación de controladores
-- Integración con API
+- Integración con el servidor por socket
 - Pruebas de funcionalidad
 
 **Fase 4: Cliente Android (3-4 semanas)**
 - Configuración del proyecto Android
 - Diseño de interfaces con Compose
 - Implementación de pantallas
-- Integración con API
+- Integración con el servidor por socket
 - Pruebas en dispositivo/emulador
 
 **Fase 5: Integración y Pruebas (2 semanas)**
@@ -231,7 +233,7 @@ El proyecto es **totalmente viable económicamente** ya que utiliza únicamente 
 - Documentación de Jetpack Compose: https://developer.android.com/jetpack/compose
 - Documentación de MySQL: https://dev.mysql.com/doc/
 - Guías de diseño Material Design: https://material.io/design
-- Documentación de Retrofit: https://square.github.io/retrofit/
+- Documentación de Gson: https://github.com/google/gson
 - API de PayPal (para integración futura): https://developer.paypal.com/
 
 **Análisis del sistema existente:**
@@ -268,7 +270,7 @@ No existe un sistema previo, por lo que el proyecto se desarrolla desde cero. Se
 
 **Términos técnicos:**
 
-- **API REST**: Interfaz de programación que utiliza el protocolo HTTP para comunicación entre cliente y servidor.
+- **Socket + JSON (app)**: Comunicación entre clientes y backend mediante conexión TCP y mensajes JSON con tipo de acción y cuerpo serializado (puerto por defecto 9090).
 
 - **JPA (Java Persistence API)**: Especificación de Java para mapeo objeto-relacional.
 
@@ -280,7 +282,7 @@ No existe un sistema previo, por lo que el proyecto se desarrolla desde cero. Se
 
 - **Service**: Capa de lógica de negocio que procesa las operaciones.
 
-- **Controller**: Capa que maneja las peticiones HTTP y devuelve respuestas.
+- **Controller (vista)**: En JavaFX, controladores FXML; en Android, actividades/fragments/Compose. En el backend no hay `RestController` para la app; la entrada de negocio la atienden las clases del paquete `socket`.
 
 ### 2.3 Requisitos funcionales y no funcionales
 
@@ -339,11 +341,11 @@ No existe un sistema previo, por lo que el proyecto se desarrolla desde cero. Se
 **RNF1. Rendimiento:**
 - RNF1.1: Las consultas a la base de datos deben completarse en menos de 2 segundos.
 - RNF1.2: La aplicación debe responder a las acciones del usuario en menos de 1 segundo.
-- RNF1.3: La API debe soportar al menos 50 usuarios concurrentes.
+- RNF1.3: El servidor debe soportar al menos 50 clientes concurrentes conectados por socket.
 
 **RNF2. Seguridad:**
 - RNF2.1: Las contraseñas deben almacenarse usando hash (BCrypt).
-- RNF2.2: Las comunicaciones deben realizarse mediante HTTP/HTTPS.
+- RNF2.2: El canal cliente↔backend usa TCP en la red de despliegue (habitualmente LAN); el cifrado de extremo a extremo no forma parte del alcance mínimo. Las llamadas a servicios externos (p. ej. PayPal) deben seguir las recomendaciones HTTPS del proveedor.
 - RNF2.3: El sistema debe validar los datos de entrada para prevenir inyecciones SQL.
 
 **RNF3. Usabilidad:**
@@ -522,12 +524,12 @@ El sistema sigue una arquitectura cliente-servidor de tres capas:
 │   (Escritorio)   │         │    (Móvil)      │
 └────────┬─────────┘         └────────┬────────┘
          │                            │
-         │      HTTP/REST (JSON)      │
+         │      TCP + JSON (tramas)     │
          └────────────┬───────────────┘
                       │
          ┌────────────▼─────────────┐
          │   Servidor Spring Boot   │
-         │      (Backend API)       │
+         │   (lógica + socket TCP)  │
          └────────────┬─────────────┘
                       │
          ┌────────────▼─────────────┐
@@ -557,7 +559,7 @@ El sistema sigue una arquitectura cliente-servidor de tres capas:
 - JPA/Hibernate (ORM)
 
 **Comunicación:**
-- API REST (JSON sobre HTTP)
+- Socket TCP con JSON entre clientes y servidor (puerto por defecto 9090)
 
 ### 3.2 Modelado funcional de la solución. Diagramas de clase
 
@@ -566,17 +568,18 @@ El sistema sigue una arquitectura cliente-servidor de tres capas:
 - `com.tfg.nbabackend.model`: Entidades JPA
 - `com.tfg.nbabackend.repository`: Repositorios JPA
 - `com.tfg.nbabackend.service`: Lógica de negocio
-- `com.tfg.nbabackend.controller`: Controladores REST
+- `com.tfg.nbabackend.socket`: Servidor TCP, despacho de acciones y serialización de tramas
 - `com.tfg.nbabackend.dto`: Objetos de transferencia de datos
 - `com.tfg.nbabackend.enums`: Enumeraciones
 - `com.tfg.nbabackend.exception`: Manejo de excepciones
+- `com.tfg.nbabackend.config`: Configuración (p. ej. Jackson)
 
 **Paquetes principales del cliente Java:**
 
 - `start`: Clase principal
 - `controller`: Controladores de vistas
 - `model`: Modelos de datos
-- `service`: Servicios de comunicación con API
+- `service`: Servicios de comunicación con el servidor (`SocketApiClient`)
 - `session`: Gestión de sesión
 - `util`: Utilidades
 
@@ -584,7 +587,7 @@ El sistema sigue una arquitectura cliente-servidor de tres capas:
 
 - `com.tfg.nbapredictor.ui`: Interfaces de usuario (Compose)
 - `com.tfg.nbapredictor.model`: Modelos de datos
-- `com.tfg.nbapredictor.network`: Servicios de red (Retrofit)
+- `com.tfg.nbapredictor.network`: Cliente socket (`SocketApi`), serialización de tramas y DTOs de red
 - `com.tfg.nbapredictor.util`: Utilidades
 
 *Nota: Los diagramas de clase detallados se pueden generar utilizando herramientas como IntelliJ IDEA, PlantUML o herramientas CASE.*
@@ -709,37 +712,26 @@ El sistema sigue una arquitectura cliente-servidor de tres capas:
 
 **Backend - Clases principales:**
 
-- `NbaBackendApplication`: Clase principal de Spring Boot
-- `UsuarioController`: Endpoints REST para gestión de usuarios
-- `PartidoController`: Endpoints REST para gestión de partidos
-- `ApuestaController`: Endpoints REST para gestión de apuestas
-- `EquipoController`: Endpoints REST para gestión de equipos
-- `TiendaController`: Endpoints REST para tienda virtual
-- `UsuarioService`: Lógica de negocio de usuarios
-- `PartidoService`: Lógica de negocio de partidos
-- `ApuestaService`: Lógica de negocio de apuestas
-- `TiendaService`: Lógica de negocio de tienda
-- `UsuarioRepository`: Acceso a datos de usuarios
-- `PartidoRepository`: Acceso a datos de partidos
-- `ApuestaRepository`: Acceso a datos de apuestas
+- `NbaBackendApplication`: Arranque Spring Boot (`WebApplicationType.NONE`) y registro del servidor socket
+- `SocketServerRunner` / `SocketClientHandler` / `SocketDispatcher`: Servidor TCP y enrutado de acciones a servicios
+- `UsuarioService`, `PartidoService`, `ApuestaService`, `EquipoService`, `JugadorService`, `TiendaService`, `PayPalService`: Lógica de negocio
+- `UsuarioRepository`, `PartidoRepository`, `ApuestaRepository`, `EquipoRepository`, `JugadorRepository`: Acceso a datos
 
 **Cliente Java - Clases principales:**
 
 - `start.Main`: Clase principal de la aplicación
 - `controller.*`: Controladores de las diferentes vistas
-- `service.*`: Servicios de comunicación con la API
+- `service.*`: Servicios de negocio que llaman a `SocketApiClient`
 - `util.Config`: Gestión de configuración (IP del servidor)
 - `session.Session`: Gestión de sesión de usuario
 
 **Cliente Android - Clases principales:**
 
-- `LoginActivity`: Actividad de inicio de sesión
-- `ComposeMainActivity`: Actividad principal con navegación
+- `ui.auth.LoginActivity` / `ui.compose.ComposeMainActivity`: Flujo de entrada y shell Compose
 - `ui.compose.screens.*`: Pantallas en Compose
-- `network.RetrofitClient`: Cliente HTTP para API
-- `network.ApiService`: Interfaz de servicios REST
-- `util.ServerConfig`: Gestión de configuración (IP del servidor)
-- `util.Session`: Gestión de sesión de usuario
+- `network.SocketApi`: Cliente de socket y llamadas tipadas al backend
+- `util.ServerConfig`: Host y puerto del servidor
+- `util.Session`: Sesión de usuario en memoria
 
 ### 4.3 Implementación del modelo de datos. Tablas
 
@@ -759,7 +751,7 @@ También se proporciona un script SQL (`populate_database.sql`) para poblar la b
 - Validación de lógica de negocio
 
 **Cliente Java:**
-- Pruebas de servicios de comunicación con API
+- Pruebas de servicios de comunicación por socket
 - Validación de cálculos de cuotas
 - Pruebas de gestión de sesión
 
@@ -798,7 +790,7 @@ También se proporciona un script SQL (`populate_database.sql`) para poblar la b
 **Objetivos alcanzados al 100%:**
 
 ✅ Desarrollo de aplicación multiplataforma (escritorio + Android)
-✅ Implementación de sistema cliente-servidor con API REST
+✅ Implementación de sistema cliente-servidor con **socket TCP + JSON**
 ✅ Creación de base de datos relacional completa
 ✅ Sistema de cálculo de cuotas basado en estadísticas
 ✅ Panel de administración funcional
@@ -898,7 +890,7 @@ También se proporciona un script SQL (`populate_database.sql`) para poblar la b
 - Spring Boot Official Website: https://spring.io/projects/spring-boot
 - JavaFX Official Website: https://openjfx.io/
 - Android Developers: https://developer.android.com/
-- Retrofit Documentation: https://square.github.io/retrofit/
+- Gson User Guide: https://github.com/google/gson/blob/main/UserGuide.md
 - Jackson JSON Processor: https://github.com/FasterXML/jackson
 - MySQL Official Website: https://www.mysql.com/
 - Stack Overflow: https://stackoverflow.com/
@@ -911,14 +903,14 @@ También se proporciona un script SQL (`populate_database.sql`) para poblar la b
 ### 8.1 Informáticos
 
 - **API (Application Programming Interface)**: Interfaz que permite la comunicación entre diferentes aplicaciones.
-- **REST (Representational State Transfer)**: Estilo arquitectónico para servicios web.
+- **REST (Representational State Transfer)**: Estilo arquitectónico habitual sobre HTTP; **no** es el mecanismo cliente↔backend de la versión entregada (ahí se usa TCP + JSON).
 - **JSON (JavaScript Object Notation)**: Formato de intercambio de datos ligero y legible.
 - **ORM (Object-Relational Mapping)**: Técnica de programación para convertir datos entre sistemas de tipos incompatibles.
 - **JPA (Java Persistence API)**: Especificación de Java para gestión de persistencia de datos.
 - **DTO (Data Transfer Object)**: Objeto que transporta datos entre procesos.
 - **Repository**: Patrón de diseño que abstrae el acceso a datos.
 - **Service**: Capa de lógica de negocio en arquitectura en capas.
-- **Controller**: Componente que maneja las peticiones HTTP.
+- **Controller**: En JavaFX/Android, controladores de vistas. En el backend de este proyecto no hay `RestController` para la app; la capa de entrada remota es el servidor **socket**.
 - **Compose**: Framework de Android para crear interfaces declarativas.
 
 ### 8.2 Problema

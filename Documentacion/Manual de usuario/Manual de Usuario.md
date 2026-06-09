@@ -1,6 +1,8 @@
 # MANUAL DE USUARIO
 ## NBA PREDICTOR - Sistema de Predicciones y Apuestas Virtuales
 
+> **Actualización importante:** el backend se comunica con los clientes por **socket TCP** (JSON), **no** por HTTP en el puerto 8080. El puerto por defecto del servidor de aplicación es **9090** (`socket.port` en `application.properties`). Donde este manual aún cite `http://…:8080`, sustitúyelo mentalmente por `host:9090` (p. ej. `localhost:9090`, `10.0.2.2:9090` en emulador).
+
 ---
 
 ## ÍNDICE
@@ -82,7 +84,7 @@ Si el servidor se ha iniciado correctamente, verás un mensaje similar a:
 Started NbaBackendApplication in X.XXX seconds
 ```
 
-El servidor estará disponible en: `http://localhost:8080`
+El backend quedará en escucha para los clientes en **TCP** (por defecto `0.0.0.0:9090`). En consola deberías ver un mensaje similar a `Socket backend escuchando en 0.0.0.0:9090`. **No** hay API HTTP obligatoria en el puerto 8080 en la configuración actual.
 
 ### 1.7 Poblado inicial de datos (Opcional)
 
@@ -136,13 +138,13 @@ mvn clean package
 
 ### 2.4 Configuración inicial
 
-La primera vez que ejecutes la aplicación, aparecerá un diálogo para configurar la IP del servidor:
+La primera vez que ejecutes la aplicación, aparecerá un diálogo para configurar **host y puerto** del servidor (formato `host:puerto`, comunicación **TCP**):
 
-1. Introduce la URL del servidor (ejemplo: `http://192.168.1.100:8080`)
-   - Si el servidor está en la misma máquina: `http://localhost:8080`
-   - Si el servidor está en otra máquina: `http://IP_DEL_SERVIDOR:8080`
+1. Introduce el servidor (ejemplos):
+   - Misma máquina: `localhost:9090`
+   - Otra máquina en la LAN: `192.168.1.100:9090` (ajusta la IP)
 2. Haz clic en "Guardar"
-3. La configuración se guardará en el archivo `config.properties` en la misma carpeta
+3. La configuración se guardará en el archivo `config.properties` en la misma carpeta (`server.host` y `server.port`).
 
 **Nota**: Puedes cambiar la IP del servidor en cualquier momento editando el archivo `config.properties` o ejecutando la aplicación de nuevo.
 
@@ -178,10 +180,10 @@ La primera vez que ejecutes la aplicación, aparecerá un diálogo para configur
 
 La primera vez que abras la aplicación:
 
-1. Aparecerá un diálogo para configurar la IP del servidor
-2. Introduce la URL del servidor:
-   - Si el servidor está en tu ordenador y usas emulador: `http://10.0.2.2:8080`
-   - Si el servidor está en otra máquina en la misma red: `http://192.168.1.100:8080`
+1. Aparecerá un diálogo para configurar **host:puerto** del backend (socket TCP).
+2. Ejemplos:
+   - Emulador con servidor en tu PC: `10.0.2.2:9090`
+   - Otra máquina en la misma red: `192.168.1.100:9090`
 3. Haz clic en **"Guardar"**
 4. La configuración se guardará automáticamente
 
@@ -471,22 +473,23 @@ La configuración del servidor se guarda en el archivo `config.properties` en la
 **Formato del archivo:**
 
 ```properties
-#Configuración del servidor
-server.url=http://localhost:8080
+# Configuración del servidor (TCP; puerto por defecto del backend: 9090)
+server.host=localhost
+server.port=9090
 ```
 
-**Para cambiar la IP:**
+**Para cambiar el servidor:**
 
 1. Edita el archivo `config.properties`
-2. Cambia la URL por la IP del servidor
+2. Ajusta `server.host` y `server.port`
 3. Guarda el archivo
 4. Reinicia la aplicación
 
 **Ejemplos:**
 
-- Servidor en la misma máquina: `http://localhost:8080`
-- Servidor en otra máquina de la red local: `http://192.168.1.100:8080`
-- Servidor remoto: `http://servidor.dominio.com:8080`
+- Servidor en la misma máquina: `localhost` + `9090`
+- Servidor en otra máquina de la red local: `192.168.1.100` + `9090`
+- Servidor remoto: hostname o IP alcanzable + puerto abierto (normalmente `9090`)
 
 ### 6.2 Configuración del servidor (Android)
 
@@ -500,9 +503,9 @@ La configuración se guarda automáticamente en las preferencias de la aplicaci�
 
 **Ejemplos:**
 
-- Servidor en tu ordenador (usando emulador): `http://10.0.2.2:8080`
-- Servidor en otra máquina de la red local: `http://192.168.1.100:8080`
-- Servidor remoto: `http://servidor.dominio.com:8080`
+- Servidor en tu ordenador (emulador): `10.0.2.2:9090`
+- Servidor en otra máquina de la red local: `192.168.1.100:9090`
+- Servidor remoto: `servidor.dominio.com:9090` (si el puerto está expuesto)
 
 ### 6.3 Solución de problemas comunes
 
@@ -533,16 +536,16 @@ La configuración se guarda automáticamente en las preferencias de la aplicaci�
 
 **Problema: La aplicación Android no se conecta al servidor**
 
-- Si usas emulador, usa `http://10.0.2.2:8080` para servidor en tu ordenador
-- Si usas dispositivo físico, usa la IP real del servidor en la red local
+- Si usas emulador, usa `10.0.2.2:9090` para servidor en tu ordenador
+- Si usas dispositivo físico, usa la IP real del servidor en la red local con puerto **9090**
 - Verifica que el dispositivo y el servidor estén en la misma red WiFi
 
 ### 6.4 Requisitos de red
 
 - El servidor debe estar accesible desde el cliente
 - Si el servidor está en otra máquina, ambas deben estar en la misma red local o el servidor debe ser accesible desde Internet
-- El puerto 8080 debe estar abierto en el servidor
-- Si hay firewall, debe permitir conexiones en el puerto 8080
+- El puerto **9090** (socket del backend) debe estar abierto en el servidor
+- Si hay firewall, debe permitir conexiones **TCP entrantes** en ese puerto
 
 ---
 
